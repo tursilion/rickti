@@ -29,8 +29,8 @@ typedef U8 img_color_t;
 typedef struct {
   U16 w, h;
   U16 ncolors;
-  img_color_t *colors;
-  U8 *pixels;
+  const img_color_t *colors;
+  const U8 *pixels;
 } img_t;
 
 /* the splash image */
@@ -56,7 +56,7 @@ extern void img_paintPic(U16, U16, U16, U16, U32 *);
  * copy a bitmap image of size <width>,<height> with data in <pic> and color at <col> at
  * position <x>,<y> (fb/px). NOTE: character (8x8) boundaries!
  */
-extern void img_paintPic(U16, U16, U16, U16, U8*, U8*);
+extern void img_paintPic(U16, U16, U16, U16, const U8*, const U8*);
 #endif
 
 #endif /* _IMG_H */

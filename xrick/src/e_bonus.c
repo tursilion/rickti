@@ -35,11 +35,11 @@ e_bonus_action(U8 e)
 
   if (ent_ents[e].seq == 0) {
     if (e_rick_boxtest(e)) {
-      env_score += 500;
+      addscore(500);
 #ifdef ENABLE_SOUND
       syssnd_play(WAV_BONUS, 1);
 #endif
-      map_marks[ent_ents[e].mark].ent |= MAP_MARK_NACT;
+      map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
       ent_ents[e].seq = 1;
       ent_ents[e].sprite = 0xad;
       ent_ents[e].front = TRUE;

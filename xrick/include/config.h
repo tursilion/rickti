@@ -14,15 +14,15 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
-#include "ricksystem.h"
-
-/* version */
-#define VERSION "050500"
-
 /* graphics (choose one) */
 #undef GFXST
 #undef GFXPC
 #define GFXTI
+
+#include "ricksystem.h"
+
+/* version */
+#define VERSION "050500"
 
 /* logging (write to console) */
 #undef ENABLE_LOG

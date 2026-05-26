@@ -79,7 +79,6 @@ U8 screen_introMap(void)
 			tiles_setBank(0);
 #endif
 #ifdef GFXTI
-            // TODO: this is probably where we load the correct tilemap
 			tiles_setBank(0);
 #endif
 			tiles_paintListAt(maps_intros[env_map].title, 32, 0);

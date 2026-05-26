@@ -25,21 +25,21 @@ MEMORY
     FIXED(xrw) : ORIGIN = 0xA000, LENGTH = 24K
     STACK(xrw) : ORIGIN = 0x2000, LENGTH = 8K
     SCRATCH(rw) : ORIGIN = 0x8320, LENGTH = 224
-    CART1(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART2(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART3(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART4(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART5(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART6(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART7(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART8(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART9(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART10(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART11(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART12(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART13(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART14(XR) : ORIGIN = 0x602e, LENGTH = 8146
-    CART15(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART1(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART2(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART3(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART4(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART5(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART6(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART7(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART8(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART9(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART10(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART11(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART12(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART13(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART14(XR) : ORIGIN = 0x6028, LENGTH = 8152
+    CART15(XR) : ORIGIN = 0x6028, LENGTH = 8152
     
     FLASH(XR) : ORIGIN = 0, LENGTH = 256K
 }
@@ -59,18 +59,11 @@ SECTIONS {
     . = 0xA000;
     fixed :
     {
+        vdpint.o
         control.o(.text .rodata)
         dat_ents.o(.text .rodata)
-        dat_maps.o(.text .rodata)
-        dat_picsTI.o(.text .rodata)
         dat_screens.o(.text .rodata)
         dat_snd.o(.text .rodata)
-        dat_spritesTI0.o(.text .rodata)
-        dat_spritesTI1.o(.text .rodata)
-        dat_spritesTI2.o(.text .rodata)
-        dat_spritesTI3.o(.text .rodata)
-        dat_spritesTI4.o(.text .rodata)
-        dat_tilesTI.o(.text .rodata)
         data.o(.text .rodata)
         devtools.o(.text .rodata)
         draw.o(.text .rodata)
@@ -113,80 +106,85 @@ SECTIONS {
     } > FIXED AT> FLASH
     
     PROVIDE (etext = .);
-    
-    bank1 :
-    {
-        /* not used - this is part of fixed above */
-        PROVIDE(ebank1a = .);
-    } > CART1 AT> FLASH
-    
-    bank2 :
-    {
-        PROVIDE(ebank2a = .);
-    } > CART2 AT> FLASH
 
+    /* bank0, 1 and 2 are used for the 24k of fixed code */
+    
     bank3 :
     {
+        dat_spritesTI0.o(.text .rodata)
         PROVIDE(ebank3a = .);
     } > CART3 AT> FLASH
 
     bank4 :
     {
+        dat_spritesTI1.o(.text .rodata)
         PROVIDE(ebank4a = .);
     } > CART4 AT> FLASH
 
     bank5 :
     {
+        dat_spritesTI2.o(.text .rodata)
         PROVIDE(ebank5a = .);
     } > CART5 AT> FLASH
 
     bank6 :
     {
+        dat_spritesTI3.o(.text .rodata)
         PROVIDE(ebank6a = .);
     } > CART6 AT> FLASH
 
     bank7 :
     {
+        dat_spritesTI4.o(.text .rodata)
+        dat_ents2.o(.text .rodata)
         PROVIDE(ebank7a = .);
     } > CART7 AT> FLASH
 
     bank8 :
     {
+        dat_tilespTI.o(.text .rodata)
         PROVIDE(ebank8a = .);
     } > CART8 AT> FLASH
 
     bank9 :
     {
+        dat_tilescTI.o(.text .rodata)
         PROVIDE(ebank9a = .);
     } > CART9 AT> FLASH
 
     bank10 :
     {
+        dat_picspTI.o(.text .rodata)
         PROVIDE(ebank10a = .);
     } > CART10 AT> FLASH
 
     bank11 :
     {
+        dat_picscTI.o(.text .rodata)
         PROVIDE(ebank11a = .);
     } > CART11 AT> FLASH
 
     bank12 :
     {
+        dat_maps1.o(.text .rodata)
         PROVIDE(ebank12a = .);
     } > CART12 AT> FLASH
 
     bank13 :
     {
+        dat_maps2.o(.text .rodata)
         PROVIDE(ebank13a = .);
     } > CART13 AT> FLASH
 
     bank14 :
     {
+        dat_maps3.o(.text .rodata)
         PROVIDE(ebank14a = .);
     } > CART14 AT> FLASH
 
     bank15 :
     {
+        dat_maps4.o(.text .rodata)
         PROVIDE(ebank15a = .);
     } > CART15 AT> FLASH
 

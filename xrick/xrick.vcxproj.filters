@@ -134,9 +134,6 @@
     <ClCompile Include="src\dat_ents.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\dat_maps.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\dat_picsPC.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -272,12 +269,6 @@
     <ClCompile Include="src\sounds.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\dat_picsTI.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dat_tilesTI.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\dat_spritesTI0.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -291,6 +282,33 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\dat_spritesTI4.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_tilescTI.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_tilespTI.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_picscTI.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_picspTI.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_maps1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_maps2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_maps3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_maps4.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_ents2.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -353,5 +371,6 @@
     <None Include="src\wav_walk.e">
       <Filter>E Includes</Filter>
     </None>
+    <None Include="src\vdpint.assembly" />
   </ItemGroup>
 </Project>

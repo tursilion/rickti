@@ -18,7 +18,7 @@
 /*
  * map intro, sprites lists
  */
-U8 screen_imapsl[] = {
+const U8 screen_imapsl[] = {
   0x1b, 0x00,
   0x1c, 0x1d, 0x00,
   0x01, 0x00,
@@ -32,7 +32,7 @@ U8 screen_imapsl[] = {
 /*
  * map intro, steps
  */
-screen_imapsteps_t screen_imapsteps[] = {
+const screen_imapsteps_t screen_imapsteps[] = {
   { 0x0000, 0x0002, 0x0002, 0x0000 },
 
   { 0x000b, 0x0000, 0x0001, 0x0000 },
@@ -71,7 +71,7 @@ screen_imapsteps_t screen_imapsteps[] = {
 /*
  * map intro, step offset per map
  */
-U8 screen_imapsofs[] = {
+const U8 screen_imapsofs[] = {
   0x00, 0x03, 0x07, 0x0a, 0x0f
 };
 
@@ -79,7 +79,7 @@ U8 screen_imapsofs[] = {
  * main intro, hall of fame title
  * (from ds + 0x8810 + 0x2642)
  */
-U8 screen_imainhoft[] =
+const U8 screen_imainhoft[] =
 { 0x2f, 0x2f, 0x2f, 0x2f, 0x2f, 0xd4, 0xb7, 0xb1,
   0xac, 0xc6, 0x2f, 0xc6, 0x2f, 0x2f, 0xa4, 0xac,
   0x9b, 0xc1, 0x2f, 0x9b, 0xc1, 0xb1, 0xac, 0xb6,
@@ -101,7 +101,7 @@ U8 screen_imainhoft[] =
  * main intro, Rick Dangerous title
  * (from ds + 0x8810 + 0x27a1)
  */
-U8 screen_imainrdt[] =
+const U8 screen_imainrdt[] =
 { 0x2f, 0x2f, 0x2f, 0x9b, 0x9c, 0xa1, 0xa4, 0xa5,
   0xa9, 0xaa, 0x2f, 0x9b, 0xac, 0xb1, 0xac, 0xb6,
   0xb7, 0xa4, 0xa5, 0x9b, 0xc1, 0x9b, 0x9c, 0xa4,
@@ -123,7 +123,7 @@ U8 screen_imainrdt[] =
  * congratulations
  * (from ds + 0x8810 + 0x257d)
  */
-U8 screen_congrats[] =
+const U8 screen_congrats[] =
 { 0xa4, 0xa5, 0xa4, 0xac, 0xb6, 0xb7, 0xa4, 0xa5,
   0x9b, 0x9c, 0xb1, 0xac, 0xcd, 0xce, 0xc6, 0xc7,
   0xd3, 0x2f, 0xb1, 0xac, 0xcd, 0xce, 0xa1, 0xa4,
@@ -147,7 +147,7 @@ U8 screen_congrats[] =
  *
  * \376=0xfe \377=0xff
  */
-U8 screen_imaincdc[] = "\
+const U8 screen_imaincdc[] = "\
 @@@@@@@@@@@@@@@@@@@\377\377\
 (C)@1989@CORE@DESIGN\377\377\377\
 @PRESS@SPACE@TO@START\376";
@@ -158,7 +158,7 @@ U8 screen_imaincdc[] = "\
  *
  * \376=0xfe \377=0xff
  */
-U8 screen_gameovertxt[] = "\
+const U8 screen_gameovertxt[] = "\
 @@@@@@@@@@@\377\
 @GAME@OVER@\377\
 @@@@@@@@@@@\376";
@@ -168,17 +168,9 @@ U8 screen_gameovertxt[] = "\
  *
  * \376=0xfe \377=0xff
  */
-U8 screen_pausedtxt[] = "\
+const U8 screen_pausedtxt[] = "\
 @@@@@@@@@@\377\
 @@PAUSED@@\377\
 @@@@@@@@@@\376";
 
 /* eof */
-
-
-
-
-
-
-
-

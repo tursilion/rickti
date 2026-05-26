@@ -28,6 +28,7 @@
 #ifdef GFXTI
 #include "pics.h"
 
+#if 0
 static img_t IMG_SPLASH_OBJECT = {
     256, 192,
     16,
@@ -36,6 +37,7 @@ static img_t IMG_SPLASH_OBJECT = {
 };
 
 img_t *IMG_SPLASH = &IMG_SPLASH_OBJECT;
+#endif
 #endif
 
 /*
@@ -53,7 +55,11 @@ screen_xrick(void)
 	{
 		fb_clear();
 		sysvid_setGamma(255);
+#ifndef GFXTI
 		img_paintImg(IMG_SPLASH);
+#else
+        img_paintPic(0, 0, 256, 192, (U8*)pic_splash_pat, (U8*)pic_splash_col);
+#endif
 		game_rects = &draw_SCREENRECT;
 		seq = 1;
 	}

@@ -71,12 +71,12 @@ e_sbonus_stop(U8 e)
 		/* rick is within trigger box */
 		e_sbonus_counting = FALSE;  /* stop counting */
 		ent_ents[e].n = 0;  /* deactivate entity */
-		env_score += e_sbonus_bonus;  /* add bonus to score */
+		addscore(e_sbonus_bonus);  /* add bonus to score */
 #ifdef ENABLE_SOUND
 		syssnd_play(WAV_SBONUS2, 1);
 #endif
 		/* make sure the entity won't be activated again */
-		map_marks[ent_ents[e].mark].ent |= MAP_MARK_NACT;
+		map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
 	}
 	else {
 		/* keep counting */

@@ -85,7 +85,7 @@ screen_introMain(void)
 			img_paintPic(0, 0, 0x140, 0xc8, pic_splash);
 #endif
 #ifdef GFXTI
-			img_paintPic(0, 0, 256, 192, pic_splash_pat, pic_splash_col);
+			img_paintPic(0, 0, 256, 192, (U8*)pic_splash_pat, (U8*)pic_splash_col);
 #endif
 
 			game_period = period/2;
@@ -145,7 +145,7 @@ screen_introMain(void)
 			img_paintPic(0, 0, 0x140, 0x20, pic_haf);
 #endif
 #ifdef GFXTI
-			img_paintPic(0, 0, 256, 24, pic_haf_pat, pic_haf_col);
+			img_paintPic(0, 0, 256, 24, (U8*)pic_haf_pat, (U8*)pic_haf_col);
 #endif
 
 			/* hall of fame content */

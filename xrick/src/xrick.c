@@ -35,39 +35,16 @@ extern sprite_data_t sprite_table[ENT_ENTSNUM+1];
 // timer updated by VDP interrupt - making it 32 bit so it can represent milliseconds better
 // without wrapping very often. Note we are doing milliseconds*10 (so we can count by 16.6ms)
 // TODO: this is wrong for PAL, obviously, which counts at 20ms
-volatile U32 vdpCount;
+volatile U16 vdpCount;
 
 // reset time at startup
 void sys_resettime() {
     vdpCount = 0;
 }
 
-// the actual VDP interrupt
-void sys_vdpint() {
-    // although the TI already cleared the interrupt, other systems might not
-    // This will clear and disable interrupts
-    VDP_CLEAR_VBLANK;
-
-    vdpCount += 166;     // ms*10
-#ifdef ENABLE_SOUND
-    // TODO: update sound engine
+// gcc doesn't support naked functions, so we need to write the interrupt handler in assembly...
+extern void sys_vdpint();
 #endif
-
-    // we should copy the sprite table, but because we don't know if a
-    // VDP operation is active, we can't. That will make flicker tricky...
-    // TODO: Since sprites are handled in a mirror table, we can just
-    // force any other VDP access to disable interrupts. Most of it should
-    // be for setups anyway. Then we can safely copy and rotate the sprite
-    // table here. If we track how many sprites are active, we can even
-    // deal with the 12 large sprites (48) instead of the hardware limit of 8 (32)
-    // TOOD: not rotating yet
-    vdpmemcpy(gSprite, (U8*)sprite_table, 128);
-
-    // turn interrupts back on
-    VDP_INT_ENABLE;
-}
-#endif
-
 
 /*
  * Sets a console, if possible

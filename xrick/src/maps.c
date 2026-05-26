@@ -229,7 +229,7 @@ map_resetMarks(void)
 {
   U16 i;
   for (i = 0; i < MAP_NBR_MARKS; i++)
-    map_marks[i].ent &= ~MAP_MARK_NACT;
+    map_marks_ent[i] = map_marks[i].ent;
 }
 
 

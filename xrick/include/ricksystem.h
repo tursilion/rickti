@@ -69,10 +69,12 @@ extern void sys_shutdown(void);
 extern void sys_panic(char *, ...);
 extern void sys_printf(char *, ...);
 extern void sys_sleep(int);
-extern U32 sys_gettime(void);
 
 #ifdef GFXTI
 void sys_resettime();
+extern U16 sys_gettime(void);
+#else
+extern U32 sys_gettime(void);
 #endif
 
 #endif

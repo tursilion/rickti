@@ -103,10 +103,10 @@ typedef struct {
 } mvstep_t;
 
 extern ent_t ent_ents[ENT_ENTSNUM + 1];
-extern entdata_t ent_entdata[ENT_NBR_ENTDATA];
+extern const entdata_t ent_entdata[ENT_NBR_ENTDATA];
 extern rect_t *ent_rects;
 extern U8 ent_sprseq[ENT_NBR_SPRSEQ];
-extern mvstep_t ent_mvstep[ENT_NBR_MVSTEP];
+extern const mvstep_t ent_mvstep[ENT_NBR_MVSTEP];
 
 extern void ent_reset(void);
 extern void ent_actvis(U8, U8);

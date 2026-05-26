@@ -6,7 +6,9 @@
  def _init_data
  
 * cartridge header here - we dont expect a normal startup entry
-* We can reserve 46 bytes for the header on every page - that must take us to the bank switch!
+* We can reserve 40 bytes for the header on every page - that must take us to the bank switch!
+* This count is enforced in the header below, the copy loop down below, and the linker file,
+* and elf2bankedcart.
     aorg >6000
     
 * because many bytes in the standard header are unused, and location is well known,
@@ -22,12 +24,12 @@ _prog:
     data 0x0000             * next program
     data _start             * entry point - 20 bytes to this point
     byte 14                 * length of following name
-    text 'RICK DANGEROUSxxxxxxx'
+    text 'RICK DANGEROUSx'
     even
 
-* 42 bytes used till this point (note title length!)
-* Pad the above if necessary to get to 42 bytes so the cartridge headers work (external tools?)
-* 46 bytes noted above includes the CLR opcode to set the start back.
+* 36 bytes used till this point (note title length!)
+* Pad the above if necessary to get to 36 bytes so the cartridge headers work
+* 40 bytes noted above includes the CLR opcode to set the start back.
 
 * Entry point for C runtime initilization code
 *
@@ -86,7 +88,7 @@ bss_clear_end:
 
 * now copy the rest of the fixed data into RAM
 * we are lazy here and assume a load address of 0xA000
-* we also assume the rest of this page and all of page 1-2 (excluding header of 46 bytes)
+* we also assume the rest of this page and all of page 1-2 (excluding header of 40 bytes)
 * for (almost) 24k. Anyway... to do this right we are going to
 * need to work from scratchpad - copy into >8320
 
@@ -146,7 +148,7 @@ cplp:
   ci r1,>8000
   jne cplp
 
-  li r1,>602E       * restart copy
+  li r1,>6028       * restart copy
   clr *r2+          * but on next page, and increment
   dec r3            * check if more
   jne cplp
@@ -196,3 +198,4 @@ waitky:
 warn32k:
   text '32K REQUIRED'
   data 0
+

@@ -1,0 +1,39 @@
+* VDP Interrupt handler
+
+ def sys_vdpint
+ ref vdpCount
+ ref sprite_table
+ ref gSprite
+ ref vdpmemcpy
+ 
+****************
+* VDP interrupt handler - user link
+sys_vdpint:
+    *limi 0              * not needed - the console interrupt disables it
+
+* use a dedicated workspace, but use the main stack pointer
+    lwpi >8320
+    mov @>8314,R10      * get the real stack pointer
+
+    li r0,166           * ms*10
+    a r0,@vdpCount
+
+*#ifdef ENABLE_SOUND
+*    // TODO: update sound engine (guess a push and a call will work, might not even need the push)
+*#endif
+
+*    // Since sprites are handled in a mirror table, we can just
+*    // force any other VDP access to disable interrupts. Most of it should
+*    // be for setups anyway. Then we can safely copy and rotate the sprite
+*    // table here. If we track how many sprites are active, we can even
+*    // deal with the 12 large sprites (48) instead of the hardware limit of 8 (32)
+*    // TOOD: not rotating yet
+    li r3,>80
+    li r2,sprite_table
+    mov @gSprite,r1
+    bl @vdpmemcpy
+
+*    // restore the GPLWS, turn ints back on, and return
+    lwpi >83E0
+*    limi 2             * not needed, the eventual RTWP will turn it back on
+    b *r11

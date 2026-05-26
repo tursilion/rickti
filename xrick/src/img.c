@@ -78,7 +78,7 @@ void img_paintImg(img_t *img)
  * position <x>,<y> (fb/px). NOTE: 8 pixel character bounardies!
  */
 #ifdef GFXTI
-void img_paintPic(U16 x, U16 y, U16 width, U16 height, U8 *pic, U8 *col)
+void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8 *pic, const U8 *col)
 {
     U16 i,v, v2;
     U16 sz = width/8;

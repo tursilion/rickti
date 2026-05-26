@@ -68,7 +68,7 @@ screen_gameover(void)
 		fb_clear();
 		tm = sys_gettime();
 #endif
-		tiles_paintListAt(screen_gameovertxt, 120, 80);
+		tiles_paintListAt((U8*)screen_gameovertxt, 120, 80);
 
 		game_rects = &draw_SCREENRECT;
 		seq = 2;

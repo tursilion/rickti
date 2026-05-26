@@ -33,7 +33,9 @@ extern U8 env_bombs;
 extern U8 env_bullets;
 
 /* game score */
-extern U32 env_score;
+extern U16 env_score_lo;
+extern U16 env_score_hi;
+extern void addscore(U16 val);
 
 /* current map and submap */
 extern U16 env_map;

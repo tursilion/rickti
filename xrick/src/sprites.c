@@ -127,7 +127,7 @@ void sprites_paint(U8 spriteNumber, U16 x, U16 y)
             // TODO: this relies on all the sprite patterns being one after the other,
             // and we need to add the bank switching to the correct bank, and the
             // sprites will definitely be in different banks.
-            vdpmemcpy(gSpritePat+(i*16)*8, spriteNumber*128+sprites_data0, 128);
+            //vdpmemcpy(gSpritePat+(i*16)*8, spriteNumber*128+sprites_data0, 128);
             VDP_INT_ENABLE;
 
             break;

@@ -60,7 +60,7 @@ e_box_action(U8 e)
 		ent_ents[e].sprite = sp[ent_ents[e].cnt >> 1];
 		if (--ent_ents[e].cnt == 0) {
 			ent_ents[e].n = 0;
-			map_marks[ent_ents[e].mark].ent |= MAP_MARK_NACT;
+			map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
 		}
 	} else {
 		/*
@@ -76,7 +76,7 @@ e_box_action(U8 e)
 			else  /* 0x11 */
 				env_bullets = GAME_BULLETS_INIT;
 			ent_ents[e].n = 0;
-			map_marks[ent_ents[e].mark].ent |= MAP_MARK_NACT;
+			map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
 		}
 		else if (E_RICK_STTST(E_RICK_STSTOP) &&
 				u_fboxtest(e, e_rick_stop_x, e_rick_stop_y)) {

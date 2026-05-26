@@ -168,7 +168,7 @@ ent_actvis(U8 frow, U8 lrow)
 		m++) {
 
 		/* ignore marks that are not active */
-		if (map_marks[m].ent & MAP_MARK_NACT)
+		if (map_marks_ent[m] & MAP_MARK_NACT)
 			continue;
 
 		/*
@@ -202,7 +202,7 @@ ent_actvis(U8 frow, U8 lrow)
 		 */
 
 		if (!(map_marks[m].flags & ENT_FLG_STOPRICK)) {
-			if (map_marks[m].ent >= 0x10) {
+			if (map_marks_ent[m] >= 0x10) {
 				/* boxes, bonuses and type 3 e_them go to slot 4-8 */
 				/* (c1 set to 0 -> all type 3 e_them are sleeping) */
 				if (!ent_creat1(&e)) continue;
@@ -225,7 +225,7 @@ ent_actvis(U8 frow, U8 lrow)
      */
     ent_ents[e].mark = m;
     ent_ents[e].flags = map_marks[m].flags;
-    ent_ents[e].n = map_marks[m].ent;
+    ent_ents[e].n = map_marks_ent[m];
 
     /*
      * if entity is to be already running (i.e. not asleep and waiting
@@ -248,12 +248,12 @@ ent_actvis(U8 frow, U8 lrow)
 
     /*ent_ents[e].w0C = 0;*/  /* in ASM code but never used */
 
-    ent_ents[e].w = ent_entdata[map_marks[m].ent].w;
-    ent_ents[e].h = ent_entdata[map_marks[m].ent].h;
-    ent_ents[e].sprbase = ent_entdata[map_marks[m].ent].spr;
-    ent_ents[e].sprite = (U8)ent_entdata[map_marks[m].ent].spr;
-    ent_ents[e].step_no_i = ent_entdata[map_marks[m].ent].sni;
-    ent_ents[e].trigsnd = (U8)ent_entdata[map_marks[m].ent].snd;
+    ent_ents[e].w = ent_entdata[map_marks_ent[m]].w;
+    ent_ents[e].h = ent_entdata[map_marks_ent[m]].h;
+    ent_ents[e].sprbase = ent_entdata[map_marks_ent[m]].spr;
+    ent_ents[e].sprite = (U8)ent_entdata[map_marks_ent[m]].spr;
+    ent_ents[e].step_no_i = ent_entdata[map_marks_ent[m]].sni;
+    ent_ents[e].trigsnd = (U8)ent_entdata[map_marks_ent[m]].snd;
 
     /*
      * FIXME what is this? when all trigger flags are up, then
@@ -269,7 +269,7 @@ ent_actvis(U8 frow, U8 lrow)
 (ENT_FLG_TRIGBOMB|ENT_FLG_TRIGBULLET|ENT_FLG_TRIGSTOP|ENT_FLG_TRIGRICK)
     if ((ent_ents[e].flags & ENT_FLG_TRIGGERS) == ENT_FLG_TRIGGERS
 	&& e >= 0x09)
-      ent_ents[e].sprbase = (U8)(ent_entdata[map_marks[m].ent].sni & 0x00ff);
+      ent_ents[e].sprbase = (U8)(ent_entdata[map_marks_ent[m]].sni & 0x00ff);
 #undef ENT_FLG_TRIGGERS
 
     ent_ents[e].trig_x = map_marks[m].lt & 0xf8;

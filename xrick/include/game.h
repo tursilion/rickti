@@ -31,7 +31,8 @@
 #define GAME_BULLETS_INIT 6
 
 typedef struct {
-  U32 score;
+  U16 score_hi; // and above
+  U16 score_lo; // 0-9999
   U8 name[10];
 } hscore_t;
 

@@ -38,8 +38,8 @@ CFLAGS=-Os -std=c99 -c -s --save-temp -DTI99 -fno-builtin -fno-function-cse
 .PHONY: all clean
 
 # crt0 must be first!
-OBJECT_LIST = crt0.o control.o dat_ents.o dat_maps.o dat_picsTI.o dat_screens.o dat_snd.o dat_tilesTI.o \
-    dat_spritesTI0.o dat_spritesTI1.o dat_spritesTI2.o dat_spritesTI3.o dat_spritesTI4.o \
+OBJECT_LIST = crt0.o vdpint.o control.o dat_ents.o dat_ents2.o dat_maps1.o dat_maps2.o dat_maps3.o dat_maps4.o dat_picscTI.o dat_picspTI.o \
+    dat_screens.o dat_snd.o dat_tilescTI.o dat_tilespTI.o dat_spritesTI0.o dat_spritesTI1.o dat_spritesTI2.o dat_spritesTI3.o dat_spritesTI4.o \
     data.o devtools.o draw.o e_bomb.o e_bonus.o e_box.o e_bullet.o e_rick.o e_sbonus.o e_them.o ents.o env.o fb.o \
     game.o img.o maps.o rects.o scr_gameover.o scr_getname.o scr_imain.o scr_imap.o scr_pause.o scr_xrick.o \
     scroller.o sounds.o sprites.o sysarg.o sysevt.o sysjoy.o syskbd.o syssnd.o system.o sysvid.o tiles.o unzip.o \

@@ -78,10 +78,10 @@ e_them_gozombie(U8 e)
 #ifdef ENABLE_SOUND
   syssnd_play(WAV_DIE, 1);
 #endif
-  env_score += 50;
+  addscore(50);
   if (ent_ents[e].flags & ENT_FLG_ONCE) {
     /* make sure entity won't be activated again */
-    map_marks[ent_ents[e].mark].ent |= MAP_MARK_NACT;
+    map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
   }
   ent_ents[e].offsx = (ent_ents[e].x >= 0x80 ? -0x02 : 0x02);
 #undef offsx

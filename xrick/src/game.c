@@ -82,38 +82,38 @@ U8 game_dir = 0;
 
 #ifdef GFXST
 hscore_t game_hscores[8] = {
-  { 8000, "SIMES@@@@@" },
-  { 7000, "JAYNE@@@@@" },
-  { 6000, "DANGERSTU@" },
-  { 5000, "KEN@@@@@@@" },
-  { 4000, "ROB@N@BOB@" },
-  { 3000, "TELLY@@@@@" },
-  { 2000, "NOBBY@@@@@" },
-  { 1000, "JEZEBEL@@@" }
+  { 0, 8000, "SIMES@@@@@" },
+  { 0, 7000, "JAYNE@@@@@" },
+  { 0, 6000, "DANGERSTU@" },
+  { 0, 5000, "KEN@@@@@@@" },
+  { 0, 4000, "ROB@N@BOB@" },
+  { 0, 3000, "TELLY@@@@@" },
+  { 0, 2000, "NOBBY@@@@@" },
+  { 0, 1000, "JEZEBEL@@@" }
 };
 #endif
 #ifdef GFXPC
 hscore_t game_hscores[8] = {
-  { 8000, "DANGERSTU@" },
-  { 7000, "SIMES@@@@@" },
-  { 6000, "KEN@T@ZEN@" },
-  { 5000, "BOBBLE@@@@" },
-  { 4000, "GREG@LAA@@" },
-  { 3000, "TELLY@@@@@" },
-  { 2000, "CHIGLET@@@" },
-  { 1000, "ANDYSPLEEN" }
+  { 0, 8000, "DANGERSTU@" },
+  { 0, 7000, "SIMES@@@@@" },
+  { 0, 6000, "KEN@T@ZEN@" },
+  { 0, 5000, "BOBBLE@@@@" },
+  { 0, 4000, "GREG@LAA@@" },
+  { 0, 3000, "TELLY@@@@@" },
+  { 0, 2000, "CHIGLET@@@" },
+  { 0, 1000, "ANDYSPLEEN" }
 };
 #endif
 #ifdef GFXTI
 hscore_t game_hscores[8] = {
-  { 8000, "TURSILION@" },
-  { 7000, "JAYNESIMES" },
-  { 6000, "DANGERSTU@" },
-  { 5000, "JEZEBEL@@@" },
-  { 4000, "ROB@N@BOB@" },
-  { 3000, "TELLY@@@@@" },
-  { 2000, "NOBBY@KEN@" },
-  { 1000, "TI994A@@@@" }
+  { 0, 8000, "TURSILION@" },
+  { 0, 7000, "JAYNESIMES" },
+  { 0, 6000, "DANGERSTU@" },
+  { 0, 5000, "JEZEBEL@@@" },
+  { 0, 4000, "ROB@N@BOB@" },
+  { 0, 3000, "TELLY@@@@@" },
+  { 0, 2000, "NOBBY@KEN@" },
+  { 0, 1000, "TI994A@@@@" }
 };
 #endif
 
@@ -766,7 +766,8 @@ init(void)
   env_lives = 6;
   env_bombs = 6;
   env_bullets = 6;
-  env_score = 0;
+  env_score_lo = 0;
+  env_score_hi = 0;
 
   env_map = sysarg_args_map;
 

@@ -54,13 +54,17 @@ static void name_draw(void);
 U8
 screen_getname(void)
 {
-  static U32 tm = 0;
+  static U16 tm = 0;
   U16 i, j;
 
   if (seq == 0) {
     /* figure out if this is a high score */
-    if (env_score < game_hscores[7].score)
-      return SCREEN_DONE;
+    if (env_score_hi < game_hscores[7].score_hi) {
+        return SCREEN_DONE;
+    }
+    if ((env_score_hi == game_hscores[7].score_hi) && (env_score_lo < game_hscores[7].score_lo)) {
+        return SCREEN_DONE;
+    }
 
     /* prepare */
     tiles_setBank(0);
@@ -152,16 +156,19 @@ screen_getname(void)
     if (!(control_status & CONTROL_FIRE)) {
       if (x == 5 && y == 4) {  /* end */
 	i = 0;
-	while (env_score < game_hscores[i].score)
+	while ((env_score_hi < game_hscores[i].score_hi) || ((env_score_hi == game_hscores[i].score_hi) && (env_score_lo < game_hscores[i].score_lo))) {
 	  i++;
+    }
 	j = 7;
 	while (j > i) {
-	  game_hscores[j].score = game_hscores[j - 1].score;
+	  game_hscores[j].score_hi = game_hscores[j - 1].score_hi;
+	  game_hscores[j].score_lo = game_hscores[j - 1].score_lo;
 	  for (x = 0; x < 10; x++)
 	    game_hscores[j].name[x] = game_hscores[j - 1].name[x];
 	  j--;
 	}
-	game_hscores[i].score = env_score;
+	game_hscores[i].score_hi = env_score_hi;
+	game_hscores[i].score_lo = env_score_lo;
 	for (x = 0; x < 10; x++)
 	  game_hscores[i].name[x] = name[x];
 	seq = 99;

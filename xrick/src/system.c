@@ -103,7 +103,7 @@ sys_sleep(int s)
 
 #include <vdp.h>
 #include <system.h>
-extern volatile U32 vdpCount;
+extern volatile U16 vdpCount;
 
 /*
  * Panic
@@ -133,7 +133,7 @@ sys_printf(char *msg, ...)
 /*
  * Return number of milliseconds elapsed since first call - note FRAME accurate
  */
-U32
+U16
 sys_gettime(void)
 {
     // vdpCount is initialized to 0, so we don't need to subtract an
@@ -148,8 +148,8 @@ sys_gettime(void)
 void
 sys_sleep(int s)
 {
-    U32 now = vdpCount;
-    U32 target = now + (s*10);
+    U16 now = vdpCount;
+    U16 target = now + (s*10);
 
     // wraparound case
     if (target < now) {

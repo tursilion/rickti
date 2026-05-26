@@ -18,7 +18,9 @@
 #include "fb.h"
 #include "tiles.h"
 
-
+#ifdef GFXTI
+#include <vdp.h>
+#endif
 
 U8 env_trainer = FALSE;
 U8 env_invicible = FALSE;
@@ -29,7 +31,8 @@ U8 env_depth = TRUE;
 U8 env_lives = 0;
 U8 env_bombs = 0;
 U8 env_bullets = 0;
-U32 env_score = 0;
+U16 env_score_lo = 0;
+U16 env_score_hi = 0;
 
 U16 env_map = 0;
 U16 env_submap = 0;
@@ -57,6 +60,14 @@ U8 env_changeSubmap = FALSE;
 #define DRAW_STATUS_Y 0
 #endif
 
+// break up the 32 bit score into two 16s
+void addscore(U16 val) {
+    env_score_lo += val;
+    if (env_score_lo > 9999) {
+        env_score_lo -= 10000;
+        env_score_hi++;
+    }
+}
 
 /*
  * env_paintGame
@@ -65,12 +76,14 @@ U8 env_changeSubmap = FALSE;
  */
 void env_paintGame(void)
 {
+#ifndef GFXTI
 	S8 i;
 	U32 sv;
 	static U8 s[7] = {0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0xfe};
 
 	tiles_setBank(0);
 
+    // TODO: this loop not ported to the 16 bit scores
 	for (i = 5, sv = env_score; i >= 0; i--)
 	{
 		s[i] = 0x30 + (U8)(sv % 10);
@@ -87,6 +100,16 @@ void env_paintGame(void)
 
 	for (i = 0; i < env_lives; i++)
 		tiles_paintAt(TILES_RICK, DRAW_STATUS_LIVES_X + i * 8, DRAW_STATUS_Y);
+#else
+    
+    VDP_INT_DISABLE;
+    VDP_SET_ADDRESS_WRITE(gImage + VDP_SCREEN_POS(DRAW_STATUS_Y, DRAW_STATUS_SCORE_X));
+    printf("%02d%04d", env_score_hi, env_score_lo);
+    hchar(DRAW_STATUS_Y, DRAW_STATUS_BULLETS_X, TILES_BULLET, env_bullets);
+    hchar(DRAW_STATUS_Y, DRAW_STATUS_BOMBS_X, TILES_BOMB, env_bombs);
+    hchar(DRAW_STATUS_Y, DRAW_STATUS_LIVES_X, TILES_RICK, env_lives);
+    VDP_INT_ENABLE;
+#endif
 }
 
 
@@ -98,7 +121,7 @@ void env_paintGame(void)
 void env_paintXtra(void)
 {
 	S8 i;
-	U32 sv;
+	U16 sv;
 	static U8 s[8] = {'M', 0x30, 0x30, TILES_CRLF, 'S', 0x30, 0x30, TILES_NULL};
 	static U8 c[8] = {'@', '@', '@', TILES_CRLF, '@', '@', '@', TILES_NULL};
 

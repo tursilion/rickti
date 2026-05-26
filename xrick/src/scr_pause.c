@@ -40,7 +40,7 @@ screen_pause(U8 pause)
 #ifdef GFXPC
 		tiles_setFilter(0xaaaa);
 #endif
-		tiles_paintListAt(screen_pausedtxt, 120, 80);
+		tiles_paintListAt((U8*)screen_pausedtxt, 120, 80);
 	}
 	else
 	{

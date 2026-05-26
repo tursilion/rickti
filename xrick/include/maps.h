@@ -71,7 +71,7 @@ typedef struct {
   char *tune;	/* map tune */
 } map_t;
 
-extern map_t map_maps[MAP_NBR_MAPS];
+extern const map_t map_maps[MAP_NBR_MAPS];
 
 /*
  * sub maps
@@ -83,7 +83,7 @@ typedef struct {
   U16 mark;            /* first entity mark */
 } submap_t;
 
-extern submap_t map_submaps[MAP_NBR_SUBMAPS];
+extern const submap_t map_submaps[MAP_NBR_SUBMAPS];
 
 /*
  * connections
@@ -95,14 +95,14 @@ typedef struct {
   U8 rowin;
 } connect_t;
 
-extern connect_t map_connect[MAP_NBR_CONNECT];
+extern const connect_t map_connect[MAP_NBR_CONNECT];
 
 /*
  * blocks - one block is 4 by 4 tiles.
  */
 typedef U8 block_t[0x10];
 
-extern block_t map_blocks[MAP_NBR_BLOCKS];
+extern const block_t map_blocks[MAP_NBR_BLOCKS];
 
 /*
  * flags for map_marks[].ent ("yes" when set)
@@ -116,18 +116,19 @@ extern block_t map_blocks[MAP_NBR_BLOCKS];
  */
 typedef struct {
   U8 row;
-  U8 ent;
+  U8 ent;     // the only non-const value, gets copied out
   U8 flags;
   U8 xy;  /* bits XXXX XYYY (from b03) with X->x, Y->y */
   U8 lt;  /* bits XXXX XNNN (from b04) with X->trig_x, NNN->lat & trig_y */
 } mark_t;
 
-extern mark_t map_marks[MAP_NBR_MARKS];
+extern const mark_t map_marks[MAP_NBR_MARKS];
+extern U8 map_marks_ent[MAP_NBR_MARKS];
 
 /*
  * block numbers, i.e. array of rows of 8 blocks
  */
-extern U8 map_bnums[MAP_NBR_BNUMS];
+extern const U8 map_bnums[MAP_NBR_BNUMS];
 
 /*
  * flags for map_eflg[map_map[row][col]]  ("yes" when set)
@@ -150,7 +151,7 @@ extern U8 map_bnums[MAP_NBR_BNUMS];
 #define MAP_EFLG_CLIMB (0x02)
 #define MAP_EFLG_01 (0x01)
 
-extern U8 map_eflg_c[MAP_NBR_EFLGC];  /* compressed */
+extern const U8 map_eflg_c[MAP_NBR_EFLGC];  /* compressed */
 extern U8 map_eflg[0x100];  /* current */
 
 /*
@@ -178,7 +179,7 @@ typedef struct
 	U8 *body;
 } maps_intros_t;
 
-extern maps_intros_t maps_intros[];
+extern const maps_intros_t maps_intros[];
 
 
 #endif
