@@ -14,24 +14,27 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
+#include "ricksystem.h"
+
 /* version */
 #define VERSION "050500"
 
 /* graphics (choose one) */
-#define GFXST
+#undef GFXST
 #undef GFXPC
+#define GFXTI
 
 /* logging (write to console) */
-#define ENABLE_LOG
+#undef ENABLE_LOG
 #ifdef EMSCRIPTEN
 #undef ENABLE_LOG
 #endif
 
 /* joystick support */
-#undef ENABLE_JOYSTICK
+#define ENABLE_JOYSTICK
 
-/* sound support */
-#define ENABLE_SOUND
+/* sound support TODO */
+#undef ENABLE_SOUND
 
 /* cheats support */
 #define ENABLE_CHEATS
@@ -45,9 +48,13 @@
 #define DEBUG /* see include/debug.h */
 
 /* zlib */
+#define NOZLIB
 #ifndef NOZLIB
 #define WITH_ZLIB
 #endif
+
+/* files */
+#undef USE_DATA_FILES
 
 #endif
 

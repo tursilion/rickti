@@ -11,14 +11,15 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+#include "config.h"
+
+#ifndef GFXTI
 #include <SDL.h>
 
 #include <stdarg.h>   /* args for sys_panic */
 #include <fcntl.h>    /* fcntl in sys_panic */
 #include <stdio.h>    /* printf */
 #include <stdlib.h>
-
-#include "system.h"
 
 /*
  * Panic
@@ -95,5 +96,71 @@ sys_sleep(int s)
 {
 	SDL_Delay(s);
 }
+
+#endif
+
+#ifdef GFXTI
+
+#include <vdp.h>
+#include <system.h>
+extern volatile U32 vdpCount;
+
+/*
+ * Panic
+ */
+void
+sys_panic(char *err, ...)
+{
+    // We don't have vararg support, so we're kind of out of luck, but we can display panic and lockup - data should be
+    // findable in a debugger...
+    VDP_INT_DISABLE;
+    charset();
+    vdpmemcpy(gImage, "PANIC!", 6);
+    halt();
+}
+
+/*
+ * Print a message
+ */
+void
+sys_printf(char *msg, ...)
+{
+#ifdef ENABLE_LOG
+    // TODO: out of luck here too... could use Classic99 debug but need varargs...
+#endif
+}
+
+/*
+ * Return number of milliseconds elapsed since first call - note FRAME accurate
+ */
+U32
+sys_gettime(void)
+{
+    // vdpCount is initialized to 0, so we don't need to subtract an
+    // offset. But we do need to divide by 10!
+    // Here's where we find out if the compiler has a decent 32-bit divide...
+	return vdpCount / 10;
+}
+
+/*
+ * Sleep a number of milliseconds
+ */
+void
+sys_sleep(int s)
+{
+    U32 now = vdpCount;
+    U32 target = now + (s*10);
+
+    // wraparound case
+    if (target < now) {
+        // wait till the wrap happens
+        // the spin is fine, the CPU isn't doing anything anyway
+        while (vdpCount > target) { }
+    }
+
+    // wait for the target
+    while (vdpCount < target) { }
+}
+#endif
 
 /* eof */

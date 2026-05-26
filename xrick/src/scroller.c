@@ -11,9 +11,12 @@
  * You must not remove this notice, or any other, from this software.
  */
 
-#include <stdlib.h>
+#include "config.h"
 
-#include "system.h"
+#ifndef GFXTI
+#include <stdlib.h>
+#endif
+
 #include "game.h"
 #include "env.h"
 
@@ -33,7 +36,7 @@ static U8 period;
 U8
 scroll_up(void)
 {
-  U8 i, j;
+  U16 i, j;
   static U8 n = 0;
 
   /* last call: restore */
@@ -101,7 +104,7 @@ scroll_up(void)
 U8
 scroll_down(void)
 {
-  U8 i, j;
+  U16 i, j;
   static U8 n = 0;
 
   /* last call: restore */

@@ -11,7 +11,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+#include "config.h"
+
+#ifndef GFXTI
 #include <stdlib.h>
+#endif
 
 #include "sounds.h"
 

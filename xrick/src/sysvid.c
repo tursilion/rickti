@@ -20,10 +20,10 @@
   * frame buffer is 8bit. We don't know its size.
   */
 
+#include "config.h"
 
-
+#ifndef GFXTI
 #include <stdlib.h> /* malloc */
-
 #include <SDL.h>
 
 #include "sysvid.h"
@@ -445,6 +445,14 @@ void sysvid_setGamma(U8 g)
 }
 
 
+#else // GFXTI
+
+void sysvid_update(void *rects) { }
+void sysvid_setGamma(U8 g) { }  // TODO: game often uses 0 and 255 to turn screen on and off, so we could implement that!
+void sysvid_shutdown(void) { }
+
+
+#endif
 
 /* eof */
 

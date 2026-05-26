@@ -12,8 +12,6 @@
  */
 
 
-
-#include "system.h"
 #include "config.h"
 #include "env.h"
 
@@ -77,6 +75,10 @@ void e_bomb_init(U16 x, U16 y)
     E_BOMB_ENT.x += 4;
     E_BOMB_ENT.y += 5;
 #endif
+#ifdef GFXTI
+    E_BOMB_ENT.x += 4;
+    E_BOMB_ENT.y += 5;
+#endif
 
 }
 
@@ -115,6 +117,12 @@ e_bomb_action(UNUSED(U8 e))
 			E_BOMB_ENT.sprite = 0x99 + 19 - (e_bomb_ticker >> 1);
 		else
 #endif
+#ifdef GFXTI
+		/* ST bomb sprites sequence is longer */
+		if (e_bomb_ticker < 40)
+			E_BOMB_ENT.sprite = 0x99 + 19 - (e_bomb_ticker >> 1);
+		else
+#endif
 		E_BOMB_ENT.sprite = (e_bomb_ticker & 0x01) ? 0x23 : 0x22;
 	}
 	else if (e_bomb_ticker == 0x09)
@@ -129,6 +137,12 @@ e_bomb_action(UNUSED(U8 e))
 		E_BOMB_ENT.sprite = 0x24 + 4 - (e_bomb_ticker >> 1);
 #endif
 #ifdef GFXST
+		/* See above: fixing alignment */
+		E_BOMB_ENT.x -= 4;
+		E_BOMB_ENT.y -= 5;
+		E_BOMB_ENT.sprite = 0xa8 + 4 - (e_bomb_ticker >> 1);
+#endif
+#ifdef GFXTI
 		/* See above: fixing alignment */
 		E_BOMB_ENT.x -= 4;
 		E_BOMB_ENT.y -= 5;
@@ -149,6 +163,9 @@ e_bomb_action(UNUSED(U8 e))
 		E_BOMB_ENT.sprite = 0x24 + 4 - (e_bomb_ticker >> 1);
 #endif
 #ifdef GFXST
+		E_BOMB_ENT.sprite = 0xa8 + 4 - (e_bomb_ticker >> 1);
+#endif
+#ifdef GFXTI
 		E_BOMB_ENT.sprite = 0xa8 + 4 - (e_bomb_ticker >> 1);
 #endif
 		/* exploding, hence lethal */

@@ -11,14 +11,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+#include "config.h"
 
-
+#ifndef GFXTI
 #include <stdlib.h>  /* malloc */
-
-//#include "system.h"
-
 #include "rects.h"
-
 
 
 /*
@@ -57,5 +54,7 @@ rect_t *rects_new(U16 x, U16 y, U16 width, U16 height, rect_t *next)
 
   return r;
 }
+
+#endif
 
 /* eof */

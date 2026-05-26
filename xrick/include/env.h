@@ -14,7 +14,7 @@
 #ifndef _ENV_H_
 #define _ENV_H_
 
-#include "system.h"
+#include "ricksystem.h"
 
 /* cheat modes */
 extern U8 env_trainer;

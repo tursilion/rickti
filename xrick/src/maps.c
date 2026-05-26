@@ -28,7 +28,6 @@
  * to map_map.
  */
 
-#include "system.h"
 #include "config.h"
 #include "env.h"
 
@@ -69,7 +68,7 @@ static void map_eflg_expand(U8);
 void
 map_expand(void)
 {
-  U8 i, j, k, l;
+  U16 i, j, k, l;
   U8 row, col;
   U16 pbnum;
 
@@ -109,6 +108,9 @@ map_init(void)
 #ifdef GFXST
 	map_tilesBank = map_submaps[env_submap].page == 1 ? 2 : 1;
 #endif
+#ifdef GFXTI
+	map_tilesBank = map_submaps[env_submap].page == 1 ? 2 : 1;
+#endif
 	map_eflg_expand((map_submaps[env_submap].page == 1) ? 0x10 : 0x00);
 	map_expand();
 	ent_reset();
@@ -138,7 +140,7 @@ map_init(void)
 void
 map_eflg_expand(U8 offs)
 {
-  U8 i, j, k;
+  U16 i, j, k;
 
   for (i = 0, k = 0; i < 0x10; i++) {
     j = map_eflg_c[offs + i++];
@@ -240,7 +242,7 @@ map_resetMarks(void)
  */
 void maps_paint(void)
 {
-	U8 i, j;
+	U16 i, j;
 	U8 *f;
 
 	tiles_setBank(map_tilesBank);
@@ -251,6 +253,9 @@ void maps_paint(void)
 		f = fb_at(0x20, i * 8);
 #endif
 #ifdef GFXST
+		f = fb_at(0x20, (i + 1) * 8);
+#endif
+#ifdef GFXTI
 		f = fb_at(0x20, (i + 1) * 8);
 #endif
 		for (j = 0; j < 0x20; j++) /* 0x20 tiles per row */
@@ -296,6 +301,9 @@ void maps_paintRect(U16 x, U16 y, U16 width, U16 height)
 		fb = fb_at(x_fb, y_fb + r * 8);
 #endif
 #ifdef GFXST
+		fb = fb_at(x_fb, 8 + y_fb + r * 8); /* FIXME +8? */
+#endif
+#ifdef GFXTI
 		fb = fb_at(x_fb, 8 + y_fb + r * 8); /* FIXME +8? */
 #endif
 		for (c = 0; c < width; c++) /* for each tile column */

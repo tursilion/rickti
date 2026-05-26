@@ -28,26 +28,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -158,7 +158,7 @@
     <ClInclude Include="include\sysjoy.h" />
     <ClInclude Include="include\syskbd.h" />
     <ClInclude Include="include\syssnd.h" />
-    <ClInclude Include="include\system.h" />
+    <ClInclude Include="include\ricksystem.h" />
     <ClInclude Include="include\sysvid.h" />
     <ClInclude Include="include\tiles.h" />
     <ClInclude Include="include\unzip.h" />
@@ -172,12 +172,19 @@
     <ClCompile Include="src\dat_maps.c" />
     <ClCompile Include="src\dat_picsPC.c" />
     <ClCompile Include="src\dat_picsST.c" />
+    <ClCompile Include="src\dat_picsTI.c" />
     <ClCompile Include="src\dat_screens.c" />
     <ClCompile Include="src\dat_snd.c" />
     <ClCompile Include="src\dat_spritesPC.c" />
     <ClCompile Include="src\dat_spritesST.c" />
+    <ClCompile Include="src\dat_spritesTI0.c" />
+    <ClCompile Include="src\dat_spritesTI1.c" />
+    <ClCompile Include="src\dat_spritesTI2.c" />
+    <ClCompile Include="src\dat_spritesTI3.c" />
+    <ClCompile Include="src\dat_spritesTI4.c" />
     <ClCompile Include="src\dat_tilesPC.c" />
     <ClCompile Include="src\dat_tilesST.c" />
+    <ClCompile Include="src\dat_tilesTI.c" />
     <ClCompile Include="src\devtools.c" />
     <ClCompile Include="src\draw.c" />
     <ClCompile Include="src\ents.c" />
@@ -221,6 +228,25 @@
   <ItemGroup>
     <Image Include="icons\xrickST.ico" />
     <Image Include="icons\xrickPC.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\crt0_bankcart.assembly" />
+    <None Include="src\img_icon.e" />
+    <None Include="src\img_splash.e" />
+    <None Include="src\linker.ld" />
+    <None Include="src\Makefile" />
+    <None Include="src\sdlcodes.e" />
+    <None Include="src\wav_bomb.e" />
+    <None Include="src\wav_bombshht.e" />
+    <None Include="src\wav_bonus.e" />
+    <None Include="src\wav_box.e" />
+    <None Include="src\wav_bullet.e" />
+    <None Include="src\wav_ddding.e" />
+    <None Include="src\wav_ding.e" />
+    <None Include="src\wav_jump.e" />
+    <None Include="src\wav_shht.e" />
+    <None Include="src\wav_waa.e" />
+    <None Include="src\wav_walk.e" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,7 +15,7 @@
 
 #ifdef GFXPC
 
-#include "system.h"
+#include "ricksystem.h"
 #include "sprites.h"
 
 sprite_t sprites_data[SPRITES_NBR_SPRITES] = {

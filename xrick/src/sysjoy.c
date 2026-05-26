@@ -11,21 +11,24 @@
  * You must not remove this notice, or any other, from this software.
  */
 
-#include <SDL.h>
-
 #include "config.h"
+
+#ifndef GFXTI
+#include <SDL.h>
+#endif
 
 #ifdef ENABLE_JOYSTICK
 
-#include "system.h"
+#include "ricksystem.h"
 #include "debug.h"
 
+#ifndef GFXTI
 static SDL_Joystick *j = NULL;
 
 void
 sysjoy_init(void)
 {
-  U8 i, jcount;
+  U16 i, jcount;
 
   if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0) {
     IFDEBUG_JOYSTICK(
@@ -57,6 +60,20 @@ sysjoy_shutdown(void)
   if (j)
     SDL_JoystickClose(j);
 }
+#endif
+
+#ifdef GFXTI
+void
+sysjoy_init(void)
+{
+    // TODO: maybe decide which stick to use, or whether to use a NES style?
+}
+
+void
+sysjoy_shutdown(void)
+{
+}
+#endif
 
 #endif /* ENABLE_JOYSTICK */
 

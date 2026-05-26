@@ -28,7 +28,8 @@
 #ifndef _SPRITES_H_
 #define _SPRITES_H_
 
-#include "system.h"
+#include "config.h"
+#include "ents.h"
 
 /*
  * methods
@@ -36,7 +37,13 @@
 void sprites_setDepth(U8);
 void sprites_paint(U8, U16, U16);
 void sprites_paint2(U8, U16, U16, U8);
+
+#ifndef GFXTI
 void sprites_clear(U16, U16);
+#endif
+#ifdef GFXTI
+void sprites_clear();
+#endif
 
 #ifdef GFXPC
 
@@ -62,6 +69,33 @@ typedef U32 sprite_t[0x54];  /* 0x15 per 0x04 */
 extern sprite_t sprites_data[SPRITES_NBR_SPRITES];
 
 #endif
+
+#ifdef GFXTI
+
+#define SPRITES_NBR_SPRITES (0xD5)
+#define SPRITE_SIZE (8*4*4)
+#define SPRITE_PAGE_SIZE (6*8)
+#define SPRITE_FINAL_SIZE (21)
+
+typedef U8 sprite_t;
+
+extern const sprite_t sprites_data0[SPRITE_PAGE_SIZE*SPRITE_SIZE];
+extern const sprite_t sprites_data1[SPRITE_PAGE_SIZE*SPRITE_SIZE];
+extern const sprite_t sprites_data2[SPRITE_PAGE_SIZE*SPRITE_SIZE];
+extern const sprite_t sprites_data3[SPRITE_PAGE_SIZE*SPRITE_SIZE];
+extern const sprite_t sprites_data4[SPRITE_FINAL_SIZE*SPRITE_SIZE];
+
+typedef struct spr_ {
+    U8 y;
+    U8 x;
+    U8 ch;
+    U8 col;
+} sprite_data_t;
+
+extern sprite_data_t sprite_table[ENT_ENTSNUM+1];
+
+#endif
+
 
 #endif
 

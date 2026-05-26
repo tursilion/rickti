@@ -11,7 +11,6 @@
  * You must not remove this notice, or any other, from this software.
  */
 
-#include "system.h"
 #include "config.h"
 #include "env.h"
 
@@ -56,7 +55,7 @@ U8
 screen_getname(void)
 {
   static U32 tm = 0;
-  U8 i, j;
+  U16 i, j;
 
   if (seq == 0) {
     /* figure out if this is a high score */
@@ -97,6 +96,9 @@ screen_getname(void)
 #endif
 #ifdef GFXPC
     tiles_paintListAt((U8 *)"Y@Z@.@@@\074@\075@\376", TOPLEFT_X, TOPLEFT_Y + 64);
+#endif
+#ifdef GFXTI
+    tiles_paintListAt((U8 *)"Y@Z@.@@@\074\373\374\375\376", TOPLEFT_X, TOPLEFT_Y + 64);
 #endif
     name_draw();
     pointer_show(TRUE);
@@ -234,7 +236,7 @@ pointer_show(U8 show)
 static void
 name_update(void)
 {
-  U8 i;
+  U16 i;
 
   i = x + y * 6;
   if (i < 26 && p < 10)
@@ -253,7 +255,7 @@ name_update(void)
 static void
 name_draw(void)
 {
-	U8 i;
+	U16 i;
 
 #ifdef GFXPC
 	tiles_setFilter(0xaaaa); /* red */
@@ -264,6 +266,11 @@ name_draw(void)
 		tiles_paintAt(TILE_CURSOR, NAMEPOS_X + i * 8, NAMEPOS_Y);
 
 #ifdef GFXST
+	for (i = 0; i < 10; i++)
+		tiles_paintAt('@', NAMEPOS_X + i * 8, NAMEPOS_Y + 8);
+	tiles_paintAt(TILE_POINTER, NAMEPOS_X + 8 * (p < 9 ? p : 9), NAMEPOS_Y + 8);
+#endif
+#ifdef GFXTI
 	for (i = 0; i < 10; i++)
 		tiles_paintAt('@', NAMEPOS_X + i * 8, NAMEPOS_Y + 8);
 	tiles_paintAt(TILE_POINTER, NAMEPOS_X + 8 * (p < 9 ? p : 9), NAMEPOS_Y + 8);

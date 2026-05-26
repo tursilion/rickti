@@ -16,7 +16,7 @@
 
 #include <stddef.h> /* NULL */
 
-#include "system.h"
+#include "ricksystem.h"
 #include "syssnd.h"
 
 #include "rects.h"

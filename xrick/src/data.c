@@ -11,13 +11,17 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+#include "config.h"
+
+#ifndef GFXTI
 #include <stdlib.h>  /* malloc */
 #include <string.h>
+#endif
 
-#include "system.h"
 #include "data.h"
-
 #include "unzip.h"
+
+#ifdef USE_DATA_FILES
 
 /*
  * Private typedefs
@@ -269,5 +273,7 @@ str_slash(char *s)
 #endif
 	return s;
 }
+
+#endif
 
 /* eof */

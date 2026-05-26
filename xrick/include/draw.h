@@ -14,7 +14,7 @@
 #ifndef _DRAW_H
 #define _DRAW_H
 
-#include "system.h"
+#include "ricksystem.h"
 #include "rects.h"
 
 /* map coordinates of the screen */

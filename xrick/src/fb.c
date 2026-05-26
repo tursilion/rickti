@@ -11,6 +11,7 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+#include "config.h"
 #include "fb.h"
 
 #include "sysvid.h"
@@ -18,14 +19,11 @@
 #include "draw.h"
 #include "game.h"
 
+#ifndef GFXTI
 #include <string.h> /* memset */
-
-
-// FIXME
+// note: we don't have a FB for the TI version, we just write direct to VRAM
 U8 fb[FB_HEIGHT][FB_WIDTH];
-rect_t *urects;
-
-
+#endif
 
 /*
  * color tables (palettes)
@@ -37,6 +35,7 @@ static U8 GREEN[] = { 0x00, 0xf8, 0x50, 0xf8, 0x00, 0xf8, 0x50, 0xf8 };
 static U8 BLUE[] = { 0x00, 0x50, 0x50, 0x50, 0x00, 0xf8, 0xf8, 0xf8 };
 #endif
 #ifdef GFXST
+// TODO: Need to use these palettes to convert the graphics for GFXTI
 #define FB_PALSZ 32
 static U8 RED[] = {		0x00, 0xd8, 0xb0, 0xf8,
 						0x20, 0x00, 0x00, 0x20,
@@ -77,22 +76,30 @@ static U8 BLUE[] = {	0x00, 0x00, 0x68, 0x68,
  */
 U8 *fb_at(U16 x, U16 y)
 {
-	// FIXME
+#ifndef GFXTI
 	return ((U8*)&fb) + x + y * FB_WIDTH;
 	//return &fb + x + y * FB_WIDTH;
+#else
+    // return it as a character offset, gImage is not added here
+    // Not into the tile set, but into the SIT
+    return (U8*)((y/8)*32+(x/8));
+#endif
 }
-
-
 
 /*
  * clears the frame buffer
  */
 void fb_clear()
 {
+#ifndef GFXTI
 	memset(fb, 0, FB_WIDTH * FB_HEIGHT);
+#else
+    // TODO: do we need to clear anything at all? If yes, to what tile?
+    // VDP_INT_DISABLE;
+    //vdpmemset(gImage, 0, 768);
+    // VDP_INT_ENABLE;
+#endif
 }
-
-
 
 /*
  * ramp the fb from black to visible.
@@ -100,6 +107,7 @@ void fb_clear()
  */
 U8 fb_fadeIn()
 {
+#ifndef GFXTI
 	static U8 fade = 0;
 
 	while (fade < 8)
@@ -114,9 +122,12 @@ U8 fb_fadeIn()
 	fade = 0;
 	sysvid_setGamma(255);
 	return TRUE;
+#else
+    // TOOD: we could potentially do a pixel dither, loading the tile graphics.
+    // If we did that, then we COULD enable fb_clear as clearing the tiles
+    return TRUE;
+#endif
 }
-
-
 
 /*
  * ramp the fb from visible to black.
@@ -124,6 +135,7 @@ U8 fb_fadeIn()
  */
 U8 fb_fadeOut()
 {
+#ifndef GFXTI
 	static U8 fade = 0;
 
 	while (fade < 8)
@@ -137,18 +149,24 @@ U8 fb_fadeOut()
 	fade = 0;
 	sysvid_setGamma(0);
 	return TRUE;
+#else
+    // as with fadein
+    return TRUE;
+#endif
 }
-
-
 
 /*
  * sets fb visibility to black (FALSE) or full (TRUE).
  */
 void fb_setVisible(U8 vis)
 {
+#ifndef GFXTI
 	sysvid_setGamma(vis ? 255 : 0);
+#else
+    // TODO: we can use the enable/disable bit.
+    // if we do, then we should also set it in fadein and fadeout above
+#endif
 }
-
 
 
 /*
@@ -156,7 +174,9 @@ void fb_setVisible(U8 vis)
  */
 void fb_initPalette()
 {
+#ifndef GFXTI
 	sysvid_setPaletteFromRGB(RED, GREEN, BLUE, FB_PALSZ);
+#endif
 }
 
 
@@ -166,7 +186,9 @@ void fb_initPalette()
  */
 void fb_setPaletteFromImg(img_t* img)
 {
+#ifndef GFXTI
 	sysvid_setPaletteFromImg(img);
+#endif
 }
 
 /* eof */

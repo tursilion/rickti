@@ -11,10 +11,14 @@
  * You must not remove this notice, or any other, from this software.
  */
 
-#include <stdlib.h>
-
-#include "system.h"
 #include "config.h"
+
+#ifndef GFXTI
+#include <stdlib.h>
+#else
+#include <math.h>
+#endif
+
 #include "env.h"
 
 #include "ents.h"
@@ -58,7 +62,7 @@ static U8 ent_creat2(U8 *, U16);
 void
 ent_reset(void)
 {
-  U8 i;
+  U16 i;
 
   E_RICK_STRST(E_RICK_STSTOP);
   e_bomb_lethal = FALSE;
@@ -284,6 +288,7 @@ ent_actvis(U8 frow, U8 lrow)
 }
 
 
+#ifndef GFXTI
 /*
  * Add a tile-aligned rectangle containing the given rectangle (indicated
  * by its MAP coordinates) to the list of rectangles. Clip the rectangle
@@ -324,6 +329,7 @@ ent_addrect(U16 x, U16 y, U16 width, U16 height)
   /* add rectangle to the list */
   ent_rects = rects_new(x0, y0, w0, h0, ent_rects);
 }
+#endif
 
 
 /*
@@ -338,9 +344,10 @@ void ents_clearAll()
 {
 }
 
+#ifndef GFXTI
 void ents_paintAll()
 {
-	U8 i;
+	U16 i;
 	U16 dx, dy;
 	static U8 prev_h = FALSE;
 
@@ -427,7 +434,31 @@ void ents_paintAll()
 
 	prev_h = env_highlight;
 }
+#endif
 
+#ifdef GFXTI
+// Instead of dealing with rects and redraws and the like, we just need to load up the sprite table
+// Is Rick an ent? I assume he is??
+// Don't use the rect system, it's not compiled in.
+void ents_paintAll()
+{
+	U16 i;
+
+    /* clear the sprite table */
+    sprites_clear();
+
+	/* foreground loop : draw all entities that are visible */
+	for (i = 0; ent_ents[i].n != 0xff; i++)
+	{
+		if (ent_ents[i].n && (env_highlight || ent_ents[i].sprite))
+		{
+			/* if entitiy is active, draw the sprite. */
+			sprites_paint(ent_ents[i].sprite,
+				ent_ents[i].x, ent_ents[i].y);
+		}
+	}
+}
+#endif
 
 /*
  * Clear entities previous state
@@ -436,7 +467,7 @@ void ents_paintAll()
 void
 ent_clprev(void)
 {
-  U8 i;
+  U16 i;
 
   for (i = 0; ent_ents[i].n != 0xff; i++)
     ent_ents[i].prev_n = 0;
@@ -480,7 +511,7 @@ void (*ent_actf[])(U8) = {
 void
 ent_action(void)
 {
-  U8 i, k;
+  U16 i, k;
 
   IFDEBUG_ENTS(
     sys_printf("xrick/ents: --------- action ----------------\n");

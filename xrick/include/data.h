@@ -14,9 +14,13 @@
 #ifndef _DATA_H
 #define _DATA_H
 
+#ifndef GFXTI
 #include <stdio.h>
+#endif
 
-#include "system.h"
+#include "ricksystem.h"
+
+#ifdef USE_DATA_FILES
 
 typedef void *data_file_t;
 
@@ -29,6 +33,7 @@ extern int data_file_tell(data_file_t *file);
 extern int data_file_size(data_file_t *file);
 extern int data_file_read(data_file_t *, void *, size_t, size_t);
 extern void data_file_close(data_file_t *);
+#endif
 
 #endif
 

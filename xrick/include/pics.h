@@ -14,12 +14,22 @@
 #ifndef _PICS_H
 #define _PICS_H
 
+#include "config.h"
+
+#ifndef GFXTI
 extern U32 pic_haf[];
 extern U32 pic_congrats[];
 extern U32 pic_splash[];
-
+#else
+extern const U8 pic_haf_pat[];
+extern const U8 pic_congrats_pat[];
+extern const U8 pic_splash_pat[];
+extern const U8 pic_haf_col[];
+extern const U8 pic_congrats_col[];
+extern const U8 pic_splash_col[];
 #endif
 
+#endif
 /* eof */
 
 

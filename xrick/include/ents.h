@@ -14,7 +14,7 @@
 #ifndef _ENTS_H
 #define _ENTS_H
 
-#include "system.h"
+#include "ricksystem.h"
 
 #include "rects.h"
 
@@ -26,6 +26,9 @@ extern void ents_paintAll();
 #define ENT_NBR_SPRSEQ 0x88
 #define ENT_NBR_MVSTEP 0x310
 
+// TODO: TI issue - we can only support 8 sprites since each needs 4 hardware sprites
+// Force flicker or what? Guess we'll see. Maybe we should have done it the spectrum way
+// and drawn, but whatever...
 #define ENT_ENTSNUM 0x0c
 
 /*

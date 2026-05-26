@@ -14,15 +14,21 @@
 #ifndef _FB_H
 #define _FB_H
 
-#include "system.h"
+#include "ricksystem.h"
 #include "img.h"
 
+#ifndef GFXTI
 /* framebuffer width and height */
 #define FB_WIDTH 320
 #define FB_HEIGHT 200
 
 // FIXME?
 extern U8 fb[FB_HEIGHT][FB_WIDTH];
+#else
+// cells instead of pixels, but we'll maintain the code's pixel assumptions
+#define FB_WIDTH 256
+#define FB_HEIGHT 192
+#endif
 
 /*
  * returns the fb pointer at <x>, <y>.

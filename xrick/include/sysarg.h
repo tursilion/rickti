@@ -14,7 +14,7 @@
 #ifndef _SYSARG_H
 #define _SYSARG_H
 
-#include "system.h"
+#include "ricksystem.h"
 
 extern int sysarg_args_period;
 extern int sysarg_args_map;

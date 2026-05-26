@@ -14,7 +14,7 @@
 #ifndef _SYSJOY_H
 #define _SYSJOY_H
 
-#include "system.h"
+#include "ricksystem.h"
 
 #ifdef ENABLE_JOYSTICK
 extern void sysjoy_init(void);

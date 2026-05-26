@@ -11,10 +11,12 @@
  * You must not remove this notice, or any other, from this software.
  */
 
-#include <stdlib.h>  /* NULL */
-
-#include "system.h"
 #include "config.h"
+
+#ifndef GFXTI
+#include <stdlib.h>  /* NULL */
+#endif
+
 #include "env.h"
 
 #include "util.h"
@@ -91,7 +93,8 @@ u_boxtest(U8 e1, U8 e2)
 void
 u_envtest(U16 x, U16 y, U8 crawl, U8 *rc0, U8 *rc1)
 {
-  U8 i, xx;
+  U16 i;
+  U8 xx;
 
   /* prepare for ent #0 test */
   ent_ents[ENT_ENTSNUM].x = x;

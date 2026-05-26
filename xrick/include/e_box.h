@@ -14,7 +14,7 @@
 #ifndef _E_BOX_H
 #define _E_BOX_H
 
-#include "system.h"
+#include "ricksystem.h"
 
 extern void e_box_action(U8);
 

@@ -11,9 +11,14 @@
  * You must not remove this notice, or any other, from this software.
  */
 
-#include <stdlib.h>
+#include "config.h"
 
-#include "system.h"
+#ifndef GFXTI
+#include <stdlib.h>
+#else
+#include <vdp.h>
+#endif
+
 #include "sysarg.h"
 #include "sysvid.h"
 #include "sysevt.h"
@@ -99,6 +104,18 @@ hscore_t game_hscores[8] = {
   { 1000, "ANDYSPLEEN" }
 };
 #endif
+#ifdef GFXTI
+hscore_t game_hscores[8] = {
+  { 8000, "TURSILION@" },
+  { 7000, "JAYNESIMES" },
+  { 6000, "DANGERSTU@" },
+  { 5000, "JEZEBEL@@@" },
+  { 4000, "ROB@N@BOB@" },
+  { 3000, "TELLY@@@@@" },
+  { 2000, "NOBBY@KEN@" },
+  { 1000, "TI994A@@@@" }
+};
+#endif
 
 
 /*
@@ -177,10 +194,14 @@ static void game_exit(void);
 void
 game_run(char *path)
 {
-	sys_printf("xrick/game: path='%s'\n", path ? path : "");
+#ifndef GFXTI
+    sys_printf("xrick/game: path='%s'\n", path ? path : "");
+#endif
 
-	data_setpath(path);
-	loadData(); /* load cached data */
+#ifdef USE_DATA_FILES
+    data_setpath(path);
+#endif
+	loadData(); /* load cached data - TI port does some system init */
 
 	game_period = sysarg_args_period ? sysarg_args_period : GAME_PERIOD;
 	tm = sys_gettime();
@@ -215,7 +236,9 @@ game_run(char *path)
 static void game_exit(void)
 {
 	freeData(); /* free cached data */
+#ifdef USE_DATA_FILES
 	data_closepath();
+#endif
 }
 
 static void game_loop(void)
@@ -736,9 +759,9 @@ static void game_cycle(void)
 static void
 init(void)
 {
-  U8 i;
+  U16 i;
 
-  E_RICK_STRST(0xff);
+  E_RICK_STRST(0xffff);
 
   env_lives = 6;
   env_bombs = 6;

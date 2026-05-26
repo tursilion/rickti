@@ -112,12 +112,14 @@
                |                                    |
                +------------------------------------+
 
+
+But not much of that really applies to the TI port ;)
+
  */
 
+#include "config.h"
 #include "draw.h"
 #include "fb.h"
-
-
 
 #ifdef GFXPC
 #define DRAW_STATUS_SCORE_X 0x28
@@ -131,8 +133,11 @@
 #define DRAW_STATUS_LIVES_X 0xF0
 #define DRAW_STATUS_Y 0
 #endif
-
-
+#ifdef GFXTI
+#define DRAW_STATUS_SCORE_X 0x20
+#define DRAW_STATUS_LIVES_X 0xF0
+#define DRAW_STATUS_Y 0
+#endif
 
 rect_t draw_STATUSRECT = {
   DRAW_STATUS_SCORE_X, DRAW_STATUS_Y,
@@ -140,7 +145,6 @@ rect_t draw_STATUSRECT = {
   NULL
 };
 rect_t draw_SCREENRECT = { 0, 0, FB_WIDTH, FB_HEIGHT, NULL };
-
 
 
 /* eof */

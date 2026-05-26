@@ -11,10 +11,14 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+#include "config.h"
+
+#ifndef GFXTI
 #include <SDL.h>
 #include <stdlib.h>
 #include <memory.h>
 #include <string.h> /* strlen, strncpy */
+#endif
 
 #include "syssnd.h"
 
@@ -312,7 +316,7 @@ syssnd_stopchan(S8 chan)
 void
 syssnd_stopsound(sound_t *sound)
 {
-	U8 i;
+	U16 i;
 
 	if (!sound) return;
 
@@ -328,7 +332,7 @@ syssnd_stopsound(sound_t *sound)
 int
 syssnd_isplaying(sound_t *sound)
 {
-	U8 i, playing;
+	U16 i, playing;
 
 	playing = 0;
 	SDL_mutexP(sndlock);
@@ -344,7 +348,7 @@ syssnd_isplaying(sound_t *sound)
 void
 syssnd_stopall(void)
 {
-	U8 i;
+	U16 i;
 
 	SDL_mutexP(sndlock);
 	for (i = 0; i < SYSSND_MIXCHANNELS; i++)

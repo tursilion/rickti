@@ -14,7 +14,7 @@
 #ifndef _MAPS_H
 #define _MAPS_H
 
-#include "system.h"
+#include "ricksystem.h"
 
 /*
  * methods

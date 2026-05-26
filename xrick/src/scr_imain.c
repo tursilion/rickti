@@ -11,9 +11,14 @@
  * You must not remove this notice, or any other, from this software.
  */
 
-#include <stdio.h>  /* sprintf */
+#include "config.h"
 
-#include "system.h"
+#ifndef GFXTI
+#include <stdio.h>  /* sprintf */
+#else
+#include <vdp.h>
+#endif
+
 #include "game.h"
 #include "screens.h"
 #include "sysvid.h"
@@ -41,7 +46,8 @@ screen_introMain(void)
 	static U8 first = TRUE;
 	static U8 period = 0;
 	static U32 tm = 0;
-	U8 i, s[32];
+	U16 i;
+    U8 s[32];
 
 	if (seq == 0)
 	{
@@ -77,6 +83,9 @@ screen_introMain(void)
 
 #ifdef GFXST
 			img_paintPic(0, 0, 0x140, 0xc8, pic_splash);
+#endif
+#ifdef GFXTI
+			img_paintPic(0, 0, 256, 192, pic_splash_pat, pic_splash_col);
 #endif
 
 			game_period = period/2;
@@ -135,6 +144,9 @@ screen_introMain(void)
 #ifdef GFXST
 			img_paintPic(0, 0, 0x140, 0x20, pic_haf);
 #endif
+#ifdef GFXTI
+			img_paintPic(0, 0, 256, 24, pic_haf_pat, pic_haf_col);
+#endif
 
 			/* hall of fame content */
 #ifdef GFXPC
@@ -142,10 +154,18 @@ screen_introMain(void)
 #endif
 			for (i = 0; i < 8; i++)
 			{
+#ifndef GFXTI
 				sprintf((char *)s, "%06d@@@....@@@%s",
 					game_hscores[i].score, game_hscores[i].name);
 				s[26] = TILES_NULL;
 				tiles_paintListAt(s, 56, 40 + i*2*8);
+#else
+                VDP_INT_DISABLE;
+                VDP_SET_ADDRESS_WRITE(VDP_SCREEN_POS(5+i*2, 7));
+                printf("%06d@@@....@@@%s",
+					game_hscores[i].score, game_hscores[i].name);
+                VDP_INT_ENABLE;
+#endif
 			}
 
 			game_period = period/2;

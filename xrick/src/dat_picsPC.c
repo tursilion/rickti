@@ -15,7 +15,7 @@
 
 #ifdef GFXPC
 
-#include "system.h"
+#include "ricksystem.h"
 #include "pics.h"
 
 #endif /* GFXPC */

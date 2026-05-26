@@ -15,7 +15,7 @@
 
 #ifdef GFXST
 
-#include "system.h"
+#include "ricksystem.h"
 #include "pics.h"
 
 U32 pic_congrats[] =

@@ -53,13 +53,13 @@
 #define __WIN32__
 #endif
 
-/* there are true at least on x86 platforms */
+/* there are true at least on x86 platforms, not sure how well 32 bits works on the TI port */
 typedef unsigned char U8;         /*  8 bits unsigned */
 typedef unsigned short int U16;   /* 16 bits unsigned */
-typedef unsigned int U32;         /* 32 bits unsigned */
+typedef unsigned long U32;        /* 32 bits unsigned */
 typedef signed char S8;           /*  8 bits signed   */
 typedef signed short int S16;     /* 16 bits signed   */
-typedef signed int S32;           /* 32 bits signed   */
+typedef signed long S32;          /* 32 bits signed   */
 
 #define TRUE 1
 #define FALSE 0
@@ -68,8 +68,12 @@ extern void sys_init(int, char **);
 extern void sys_shutdown(void);
 extern void sys_panic(char *, ...);
 extern void sys_printf(char *, ...);
-extern U32 sys_gettime(void);
 extern void sys_sleep(int);
+extern U32 sys_gettime(void);
+
+#ifdef GFXTI
+void sys_resettime();
+#endif
 
 #endif
 

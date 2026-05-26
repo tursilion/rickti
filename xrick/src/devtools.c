@@ -15,7 +15,7 @@
 
 #ifdef ENABLE_DEVTOOLS
 
-#include "system.h"
+#include "ricksystem.h"
 #include "game.h"
 
 #include "control.h"
@@ -35,7 +35,7 @@ devtools_run(void)
 	static U8 seq = 0;
 	static U8 pos = 0;
 	static U8 pos2 = 0;
-	U8 i, j, k, l;
+	U16 i, j, k, l;
 	U8 s[128];
 
 	if (seq == 0)
@@ -182,6 +182,9 @@ devtools_run(void)
 #ifdef GFXST
 			if (pos2 == 0) pos2 = 1;
 #endif
+#ifdef GFXTI
+			if (pos2 == 0) pos2 = 1;
+#endif
 			sprintf(s, "BLOCKS@%#04X@TO@%#04X@WITH@BANK@%d\376",
 				pos, pos + 4*8-1, pos2);
 			tiles_setBank(0);
@@ -244,6 +247,10 @@ devtools_run(void)
 				else pos2 = 2;
 #endif
 #ifdef GFXST
+				if (pos2 == 1) pos2 = 2;
+				else pos2 = 1;
+#endif
+#ifdef GFXTI
 				if (pos2 == 1) pos2 = 2;
 				else pos2 = 1;
 #endif

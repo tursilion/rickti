@@ -13,7 +13,7 @@
 
 #include "stddef.h" /* NULL */
 
-#include "system.h"
+#include "config.h"
 #include "game.h"
 #include "screens.h"
 #include "sysvid.h"
@@ -35,6 +35,9 @@ screen_gameover(void)
 	static U8 seq = 0;
 	static U8 period = 0;
 #ifdef GFXST
+	static U32 tm = 0;
+#endif
+#ifdef GFXTI
 	static U32 tm = 0;
 #endif
 #ifdef ENABLE_SOUND
@@ -61,6 +64,10 @@ screen_gameover(void)
 #ifdef GFXPC
 		tiles_setFilter(0xaaaa);
 #endif
+#ifdef GFXTI
+		fb_clear();
+		tm = sys_gettime();
+#endif
 		tiles_paintListAt(screen_gameovertxt, 120, 80);
 
 		game_rects = &draw_SCREENRECT;
@@ -71,6 +78,10 @@ screen_gameover(void)
 		if (control_status & CONTROL_FIRE)
 			seq = 3;
 #ifdef GFXST
+		else if (sys_gettime() - tm > SCREEN_TIMEOUT)
+			seq = 4;
+#endif
+#ifdef GFXTI
 		else if (sys_gettime() - tm > SCREEN_TIMEOUT)
 			seq = 4;
 #endif

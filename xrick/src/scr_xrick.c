@@ -11,7 +11,7 @@
  * You must not remove this notice, or any other, from this software.
  */
 
-#include "system.h"
+#include "ricksystem.h"
 #include "game.h"
 #include "screens.h"
 #include "sysvid.h"
@@ -22,7 +22,21 @@
 #include "img.h"
 #include "fb.h"
 
+#ifndef GFXTI
 #include "img_splash.e"
+#endif
+#ifdef GFXTI
+#include "pics.h"
+
+static img_t IMG_SPLASH_OBJECT = {
+    256, 192,
+    16,
+    pic_splash_col,
+    pic_splash_pat
+};
+
+img_t *IMG_SPLASH = &IMG_SPLASH_OBJECT;
+#endif
 
 /*
  * Display XRICK splash screen

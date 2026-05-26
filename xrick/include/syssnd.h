@@ -14,7 +14,7 @@
 #ifndef _SYSSND_H
 #define _SYSSND_H
 
-#include "system.h"
+#include "ricksystem.h"
 
 #ifdef ENABLE_SOUND
 

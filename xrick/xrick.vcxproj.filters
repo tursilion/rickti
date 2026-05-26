@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="E Includes">
+      <UniqueIdentifier>{d02032db-4a6b-4f06-8283-517ee6f4566e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\config.h">
@@ -90,7 +93,7 @@
     <ClInclude Include="include\syssnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\system.h">
+    <ClInclude Include="include\ricksystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\sysvid.h">
@@ -269,6 +272,27 @@
     <ClCompile Include="src\sounds.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\dat_picsTI.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_tilesTI.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_spritesTI0.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_spritesTI1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_spritesTI2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_spritesTI3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat_spritesTI4.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xrick.rc">
@@ -282,5 +306,52 @@
     <Image Include="icons\xrickPC.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\linker.ld" />
+    <None Include="src\Makefile" />
+    <None Include="src\crt0_bankcart.assembly" />
+    <None Include="src\img_icon.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\img_splash.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\sdlcodes.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_bomb.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_bombshht.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_bonus.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_box.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_bullet.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_ddding.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_ding.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_jump.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_shht.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_waa.e">
+      <Filter>E Includes</Filter>
+    </None>
+    <None Include="src\wav_walk.e">
+      <Filter>E Includes</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -11,10 +11,12 @@
  * You must not remove this notice, or any other, from this software.
  */
 
-#include <stdio.h>
-
-#include "system.h"
 #include "config.h"
+
+#ifndef GFXTI
+#include <stdio.h>
+#endif
+
 #include "env.h"
 
 #include "screens.h"
@@ -74,6 +76,10 @@ U8 screen_introMap(void)
 			tiles_setFilter(0xaaaa);
 #endif
 #ifdef GFXST
+			tiles_setBank(0);
+#endif
+#ifdef GFXTI
+            // TODO: this is probably where we load the correct tilemap
 			tiles_setBank(0);
 #endif
 			tiles_paintListAt(maps_intros[env_map].title, 32, 0);
@@ -172,7 +178,7 @@ U8 screen_introMap(void)
 static void
 drawtb(void)
 {
-	U8 i;
+	U16 i;
 
 	flipflop++;
 	if (flipflop & 0x01)
@@ -199,7 +205,7 @@ drawtb(void)
 static void
 drawlr(void)
 {
-	U8 i;
+	U16 i;
 
 	if (flipflop & 0x02)
 	{
@@ -241,7 +247,8 @@ static void
 drawcenter(void)
 {
 	static U8 tn0[] = { 0x07, 0x5B, 0x7F, 0xA3, 0xC7 };
-	U8 i, j, tn;
+	U16 i, j;
+    U8 tn;
 
 	tn = tn0[env_map];
 	for (i = 0; i < 6; i++)
@@ -280,7 +287,7 @@ nextstep(void)
 static void
 anim(void)
 {
-	U8 i;
+	U16 i;
 
 	if (run)
 	{

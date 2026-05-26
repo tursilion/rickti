@@ -14,12 +14,16 @@
 #ifndef _IMG_H
 #define _IMG_H
 
-#include "system.h"
+#include "config.h"
 
 /* a color */
+#ifndef GFXTI
 typedef struct {
   U8 r, g, b, nothing;
 } img_color_t;
+#else
+typedef U8 img_color_t;
+#endif
 
 /* an image */
 typedef struct {
@@ -47,6 +51,15 @@ extern void img_paintImg(img_t *);
 extern void img_paintPic(U16, U16, U16, U16, U32 *);
 #endif
 
+#ifdef GFXTI
+/*
+ * copy a bitmap image of size <width>,<height> with data in <pic> and color at <col> at
+ * position <x>,<y> (fb/px). NOTE: character (8x8) boundaries!
+ */
+extern void img_paintPic(U16, U16, U16, U16, U8*, U8*);
+#endif
+
 #endif /* _IMG_H */
+
 
 /* eof */

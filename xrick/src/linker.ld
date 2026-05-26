@@ -1,0 +1,217 @@
+/* 
+ 128k banked cartridge with 32k RAM support
+ Fixed bank is copied into 32k by the CRT0.
+ The cartridge builder deal with how that works,
+ and we will assume a maximum size of 24k (the
+ entire high memory bank). All other pages here
+ become 8k
+*/
+
+OUTPUT_FORMAT("elf32-tms9900", "elf32-tms9900",
+              "elf32-tms9900")
+OUTPUT_ARCH(tms9900)
+ENTRY(_start)
+SEARCH_DIR("/home/tursi/gcc9900/tms9900/lib");
+
+/* banked offset of 46 bytes to account for header space */
+/* We also make the 24k block smaller by 46*3 so we can store it across 3 banks */
+/* Although this script gives 24k, note we lose an extra */
+/* 92 bytes for the headers in page 2 and 3 (46 bytes each) */
+
+MEMORY
+{
+    INIT(xr) : ORIGIN = 0x6000, LENGTH = 512
+
+    FIXED(xrw) : ORIGIN = 0xA000, LENGTH = 24K
+    STACK(xrw) : ORIGIN = 0x2000, LENGTH = 8K
+    SCRATCH(rw) : ORIGIN = 0x8320, LENGTH = 224
+    CART1(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART2(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART3(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART4(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART5(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART6(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART7(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART8(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART9(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART10(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART11(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART12(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART13(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART14(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    CART15(XR) : ORIGIN = 0x602e, LENGTH = 8146
+    
+    FLASH(XR) : ORIGIN = 0, LENGTH = 256K
+}
+
+SECTIONS {
+    PROVIDE (__executable_start = 0xA000); 
+
+    PROVIDE (stext = .);
+    
+    . = 0x6000;
+    
+    loader :
+    {
+        crt0.o
+    } > INIT AT> FLASH
+
+    . = 0xA000;
+    fixed :
+    {
+        control.o(.text .rodata)
+        dat_ents.o(.text .rodata)
+        dat_maps.o(.text .rodata)
+        dat_picsTI.o(.text .rodata)
+        dat_screens.o(.text .rodata)
+        dat_snd.o(.text .rodata)
+        dat_spritesTI0.o(.text .rodata)
+        dat_spritesTI1.o(.text .rodata)
+        dat_spritesTI2.o(.text .rodata)
+        dat_spritesTI3.o(.text .rodata)
+        dat_spritesTI4.o(.text .rodata)
+        dat_tilesTI.o(.text .rodata)
+        data.o(.text .rodata)
+        devtools.o(.text .rodata)
+        draw.o(.text .rodata)
+        e_bomb.o(.text .rodata)
+        e_bonus.o(.text .rodata)
+        e_box.o(.text .rodata)
+        e_bullet.o(.text .rodata)
+        e_rick.o(.text .rodata)
+        e_sbonus.o(.text .rodata)
+        e_them.o(.text .rodata)
+        ents.o(.text .rodata)
+        env.o(.text .rodata)
+        fb.o(.text .rodata)
+        game.o(.text .rodata)
+        img.o(.text .rodata)
+        maps.o(.text .rodata)
+        rects.o(.text .rodata)
+        scr_gameover.o(.text .rodata)
+        scr_getname.o(.text .rodata)
+        scr_imain.o(.text .rodata)
+        scr_imap.o(.text .rodata)
+        scr_pause.o(.text .rodata)
+        scr_xrick.o(.text .rodata)
+        scroller.o(.text .rodata)
+        sounds.o(.text .rodata)
+        sprites.o(.text .rodata)
+        sysarg.o(.text .rodata)
+        sysevt.o(.text .rodata)
+        sysjoy.o(.text .rodata)
+        syskbd.o(.text .rodata)
+        syssnd.o(.text .rodata)
+        system.o(.text .rodata)
+        sysvid.o(.text .rodata)
+        tiles.o(.text .rodata)
+        unzip.o(.text .rodata)
+        util.o(.text .rodata)
+        xrick.o(.text .rodata)
+        *libti99.a:*(.text .rodata)
+        *libtivgm2.a:*(.text .rodata)
+    } > FIXED AT> FLASH
+    
+    PROVIDE (etext = .);
+    
+    bank1 :
+    {
+        /* not used - this is part of fixed above */
+        PROVIDE(ebank1a = .);
+    } > CART1 AT> FLASH
+    
+    bank2 :
+    {
+        PROVIDE(ebank2a = .);
+    } > CART2 AT> FLASH
+
+    bank3 :
+    {
+        PROVIDE(ebank3a = .);
+    } > CART3 AT> FLASH
+
+    bank4 :
+    {
+        PROVIDE(ebank4a = .);
+    } > CART4 AT> FLASH
+
+    bank5 :
+    {
+        PROVIDE(ebank5a = .);
+    } > CART5 AT> FLASH
+
+    bank6 :
+    {
+        PROVIDE(ebank6a = .);
+    } > CART6 AT> FLASH
+
+    bank7 :
+    {
+        PROVIDE(ebank7a = .);
+    } > CART7 AT> FLASH
+
+    bank8 :
+    {
+        PROVIDE(ebank8a = .);
+    } > CART8 AT> FLASH
+
+    bank9 :
+    {
+        PROVIDE(ebank9a = .);
+    } > CART9 AT> FLASH
+
+    bank10 :
+    {
+        PROVIDE(ebank10a = .);
+    } > CART10 AT> FLASH
+
+    bank11 :
+    {
+        PROVIDE(ebank11a = .);
+    } > CART11 AT> FLASH
+
+    bank12 :
+    {
+        PROVIDE(ebank12a = .);
+    } > CART12 AT> FLASH
+
+    bank13 :
+    {
+        PROVIDE(ebank13a = .);
+    } > CART13 AT> FLASH
+
+    bank14 :
+    {
+        PROVIDE(ebank14a = .);
+    } > CART14 AT> FLASH
+
+    bank15 :
+    {
+        PROVIDE(ebank15a = .);
+    } > CART15 AT> FLASH
+
+    . = 0x2080;
+    PROVIDE(sdata = .);
+    .data : 
+    { 
+        *(.data) 
+    } > STACK AT> FLASH
+    PROVIDE(edata = .);
+    
+    PROVIDE(sbss = .);
+    .bss :  
+    { 
+        *(.bss) 
+        libti99.a:*(.bss)  
+    } > STACK AT> FLASH
+
+    PROVIDE(ebss = .);
+
+    songDatVars : 
+    { 
+        *(.songDatVars) 
+    } > STACK AT> FLASH
+    
+    _end = .; 
+    PROVIDE (end = .);
+}

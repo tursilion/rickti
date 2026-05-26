@@ -11,7 +11,7 @@
  * You must not remove this notice, or any other, from this software.
  */
 
-#include "system.h"
+#include "ricksystem.h"
 #include "config.h"
 #include "env.h"
 
@@ -50,7 +50,7 @@ static U16 e_them_rndnbr = 0;
 U8
 u_themtest(U8 e)
 {
-  U8 i;
+  U16 i;
 
   if ((ent_ents[0].n & ENT_LETHAL) && u_boxtest(e, 0))
     return TRUE;
@@ -569,7 +569,7 @@ e_them_t3_action2(U8 e)
 {
 #define sproffs c1
 #define step_count c2
-  U8 i;
+  U16 i;
   U16 x, y;
 
   while (1) {

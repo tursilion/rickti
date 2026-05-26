@@ -14,7 +14,7 @@
 #ifndef _SYSKBD_H
 #define _SYSKBD_H
 
-#include "system.h"
+#include "ricksystem.h"
 
 extern U8 syskbd_up;
 extern U8 syskbd_down;

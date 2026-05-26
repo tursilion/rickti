@@ -13,7 +13,7 @@
 
 #include <stddef.h> /* NULL */
 
-#include "system.h"
+#include "ricksystem.h"
 #include "config.h"
 #include "env.h"
 

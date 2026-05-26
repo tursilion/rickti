@@ -12,16 +12,20 @@
  */
 
 
-
+#include "config.h"
 #include "tiles.h"
 #include "fb.h"
 
+#ifdef GFXTI
+#include <vdp.h>
+extern tile_t tiles_banks_pat[TILES_BANKS_COUNT*256*8];
+extern tile_t tiles_banks_col[TILES_BANKS_COUNT*256*8];
+#endif
 
-
+#ifndef GFXTI
 static tile_t *tiles_bank;
 static U16 tiles_filter;
-
-
+#endif
 
 /*
  * tiles_setBank
@@ -32,10 +36,23 @@ void tiles_setBank(U8 bank)
 {
 	if (bank >= TILES_BANKS_COUNT)
 		sys_panic("xrick/tiles: invalid bank number %d\n", bank);
+
+#ifndef GFXTI
 	tiles_bank = tiles_banks[bank];
+#endif
+
+#ifdef GFXTI
+    U16 off = bank*0x800;
+    VDP_INT_DISABLE;
+    vdpmemcpy(gPattern, tiles_banks_pat+off, 0x800);
+    vdpmemcpy(gColor, tiles_banks_col+off, 0x800);
+    vdpmemcpy(gPattern+0x800, tiles_banks_pat+off, 0x800);
+    vdpmemcpy(gColor+0x800, tiles_banks_col+off, 0x800);
+    vdpmemcpy(gPattern+0x1000, tiles_banks_pat+off, 0x800);
+    vdpmemcpy(gColor+0x1000, tiles_banks_col+off, 0x800);
+    VDP_INT_ENABLE;
+#endif
 }
-
-
 
 /*
  * tiles_setFilter
@@ -44,7 +61,9 @@ void tiles_setBank(U8 bank)
  */
 void tiles_setFilter(U16 filter)
 {
+#ifndef GFXTI
 	tiles_filter = filter;
+#endif
 }
 
 
@@ -57,15 +76,21 @@ void tiles_setFilter(U16 filter)
  */
 U8 *tiles_paint(U8 tileNumber, U8 *fb)
 {
-	U8 i, k, *f;
+	U16 i, k;
 #ifdef GFXPC
 	U16 x;
+    U8 *f;
+	f = fb;
 #endif
 #ifdef GFXST
 	U32 x;
-#endif
-
+    U8 *f;
 	f = fb;
+#endif
+#ifdef GFXTI
+	U16 x,y;
+    U16 f = (U16)fb;
+#endif
 
 	for (i = 0; i < 8; i++) /* 8 pixel lines */
 	{
@@ -74,14 +99,21 @@ U8 *tiles_paint(U8 tileNumber, U8 *fb)
 		x = tiles_bank[tileNumber][i] & tiles_filter;
 		for (k = 8; k--; x >>= 2)
 			f[k] = x & 3;
+		f += FB_WIDTH; /* next line */
 #endif
 #ifdef GFXST
 		/* map ST 4 bits per pixel to frame buffer 8 bits per pixels */
 		x = tiles_bank[tileNumber][i];
 		for (k = 8; k--; x >>= 4)
 			f[k] = x & 0x0f;
-#endif
 		f += FB_WIDTH; /* next line */
+#endif
+#ifdef GFXTI
+        // TODO: We don't want to "paint tiles", we use the loaded tle and just place it
+        y = (f/256)/8;
+        x = (f%256)/8;
+        vdpchar(gImage+y*(32*8)+(x*8), tileNumber);
+#endif
 	}
 
 	return fb + 8;

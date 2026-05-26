@@ -12,8 +12,6 @@
  */
 
 
-
-#include "system.h"
 #include "config.h"
 #include "env.h"
 
@@ -49,6 +47,11 @@ U8 env_changeSubmap = FALSE;
 #define DRAW_STATUS_BULLETS_X 0x68
 #define DRAW_STATUS_BOMBS_X 0xA8
 #ifdef GFXST
+#define DRAW_STATUS_SCORE_X 0x20
+#define DRAW_STATUS_LIVES_X 0xF0
+#define DRAW_STATUS_Y 0
+#endif
+#ifdef GFXTI
 #define DRAW_STATUS_SCORE_X 0x20
 #define DRAW_STATUS_LIVES_X 0xF0
 #define DRAW_STATUS_Y 0
@@ -133,12 +136,16 @@ void env_paintXtra(void)
 void
 env_clearGame(void)
 {
-	U8 i, *f;
+	U16 i;
+    U8 *f;
 
 #ifdef GFXPC
 	tiles_setBank(map_tilesBank);
 #endif
 #ifdef GFXST
+	tiles_setBank(0);
+#endif
+#ifdef GFXTI
 	tiles_setBank(0);
 #endif
 
@@ -148,6 +155,10 @@ env_clearGame(void)
 		f = tile_paint(map_map[MAP_ROW_SCRTOP + (DRAW_STATUS_Y / 8)][i], f);
 #endif
 #ifdef GFXST
+	for (i = 0; i < DRAW_STATUS_LIVES_X/8 + 6 - DRAW_STATUS_SCORE_X/8; i++)
+		f = tiles_paint('@', f);
+#endif
+#ifdef GFXTI
 	for (i = 0; i < DRAW_STATUS_LIVES_X/8 + 6 - DRAW_STATUS_SCORE_X/8; i++)
 		f = tiles_paint('@', f);
 #endif

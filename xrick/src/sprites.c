@@ -13,7 +13,6 @@
 
 
 
-#include "system.h"
 #include "config.h"
 #include "env.h"
 
@@ -21,6 +20,11 @@
 #include "fb.h"
 #include "maps.h"
 #include "tiles.h"
+
+#ifdef GFXTI
+#include <vdp.h>
+#include <string.h>
+#endif
 
 
 
@@ -34,7 +38,8 @@
 #ifdef GFXPC
 void sprites_paint(U8 spriteNumber, U16 x, U16 y)
 {
-	U8 i, j, k, *f, *fb;
+	U16 i, j, k;
+    U8 *f, *fb;
 	U16 xm = 0, xp = 0;
 
 	fb = fb_at(x, y);
@@ -59,7 +64,8 @@ void sprites_paint(U8 spriteNumber, U16 x, U16 y)
 #ifdef GFXST
 void sprites_paint(U8 spriteNumber, U16 x, U16 y)
 {
-	U8 i, j, k, *f, *fb;
+	U16 i, j, k;
+    U8 *f, *fb;
 	U16 g;
 	U32 d;
 
@@ -80,6 +86,59 @@ void sprites_paint(U8 spriteNumber, U16 x, U16 y)
 		fb += FB_WIDTH;
 	}
 }
+#endif
+#ifdef GFXTI
+sprite_data_t sprite_table[ENT_ENTSNUM+1];
+
+// TODO: need to draw actual sprites... sprites are 32x32 (so four sprites each)
+// There are up to 12 sprites in game (though our hardware supports 8). We'll let
+// the copy function sort that out though.
+void sprites_paint(U8 spriteNumber, U16 x, U16 y)
+{
+    // we just have to load the four sprites into the sprite table at the first clear spot
+    // TODO: need a mapping table for colors
+    // TODO: we are not copying in the bitmap properly, we probably need to at this point,
+    // which means we need to assign a psuedo-hardware sprite AND a character pattern.
+    // If we assume entities don't switch around order, we can probably base the pattern
+    // on the sprite table entry (48*4 is only 192 characters)
+    for (int i=0; i<ENT_ENTSNUM+1; i+=4) {
+        if (sprite_table[i].y == 0xd1) {
+            sprite_table[i].y = y;
+            sprite_table[i].x = x;
+            sprite_table[i].ch = i*4;
+            sprite_table[i].col = COLOR_WHITE;  // TODO: color table
+
+            sprite_table[i+1].y = y+16;
+            sprite_table[i+1].x = x;
+            sprite_table[i+1].ch = i*4+1;
+            sprite_table[i+1].col = COLOR_WHITE;  // TODO: color table
+
+            sprite_table[i+2].y = y;
+            sprite_table[i+2].x = x+16;
+            sprite_table[i+2].ch = i*4+2;
+            sprite_table[i+2].col = COLOR_WHITE;  // TODO: color table
+
+            sprite_table[i+3].y = y+16;
+            sprite_table[i+3].x = x+16;
+            sprite_table[i+3].ch = i*4+3;
+            sprite_table[i+3].col = COLOR_WHITE;  // TODO: color table
+
+            VDP_INT_DISABLE;
+            // TODO: this relies on all the sprite patterns being one after the other,
+            // and we need to add the bank switching to the correct bank, and the
+            // sprites will definitely be in different banks.
+            vdpmemcpy(gSpritePat+(i*16)*8, spriteNumber*128+sprites_data0, 128);
+            VDP_INT_ENABLE;
+
+            break;
+        }
+    }
+}
+
+void sprites_clear() {
+    memset(sprite_table, 0xd1, sizeof(sprite_table));
+}
+
 #endif
 
 
@@ -255,8 +314,7 @@ void sprites_paint2(U8 spriteNumber, U16 x, U16 y, U8 front)
 }
 #endif
 
-
-
+#ifndef GFXTI
 /*
  * sprites_clear
  *
@@ -306,5 +364,6 @@ sprites_clear(U16 x, U16 y)
 		}
 	}
 }
+#endif
 
 /* eof */

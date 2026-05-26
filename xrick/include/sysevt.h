@@ -14,7 +14,7 @@
 #ifndef _SYSEVT_H
 #define _SYSEVT_H
 
-#include "system.h"
+#include "ricksystem.h"
 
 extern void sysevt_poll(void);
 extern void sysevt_wait(void);

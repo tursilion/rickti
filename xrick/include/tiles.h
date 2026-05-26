@@ -14,7 +14,7 @@
 #ifndef _TILES_H
 #define _TILES_H
 
-#include "system.h"
+#include "config.h"
 
 /*
  * methods
@@ -32,6 +32,7 @@ void tiles_paintListAt(U8 *, U16, U16);
  * a tile is 8x8 pixels.
  * PC: CGA encoding = 2 bits per pixel, one U16 per line.
  * ST: encoding = 4 bits per pixel, one U32 per line.
+ * TI: bitmap encoding, 8 bytes pattern then 8 bytes color - TODO but might not use this...
  */
 #ifdef GFXPC
 typedef U16 tile_t[8];
@@ -39,13 +40,16 @@ typedef U16 tile_t[8];
 #ifdef GFXST
 typedef U32 tile_t[8];
 #endif
+#ifdef GFXTI
+typedef U8 tile_t;
+#endif
 
 /*
  * banks (each bank contains 256 (0x100) tiles)
  *
  * FIXME is this true?
  * bank 0: tiles for main intro
- * bank 1: tiles for map intro
+ * bank 1: tiles for map intro (skipped as per ST version)
  * bank 2: unused
  * bank 3: game tiles, page 0
  * bank 4: game tiles, page 1
@@ -54,6 +58,9 @@ typedef U32 tile_t[8];
 #define TILES_BANKS_COUNT 4
 #endif
 #ifdef GFXST
+#define TILES_BANKS_COUNT 3
+#endif
+#ifdef GFXTI
 #define TILES_BANKS_COUNT 3
 #endif
 
