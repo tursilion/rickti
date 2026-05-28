@@ -300,6 +300,8 @@ static void game_loop(void)
  */
 static void game_cycle(void)
 {
+    unsigned int nOldBank = 0;
+
 	while (1) {
 
 		//if (game_state != game_state2)
@@ -379,6 +381,8 @@ static void game_cycle(void)
 		case INIT:
 
 			init();
+            nOldBank = nBank;
+            SWITCH_IN_BANK12;
 			if (env_submap == map_maps[env_map].submap)
 			{
 				game_state = MAP_INTRO;
@@ -387,6 +391,7 @@ static void game_cycle(void)
 			{
 				game_state = INIT_MAP; /* no intro if not first submap */
 			}
+            SWITCH_IN_BANK(nOldBank);
 			break;
 
 
@@ -630,10 +635,14 @@ static void game_cycle(void)
 
 		case NEXT_MAP:
 
-			ent_ents[1].x = map_maps[env_map].x;
-			ent_ents[1].y = map_maps[env_map].y;
-			map_frow = (U8)map_maps[env_map].row;
-			env_submap = map_maps[env_map].submap;
+            nOldBank = nBank;
+            SWITCH_IN_BANK12;
+			    ent_ents[1].x = map_maps[env_map].x;
+			    ent_ents[1].y = map_maps[env_map].y;
+			    map_frow = (U8)map_maps[env_map].row;
+			    env_submap = map_maps[env_map].submap;
+            SWITCH_IN_BANK(nOldBank);
+
 			game_state = FADEOUT__MAP_INTRO;
 			break;
 
@@ -760,6 +769,7 @@ static void
 init(void)
 {
   U16 i;
+  unsigned int nOldBank;
 
   E_RICK_STRST(0xffff);
 
@@ -770,6 +780,9 @@ init(void)
   env_score_hi = 0;
 
   env_map = sysarg_args_map;
+  nOldBank = nBank;
+
+  SWITCH_IN_BANK12;     // map_maps, map_connect
 
   if (sysarg_args_submap == 0) {
     env_submap = map_maps[env_map].submap;
@@ -798,6 +811,8 @@ init(void)
   ent_ents[1].sprite = 0x01;
   ent_ents[1].front = FALSE;
   ent_ents[ENT_ENTSNUM].n = 0xFF;
+
+  SWITCH_IN_BANK(nOldBank);
 
   map_resetMarks();
 }

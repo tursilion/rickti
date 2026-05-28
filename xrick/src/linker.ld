@@ -111,30 +111,35 @@ SECTIONS {
     
     bank3 :
     {
+        /* must start at beginning of bank, index is hard coded in sprites.c sprites_paint */
         dat_spritesTI0.o(.text .rodata)
         PROVIDE(ebank3a = .);
     } > CART3 AT> FLASH
 
     bank4 :
     {
+        /* must start at beginning of bank and be sequential after 0 */
         dat_spritesTI1.o(.text .rodata)
         PROVIDE(ebank4a = .);
     } > CART4 AT> FLASH
 
     bank5 :
     {
+        /* must start at beginning of bank and be sequential after 1 */
         dat_spritesTI2.o(.text .rodata)
         PROVIDE(ebank5a = .);
     } > CART5 AT> FLASH
 
     bank6 :
     {
+        /* must start at beginning of bank and be sequential after 2 */
         dat_spritesTI3.o(.text .rodata)
         PROVIDE(ebank6a = .);
     } > CART6 AT> FLASH
 
     bank7 :
     {
+        /* must start at beginning of bank and be sequential after 3 */
         dat_spritesTI4.o(.text .rodata)
         dat_ents2.o(.text .rodata)
         PROVIDE(ebank7a = .);

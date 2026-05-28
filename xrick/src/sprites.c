@@ -93,11 +93,13 @@ sprite_data_t sprite_table[ENT_ENTSNUM+1];
 // TODO: need to draw actual sprites... sprites are 32x32 (so four sprites each)
 // There are up to 12 sprites in game (though our hardware supports 8). We'll let
 // the copy function sort that out though.
-void sprites_paint(U8 spriteNumber, U16 x, U16 y)
+void sprites_paint(U16 spriteNumber, U16 x, U16 y)
 {
+    unsigned int nOldBank;
+
     // we just have to load the four sprites into the sprite table at the first clear spot
     // TODO: need a mapping table for colors
-    // TODO: we are not copying in the bitmap properly, we probably need to at this point,
+    // we need to copy in the bitmap properly, we probably need to at this point,
     // which means we need to assign a psuedo-hardware sprite AND a character pattern.
     // If we assume entities don't switch around order, we can probably base the pattern
     // on the sprite table entry (48*4 is only 192 characters)
@@ -124,10 +126,19 @@ void sprites_paint(U8 spriteNumber, U16 x, U16 y)
             sprite_table[i+3].col = COLOR_WHITE;  // TODO: color table
 
             VDP_INT_DISABLE;
-            // TODO: this relies on all the sprite patterns being one after the other,
-            // and we need to add the bank switching to the correct bank, and the
-            // sprites will definitely be in different banks.
-            //vdpmemcpy(gSpritePat+(i*16)*8, spriteNumber*128+sprites_data0, 128);
+            // based on which pattern we need, we need to map and copy from ROM
+            // each table has 48 of those big objects (8x6)
+            nOldBank = nBank;
+            // since calculated, we do the bank here manually. SINCE WE DO NOT
+            // UPDATE nBank YOU CAN NOT BRANCH TO ANY CODE THAT MIGHT BANK SWITCH AGAIN
+            unsigned int spritePage = spriteNumber / 48;
+            unsigned int spriteIdx = spriteNumber % 48;
+            // Note: page index 0x6006 is determined by dat_sprintesTI0.o in the linker file
+            *(volatile unsigned int*)(0x6006 + (spritePage*2))=nBank;
+            vdpmemcpy(gSpritePat+(i*16)*8, spriteIdx*128+sprites_data0, 128);
+            // restore the previous page
+            SWITCH_IN_BANK(nOldBank);
+
             VDP_INT_ENABLE;
 
             break;

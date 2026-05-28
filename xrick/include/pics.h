@@ -22,10 +22,10 @@ extern U32 pic_congrats[];
 extern U32 pic_splash[];
 #else
 extern const U8 pic_haf_pat[];
-extern const U8 pic_congrats_pat[];
+extern const U8 pic_congrats_pat[];     // is this even used?!
 extern const U8 pic_splash_pat[];
 extern const U8 pic_haf_col[];
-extern const U8 pic_congrats_col[];
+extern const U8 pic_congrats_col[];     // is this even used?!
 extern const U8 pic_splash_col[];
 #endif
 

@@ -37,6 +37,7 @@ devtools_run(void)
 	static U8 pos2 = 0;
 	U16 i, j, k, l;
 	U8 s[128];
+    unsigned int nOldBank = 0;
 
 	if (seq == 0)
 	{
@@ -190,6 +191,8 @@ devtools_run(void)
 			tiles_setBank(0);
 			tiles_paintListAt(s, 4, 4);
 			tiles_setBank(pos2);
+            nOldBank = nBank;
+            SWITCH_IN_BANK15;   // map_blocks
 			for (l = 0; l < 8; l++)
 				for (k = 0; k < 4; k++)
 					for (i = 0; i < 4; i++)
@@ -198,7 +201,8 @@ devtools_run(void)
 							tiles_paintAt(map_blocks[pos + l + k * 8][i * 4 + j],
 								20 + j * 8 + l * 36, 30 + i * 8 + k * 36);
 						}
-			seq = 41;
+			SWITCH_IN_BANK(nOldBank);
+            seq = 41;
 			break;
 
 		case 41:

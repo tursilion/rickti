@@ -145,18 +145,26 @@ ent_actvis(U8 frow, U8 lrow)
 	U16 m;
 	U8 e;
 	U16 y;
+    unsigned int nOldBank = nBank;
+    U16 tmpMark;
+
+    SWITCH_IN_BANK12;   // map_submaps
+    tmpMark = map_submaps[env_submap].mark;
 
 	/*
 	* go through the list and find the first mark that
 	* is visible, i.e. which has a row greater than the
 	* first row (marks being ordered by row number).
 	*/
-	for (m = map_submaps[env_submap].mark;
+    SWITCH_IN_BANK14;   // map_marks
+	for (m = tmpMark;
 		map_marks[m].row != 0xff && map_marks[m].row < frow;
 		m++);
 
-	if (map_marks[m].row == 0xff)  /* none found */
+	if (map_marks[m].row == 0xff)  /* none found */ {
+        SWITCH_IN_BANK(nOldBank);
 		return;
+    }
 
 	/*
 	* go through the list and process all marks that are
@@ -285,6 +293,7 @@ ent_actvis(U8 frow, U8 lrow)
     ent_ents[e].front = FALSE;
 
   }
+    SWITCH_IN_BANK(nOldBank);
 }
 
 

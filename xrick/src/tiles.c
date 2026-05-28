@@ -18,8 +18,6 @@
 
 #ifdef GFXTI
 #include <vdp.h>
-extern tile_t tiles_banks_pat[TILES_BANKS_COUNT*256*8];
-extern tile_t tiles_banks_col[TILES_BANKS_COUNT*256*8];
 #endif
 
 #ifndef GFXTI
@@ -34,6 +32,8 @@ static U16 tiles_filter;
  */
 void tiles_setBank(U8 bank)
 {
+    unsigned int nOldBank;
+
 	if (bank >= TILES_BANKS_COUNT)
 		sys_panic("xrick/tiles: invalid bank number %d\n", bank);
 
@@ -43,13 +43,24 @@ void tiles_setBank(U8 bank)
 
 #ifdef GFXTI
     U16 off = bank*0x800;
+    nOldBank = nBank;
+
     VDP_INT_DISABLE;
+    
+    // first patterns
+    SWITCH_IN_BANK8;
     vdpmemcpy(gPattern, tiles_banks_pat+off, 0x800);
-    vdpmemcpy(gColor, tiles_banks_col+off, 0x800);
     vdpmemcpy(gPattern+0x800, tiles_banks_pat+off, 0x800);
-    vdpmemcpy(gColor+0x800, tiles_banks_col+off, 0x800);
     vdpmemcpy(gPattern+0x1000, tiles_banks_pat+off, 0x800);
+
+    // then color
+    SWITCH_IN_BANK9;
+    vdpmemcpy(gColor, tiles_banks_col+off, 0x800);
+    vdpmemcpy(gColor+0x800, tiles_banks_col+off, 0x800);
     vdpmemcpy(gColor+0x1000, tiles_banks_col+off, 0x800);
+
+    // restore bank
+    SWITCH_IN_BANK(nOldBank);
     VDP_INT_ENABLE;
 #endif
 }

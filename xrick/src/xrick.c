@@ -37,6 +37,9 @@ extern sprite_data_t sprite_table[ENT_ENTSNUM+1];
 // TODO: this is wrong for PAL, obviously, which counts at 20ms
 volatile U16 vdpCount;
 
+// current bank, used so we can switch and switch back
+unsigned int nBank;
+
 // reset time at startup
 void sys_resettime() {
     vdpCount = 0;
@@ -107,6 +110,9 @@ sys_init(int argc, char** argv)
 #ifdef GFXTI
     // make sure interrupts are off during init
     VDP_INT_DISABLE;
+
+    // get banking into a known state
+    SWITCH_IN_BANK0;
 
     // TODO: F18A can use bitmap with a single color/pattern table (half bitmap) and still
     // have access to all sprites. It will use palettes. Also set up for 8 color sprites.

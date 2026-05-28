@@ -33,6 +33,21 @@
 
 #define IMAIN_PERIOD 50;
 
+void draw_titlepage()
+{
+    unsigned int nOldBank = 0;
+
+    nOldBank = nBank;
+    // pattern
+    SWITCH_IN_BANK10;
+	img_paintPic(0, 0, 256, 192, (U8*)pic_splash_pat, 0);
+    // color
+    SWITCH_IN_BANK11;
+	img_paintPic(0, 0, 256, 192, 0, (U8*)pic_splash_col);
+    // restore
+    SWITCH_IN_BANK(nOldBank);
+}
+
 /*
  * Main introduction
  *
@@ -46,6 +61,7 @@ screen_introMain(void)
 	static U8 first = TRUE;
 	static U8 period = 0;
 	static U32 tm = 0;
+    unsigned int nOldBank = 0;
 	U16 i;
     U8 s[32];
 
@@ -66,7 +82,7 @@ screen_introMain(void)
 
 	switch (seq)
 	{
-		case 1:  /* dispay hall of fame */
+		case 1:  /* title */
 			fb_clear();
 			sysvid_setGamma(0);
 			tm = sys_gettime();
@@ -85,7 +101,7 @@ screen_introMain(void)
 			img_paintPic(0, 0, 0x140, 0xc8, pic_splash);
 #endif
 #ifdef GFXTI
-			img_paintPic(0, 0, 256, 192, (U8*)pic_splash_pat, (U8*)pic_splash_col);
+            draw_titlepage();
 #endif
 
 			game_period = period/2;
@@ -132,7 +148,7 @@ screen_introMain(void)
 			}
 			break;
 
-		case 10:  /* display Rick Dangerous title and Core Design copyright */
+		case 10:  /* display hall of fame */
 			fb_clear();
 			tm = sys_gettime();
 
@@ -145,7 +161,15 @@ screen_introMain(void)
 			img_paintPic(0, 0, 0x140, 0x20, pic_haf);
 #endif
 #ifdef GFXTI
-			img_paintPic(0, 0, 256, 24, (U8*)pic_haf_pat, (U8*)pic_haf_col);
+            nOldBank = nBank;
+            // pattern
+            SWITCH_IN_BANK10;
+			img_paintPic(0, 0, 256, 24, (U8*)pic_haf_pat, 0);
+            // color
+            SWITCH_IN_BANK11;
+			img_paintPic(0, 0, 256, 24, 0, (U8*)pic_haf_col);
+            // restore
+            SWITCH_IN_BANK(nOldBank);
 #endif
 
 			/* hall of fame content */
@@ -162,8 +186,8 @@ screen_introMain(void)
 #else
                 VDP_INT_DISABLE;
                 VDP_SET_ADDRESS_WRITE(VDP_SCREEN_POS(5+i*2, 7));
-                printf("%06d@@@....@@@%s",
-					game_hscores[i].score, game_hscores[i].name);
+                printf("%02d%04d@@@....@@@%s",
+					game_hscores[i].score_hi, game_hscores[i].score_lo, game_hscores[i].name);
                 VDP_INT_ENABLE;
 #endif
 			}

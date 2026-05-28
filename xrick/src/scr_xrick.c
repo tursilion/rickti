@@ -40,6 +40,8 @@ img_t *IMG_SPLASH = &IMG_SPLASH_OBJECT;
 #endif
 #endif
 
+extern void draw_titlepage();
+
 /*
  * Display XRICK splash screen
  *
@@ -58,7 +60,8 @@ screen_xrick(void)
 #ifndef GFXTI
 		img_paintImg(IMG_SPLASH);
 #else
-        img_paintPic(0, 0, 256, 192, (U8*)pic_splash_pat, (U8*)pic_splash_col);
+        // why is this loaded twice - was it just for convenience?
+        draw_titlepage();
 #endif
 		game_rects = &draw_SCREENRECT;
 		seq = 1;

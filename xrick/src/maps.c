@@ -71,24 +71,38 @@ map_expand(void)
   U16 i, j, k, l;
   U8 row, col;
   U16 pbnum;
+  int tmpbnum;
+  unsigned int nOldBank = nBank;
+
+  SWITCH_IN_BANK12; // map_submaps
 
   pbnum = map_submaps[env_submap].bnum + ((2 * map_frow) & 0xfff8);
   row = col = 0;
 
+  SWITCH_IN_BANK13; // map_bnums
+  tmpbnum = map_bnums[pbnum];
+  SWITCH_IN_BANK15; // map_blocks
+
   for (i = 0; i < 0x0b; i++) {  /* 0x0b rows of blocks */
     for (j = 0; j < 0x08; j++) {  /* 0x08 blocks per row */
       for (k = 0, l = 0; k < 0x04; k++) {  /* expand one block */
-	map_map[row][col++] = map_blocks[map_bnums[pbnum]][l++];
-	map_map[row][col++] = map_blocks[map_bnums[pbnum]][l++];
-	map_map[row][col++] = map_blocks[map_bnums[pbnum]][l++];
-	map_map[row][col]   = map_blocks[map_bnums[pbnum]][l++];
+	map_map[row][col++] = map_blocks[tmpbnum][l++];    // map_map is local, ram, map_maps is banked ROM
+	map_map[row][col++] = map_blocks[tmpbnum][l++];
+	map_map[row][col++] = map_blocks[tmpbnum][l++];
+	map_map[row][col]   = map_blocks[tmpbnum][l++];
 	row += 1; col -= 3;
       }
       row -= 4; col += 4;
       pbnum++;
+      SWITCH_IN_BANK13; // map_bnums
+      tmpbnum = map_bnums[pbnum];
+      SWITCH_IN_BANK15; // map_blocks
     }
     row += 4; col = 0;
   }
+
+  SWITCH_IN_BANK(nOldBank);
+
 }
 
 
@@ -100,6 +114,10 @@ map_expand(void)
 void
 map_init(void)
 {
+  unsigned int nOldBank = nBank;
+
+  SWITCH_IN_BANK12;
+
 	/*sys_printf("xrick/map_init: map=%#04x submap=%#04x\n", g_map, env_submap);*/
 #ifdef GFXPC
 	tiles_setFilter(0xffff);
@@ -112,6 +130,9 @@ map_init(void)
 	map_tilesBank = map_submaps[env_submap].page == 1 ? 2 : 1;
 #endif
 	map_eflg_expand((map_submaps[env_submap].page == 1) ? 0x10 : 0x00);
+
+    SWITCH_IN_BANK(nOldBank);
+
 	map_expand();
 	ent_reset();
 
@@ -142,10 +163,15 @@ map_eflg_expand(U8 offs)
 {
   U16 i, j, k;
 
+  unsigned int nOldBank = nBank;
+  SWITCH_IN_BANK14;
+
   for (i = 0, k = 0; i < 0x10; i++) {
     j = map_eflg_c[offs + i++];
     while (j--) map_eflg[k++] = map_eflg_c[offs + i];
   }
+
+  SWITCH_IN_BANK(nOldBank);
 }
 
 
@@ -160,11 +186,15 @@ U8
 map_chain(void)
 {
   U16 c, t;
+  unsigned int nOldBank;
 
   env_changeSubmap = 0; /* FIXME but not used?! */
   e_sbonus_counting = FALSE; /* FIXME what? move this out of here!! */
 
   /* find connection */
+  nOldBank = nBank;
+  SWITCH_IN_BANK12; // map_submaps, map_connect
+
   c = map_submaps[env_submap].connect;
   t = 3;
 
@@ -196,6 +226,8 @@ map_chain(void)
 
   if (map_connect[c].submap == 0xff) {
     /* no next submap - request next map */
+    
+    SWITCH_IN_BANK(nOldBank);
     IFDEBUG_MAPS(
       sys_printf("chain to next map\n");
       );
@@ -213,6 +245,8 @@ map_chain(void)
       sys_printf("xrick/maps: chain frow=%#04x\n",
 		 map_frow);
       );
+
+    SWITCH_IN_BANK(nOldBank);
     return TRUE;
   }
 }
@@ -228,8 +262,12 @@ void
 map_resetMarks(void)
 {
   U16 i;
-  for (i = 0; i < MAP_NBR_MARKS; i++)
+  unsigned int nOldBank = nBank;
+  SWITCH_IN_BANK14;
+  for (i = 0; i < MAP_NBR_MARKS; i++) {
     map_marks_ent[i] = map_marks[i].ent;
+  }
+  SWITCH_IN_BANK(nOldBank);
 }
 
 

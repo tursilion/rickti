@@ -65,6 +65,8 @@ static void init(void);
  */
 U8 screen_introMap(void)
 {
+    unsigned int nOldBank = 0;
+
 	switch (seq)
 	{
 		case 0: /* initialize */
@@ -81,12 +83,15 @@ U8 screen_introMap(void)
 #ifdef GFXTI
 			tiles_setBank(0);
 #endif
+            nOldBank = nBank;
+            SWITCH_IN_BANK14;
 			tiles_paintListAt(maps_intros[env_map].title, 32, 0);
 
 #ifdef GFXPC
 			tiles_setFilter(0x5555);
 #endif
 			tiles_paintListAt(maps_intros[env_map].body, 32, 96);
+            SWITCH_IN_BANK(nOldBank);
 
 #ifdef GFXPC
 			tiles_setFilter(0xffff);
@@ -103,7 +108,10 @@ U8 screen_introMap(void)
 			//game_rects = &draw_SCREENRECT;
 
 #ifdef ENABLE_SOUND
+            nOldBank = nBank;
+            SWITCH_IN_BANK12;
 			sounds_setMusic(map_maps[env_map].tune, 1);
+            SWITCH_IN_BANK(nOldBank);
 #endif
 
 			seq = 1;

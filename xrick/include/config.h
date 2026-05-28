@@ -56,6 +56,28 @@
 /* files */
 #undef USE_DATA_FILES
 
+/* bank switching */
+// bank switching - nOldBank is used to let a function restore the original bank
+// our fixed bank is copied out of banks 0-1-2 into 32k memory expansion
+extern unsigned int nBank;
+#define SWITCH_IN_BANK(nOldBank) nBank=nOldBank; (*(volatile unsigned int*)nOldBank)=nBank; 
+#define SWITCH_IN_BANK0    nBank=(unsigned int)0x6000; (*(volatile unsigned int*)0x6000)=nBank;  
+#define SWITCH_IN_BANK1    nBank=(unsigned int)0x6002; (*(volatile unsigned int*)0x6002)=nBank;  
+#define SWITCH_IN_BANK2    nBank=(unsigned int)0x6004; (*(volatile unsigned int*)0x6004)=nBank; 
+#define SWITCH_IN_BANK3    nBank=(unsigned int)0x6006; (*(volatile unsigned int*)0x6006)=nBank; 
+#define SWITCH_IN_BANK4    nBank=(unsigned int)0x6008; (*(volatile unsigned int*)0x6008)=nBank; 	
+#define SWITCH_IN_BANK5    nBank=(unsigned int)0x600a; (*(volatile unsigned int*)0x600a)=nBank; 
+#define SWITCH_IN_BANK6    nBank=(unsigned int)0x600c; (*(volatile unsigned int*)0x600c)=nBank; 
+#define SWITCH_IN_BANK7    nBank=(unsigned int)0x600e; (*(volatile unsigned int*)0x600e)=nBank; 
+#define SWITCH_IN_BANK8    nBank=(unsigned int)0x6010; (*(volatile unsigned int*)0x6010)=nBank; 
+#define SWITCH_IN_BANK9    nBank=(unsigned int)0x6012; (*(volatile unsigned int*)0x6012)=nBank; 
+#define SWITCH_IN_BANK10   nBank=(unsigned int)0x6014; (*(volatile unsigned int*)0x6014)=nBank; 
+#define SWITCH_IN_BANK11   nBank=(unsigned int)0x6016; (*(volatile unsigned int*)0x6016)=nBank; 
+#define SWITCH_IN_BANK12   nBank=(unsigned int)0x6018; (*(volatile unsigned int*)0x6018)=nBank; 
+#define SWITCH_IN_BANK13   nBank=(unsigned int)0x601a; (*(volatile unsigned int*)0x601a)=nBank; 
+#define SWITCH_IN_BANK14   nBank=(unsigned int)0x601c; (*(volatile unsigned int*)0x601c)=nBank; 
+#define SWITCH_IN_BANK15   nBank=(unsigned int)0x601e; (*(volatile unsigned int*)0x601e)=nBank; 
+
 #endif
 
 /* eof */
