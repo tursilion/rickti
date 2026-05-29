@@ -42,6 +42,10 @@
 #include "tiles.h"
 #include "fb.h"
 
+#ifdef GFXTI
+#include <vdp.h>
+#endif
+
 /*
  * global vars
  */
@@ -282,23 +286,36 @@ void maps_paint(void)
 {
 	U16 i, j;
 	U8 *f;
+    unsigned int nOldBank = nBank;
 
+    // TODO: we can't do this every frame! this actually loads the font
 	tiles_setBank(map_tilesBank);
+
+    SWITCH_IN_BANK12;
 
 	for (i = 0; i < 0x18; i++) /* 0x18 rows */
 	{
 #ifdef GFXPC
 		f = fb_at(0x20, i * 8);
+		for (j = 0; j < 0x20; j++) {
+            /* 0x20 tiles per row */
+			f = tiles_paint(map_map[i + 8][j], f);
+        }
 #endif
 #ifdef GFXST
 		f = fb_at(0x20, (i + 1) * 8);
+		for (j = 0; j < 0x20; j++) {
+            /* 0x20 tiles per row */
+			f = tiles_paint(map_map[i + 8][j], f);
+        }
 #endif
 #ifdef GFXTI
-		f = fb_at(0x20, (i + 1) * 8);
+		f = fb_at(0, (i + 1) * 8);   // gets VDP offset into gImage
+        vdpmemcpy(gImage+f, map_map[i+8], 32);
 #endif
-		for (j = 0; j < 0x20; j++) /* 0x20 tiles per row */
-			f = tiles_paint(map_map[i + 8][j], f);
 	}
+
+    SWITCH_IN_BANK(nOldBank);
 }
 
 

@@ -112,17 +112,17 @@ void sprites_paint(U16 spriteNumber, U16 x, U16 y)
 
             sprite_table[i+1].y = y+16;
             sprite_table[i+1].x = x;
-            sprite_table[i+1].ch = i*4+1;
+            sprite_table[i+1].ch = i*4+4;
             sprite_table[i+1].col = COLOR_WHITE;  // TODO: color table
 
             sprite_table[i+2].y = y;
             sprite_table[i+2].x = x+16;
-            sprite_table[i+2].ch = i*4+2;
+            sprite_table[i+2].ch = i*4+8;
             sprite_table[i+2].col = COLOR_WHITE;  // TODO: color table
 
             sprite_table[i+3].y = y+16;
             sprite_table[i+3].x = x+16;
-            sprite_table[i+3].ch = i*4+3;
+            sprite_table[i+3].ch = i*4+12;
             sprite_table[i+3].col = COLOR_WHITE;  // TODO: color table
 
             VDP_INT_DISABLE;

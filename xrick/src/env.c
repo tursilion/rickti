@@ -45,19 +45,23 @@ U8 env_changeSubmap = FALSE;
  */
 #ifdef GFXPC
 #define DRAW_STATUS_SCORE_X 0x28
+#define DRAW_STATUS_BULLETS_X 0x68
+#define DRAW_STATUS_BOMBS_X 0xA8
 #define DRAW_STATUS_LIVES_X 0xE8
 #define DRAW_STATUS_Y 0x08
 #endif
-#define DRAW_STATUS_BULLETS_X 0x68
-#define DRAW_STATUS_BOMBS_X 0xA8
 #ifdef GFXST
 #define DRAW_STATUS_SCORE_X 0x20
+#define DRAW_STATUS_BULLETS_X 0x68
+#define DRAW_STATUS_BOMBS_X 0xA8
 #define DRAW_STATUS_LIVES_X 0xF0
 #define DRAW_STATUS_Y 0
 #endif
 #ifdef GFXTI
-#define DRAW_STATUS_SCORE_X 0x20
-#define DRAW_STATUS_LIVES_X 0xF0
+#define DRAW_STATUS_SCORE_X 24
+#define DRAW_STATUS_BULLETS_X 80
+#define DRAW_STATUS_BOMBS_X 136
+#define DRAW_STATUS_LIVES_X 192
 #define DRAW_STATUS_Y 0
 #endif
 
@@ -105,11 +109,13 @@ void env_paintGame(void)
     
     VDP_INT_DISABLE;
     // TODO: conio might be too slow here?
-    gotoxy(DRAW_STATUS_SCORE_X, DRAW_STATUS_Y);
+    // TODO: we don't have text or the correct characters in the game tileset - how do we get text?
+    // bank 0 has font and cutscenes, but 2 and 3 have level graphics.
+    gotoxy(DRAW_STATUS_SCORE_X/8, DRAW_STATUS_Y/8);
     cprintf("%02d%04d", env_score_hi, env_score_lo);
-    hchar(DRAW_STATUS_Y, DRAW_STATUS_BULLETS_X, TILES_BULLET, env_bullets);
-    hchar(DRAW_STATUS_Y, DRAW_STATUS_BOMBS_X, TILES_BOMB, env_bombs);
-    hchar(DRAW_STATUS_Y, DRAW_STATUS_LIVES_X, TILES_RICK, env_lives);
+    hchar(DRAW_STATUS_Y/8, DRAW_STATUS_BULLETS_X/8, TILES_BULLET, env_bullets);
+    hchar(DRAW_STATUS_Y/8, DRAW_STATUS_BOMBS_X/8, TILES_BOMB, env_bombs);
+    hchar(DRAW_STATUS_Y/8, DRAW_STATUS_LIVES_X/8, TILES_RICK, env_lives);
     VDP_INT_ENABLE;
 #endif
 }

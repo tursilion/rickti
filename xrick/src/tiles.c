@@ -84,54 +84,57 @@ void tiles_setFilter(U16 filter)
 /*
  * tiles_paint
  *
- * paints tile <tileNumber> at the position indicated by <fb>.
+ * paints ONE tile <tileNumber> at the position indicated by <fb>.
  * returns next <fb> value.
  */
+// TODO: it's likely everything that calls this can be replaced with a vdpmemcpy or hchar or vchar
 U8 *tiles_paint(U8 tileNumber, U8 *fb)
 {
-	U16 i;
 #ifdef GFXPC
+	U16 i;
     U16 k;
 	U16 x;
     U8 *f;
 	f = fb;
 #endif
 #ifdef GFXST
+	U16 i;
     U16 k;
 	U32 x;
     U8 *f;
 	f = fb;
 #endif
 #ifdef GFXTI
-	U16 x,y;
-    U8 f = ((U16)fb)&0x3fff;     // I know this looks wrong, but fb is a VDP address, not a CPU one
+    // TODO: could optimize by not converting to/from pointer
+    U16 f = ((U16)fb)&0x3fff;     // I know this looks wrong, but fb is a VDP address, not a CPU one
 #endif
 
+#ifdef GFXPC
 	for (i = 0; i < 8; i++) /* 8 pixel lines */
 	{
-#ifdef GFXPC
 		/* map CGA 2 bits per pixel to frame buffer 8 bits per pixels */
 		x = tiles_bank[tileNumber][i] & tiles_filter;
 		for (k = 8; k--; x >>= 2)
 			f[k] = x & 3;
 		f += FB_WIDTH; /* next line */
+    }
 #endif
 #ifdef GFXST
+	for (i = 0; i < 8; i++) /* 8 pixel lines */
+	{
 		/* map ST 4 bits per pixel to frame buffer 8 bits per pixels */
 		x = tiles_bank[tileNumber][i];
 		for (k = 8; k--; x >>= 4)
 			f[k] = x & 0x0f;
 		f += FB_WIDTH; /* next line */
+    }
 #endif
 #ifdef GFXTI
-        // TODO: We don't want to "paint tiles", we use the loaded tle and just place it
-        y = (f/256)/8;
-        x = (f%256)/8;
-        vdpchar(gImage+y*(32*8)+(x*8), tileNumber);
+    // TODO: We don't want to "paint tiles", we use the loaded tle and just place it
+    vdpchar(gImage+f, tileNumber);
 #endif
-	}
 
-	return fb + 8;
+	return fb + 1;
 }
 
 

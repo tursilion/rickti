@@ -207,7 +207,7 @@ sys_sleep(int s)
 #ifndef CLASSIC99
         while (vdpCount > target) { }
 #else
-        while (getVdpCount() > target) { }
+        while (getVdpCount() > now) { }
 #endif
     }
 
@@ -215,7 +215,10 @@ sys_sleep(int s)
 #ifndef CLASSIC99
     while (vdpCount < target) { }
 #else
-    while (getVdpCount() < target) { }
+    U16 x;
+    do {
+        x = getVdpCount();
+    } while ((x < target) && (x > now));
 #endif
 
 }
