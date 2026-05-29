@@ -447,6 +447,8 @@ e_rick_action2(void)
  */
 void e_rick_action(UNUSED(U8 e))
 {
+    (void)e;
+
 	static U8 stopped = FALSE; /* is this the most elegant way? */
 
 	e_rick_action2();

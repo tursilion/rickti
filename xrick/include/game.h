@@ -33,7 +33,7 @@
 typedef struct {
   U16 score_hi; // and above
   U16 score_lo; // 0-9999
-  U8 name[10];
+  U8 name[11];
 } hscore_t;
 
 extern hscore_t game_hscores[8];  /* highest scores (hall of fame) */

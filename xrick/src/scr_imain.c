@@ -17,6 +17,7 @@
 #include <stdio.h>  /* sprintf */
 #else
 #include <vdp.h>
+#include <conio.h>
 #endif
 
 #include "game.h"
@@ -40,10 +41,10 @@ void draw_titlepage()
     nOldBank = nBank;
     // pattern
     SWITCH_IN_BANK10;
-	img_paintPic(0, 0, 256, 192, (U8*)pic_splash_pat, 0);
+	img_paintPic(0, 0, 256, 192, (U8*)pic_splash_pat, 0, 0);
     // color
     SWITCH_IN_BANK11;
-	img_paintPic(0, 0, 256, 192, 0, (U8*)pic_splash_col);
+	img_paintPic(0, 0, 256, 192, 0, (U8*)pic_splash_col, 0);
     // restore
     SWITCH_IN_BANK(nOldBank);
 }
@@ -63,7 +64,7 @@ screen_introMain(void)
 	static U32 tm = 0;
     unsigned int nOldBank = 0;
 	U16 i;
-    U8 s[32];
+    //U8 s[32];
 
 	if (seq == 0)
 	{
@@ -151,6 +152,9 @@ screen_introMain(void)
 		case 10:  /* display hall of fame */
 			fb_clear();
 			tm = sys_gettime();
+            
+            // we need the main tiles loaded to see text!
+            tiles_setBank(0);
 
 			/* hall of fame title */
 #ifdef GFXPC
@@ -164,10 +168,10 @@ screen_introMain(void)
             nOldBank = nBank;
             // pattern
             SWITCH_IN_BANK10;
-			img_paintPic(0, 0, 256, 24, (U8*)pic_haf_pat, 0);
+			img_paintPic(0, 0, 256, 24, (U8*)pic_haf_pat, 0, 128);
             // color
             SWITCH_IN_BANK11;
-			img_paintPic(0, 0, 256, 24, 0, (U8*)pic_haf_col);
+			img_paintPic(0, 0, 256, 24, 0, (U8*)pic_haf_col, 128);
             // restore
             SWITCH_IN_BANK(nOldBank);
 #endif
@@ -176,6 +180,7 @@ screen_introMain(void)
 #ifdef GFXPC
 			tiles_setFilter(0x5555);
 #endif
+            VDP_INT_DISABLE;
 			for (i = 0; i < 8; i++)
 			{
 #ifndef GFXTI
@@ -184,13 +189,13 @@ screen_introMain(void)
 				s[26] = TILES_NULL;
 				tiles_paintListAt(s, 56, 40 + i*2*8);
 #else
-                VDP_INT_DISABLE;
-                VDP_SET_ADDRESS_WRITE(VDP_SCREEN_POS(5+i*2, 7));
-                printf("%02d%04d@@@....@@@%s",
+                // conio is slow, but this will work
+                gotoxy(4, 5+i*2);
+                cprintf("%02d%04d@@@....@@@%s",
 					game_hscores[i].score_hi, game_hscores[i].score_lo, game_hscores[i].name);
-                VDP_INT_ENABLE;
 #endif
 			}
+            VDP_INT_ENABLE;
 
 			game_period = period/2;
 			seq = 11;

@@ -19,6 +19,10 @@
 #include "draw.h"
 #include "game.h"
 
+#ifdef GFXTI
+#include <vdp.h>
+#endif
+
 #ifndef GFXTI
 #include <string.h> /* memset */
 // note: we don't have a FB for the TI version, we just write direct to VRAM
@@ -94,10 +98,11 @@ void fb_clear()
 #ifndef GFXTI
 	memset(fb, 0, FB_WIDTH * FB_HEIGHT);
 #else
-    // TODO: do we need to clear anything at all? If yes, to what tile?
-    // VDP_INT_DISABLE;
-    //vdpmemset(gImage, 0, 768);
-    // VDP_INT_ENABLE;
+    // Clear by wiping tile 0 and clear to tile 0
+    VDP_INT_DISABLE;
+    vdpmemset(gPattern, 0, 8);
+    vdpmemset(gImage, 0, 768);
+    VDP_INT_ENABLE;
 #endif
 }
 
@@ -108,8 +113,7 @@ void fb_clear()
 U8 fb_fadeIn()
 {
 #ifndef GFXTI
-	static U8 fade = 0;
-
+	U8 fade = 0;
 	while (fade < 8)
 	{
 		/* const = 255 * 2 / (max_fade+2) */
@@ -118,15 +122,12 @@ U8 fb_fadeIn()
 		game_rects = &draw_SCREENRECT; // FIXME
 		return FALSE;
 	}
+#endif
 
-	fade = 0;
-	sysvid_setGamma(255);
-	return TRUE;
-#else
     // TOOD: we could potentially do a pixel dither, loading the tile graphics.
     // If we did that, then we COULD enable fb_clear as clearing the tiles
+	sysvid_setGamma(255);
     return TRUE;
-#endif
 }
 
 /*
@@ -136,8 +137,7 @@ U8 fb_fadeIn()
 U8 fb_fadeOut()
 {
 #ifndef GFXTI
-	static U8 fade = 0;
-
+	U8 fade = 0;
 	while (fade < 8)
 	{
 		sysvid_setGamma((U8)(255.0 * 3.0/(fade+3.0)));
@@ -145,14 +145,10 @@ U8 fb_fadeOut()
 		game_rects = &draw_SCREENRECT; // FIXME
 		return FALSE;
 	}
+#endif
 
-	fade = 0;
 	sysvid_setGamma(0);
 	return TRUE;
-#else
-    // as with fadein
-    return TRUE;
-#endif
 }
 
 /*
@@ -160,12 +156,7 @@ U8 fb_fadeOut()
  */
 void fb_setVisible(U8 vis)
 {
-#ifndef GFXTI
 	sysvid_setGamma(vis ? 255 : 0);
-#else
-    // TODO: we can use the enable/disable bit.
-    // if we do, then we should also set it in fadein and fadeout above
-#endif
 }
 
 
@@ -186,6 +177,7 @@ void fb_initPalette()
  */
 void fb_setPaletteFromImg(img_t* img)
 {
+    (void)img;
 #ifndef GFXTI
 	sysvid_setPaletteFromImg(img);
 #endif

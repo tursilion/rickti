@@ -447,9 +447,28 @@ void sysvid_setGamma(U8 g)
 
 #else // GFXTI
 
-void sysvid_update(void *rects) { }
-void sysvid_setGamma(U8 g) { }  // TODO: game often uses 0 and 255 to turn screen on and off, so we could implement that!
-void sysvid_shutdown(void) { }
+#include <vdp.h>
+
+void sysvid_update(void *rects) { (void)rects; }    // game_rects - can delete this
+void sysvid_shutdown(void) { }  // nothing to really do here
+
+// game often uses 0 and 255 to turn screen on and off, so we could implement that!
+// all non zero is treated as visible
+void sysvid_setGamma(U8 g) {
+    VDP_INT_DISABLE;
+
+    if (g) {
+        // we probably don't change modes from bitmap, but we have the kscan mirror, might as well use it
+        VDP_REG1_KSCAN_MIRROR |= (VDP_MODE1_UNBLANK);
+    } else {
+        VDP_REG1_KSCAN_MIRROR &= ~(VDP_MODE1_UNBLANK);
+    }
+    VDP_SET_REGISTER(1, VDP_REG1_KSCAN_MIRROR);
+
+    VDP_INT_ENABLE;
+}
+
+
 
 
 #endif

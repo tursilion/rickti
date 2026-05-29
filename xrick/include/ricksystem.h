@@ -37,13 +37,16 @@
  * Detect Microsoft Visual C
  */
 #ifdef _MSC_VER
-#define __MSVC__
+//#define __MSVC__
 /*
  * FIXME disable "integral size mismatch in argument; conversion supplied" warning
  * as long as the code has not been cleared -- there are so many of them...
  */
 
-#pragma warning( disable : 4761 )
+#pragma warning( disable : 4255 )   // no prototype, converting () to (void)
+#pragma warning( disable : 4820 )   // padding added to data structure
+#pragma warning( disable : 4057 )   // initializing pointer differs in indirection to slightly different base type (U8* vs char[])
+#pragma warning( disable : 5045 )   // spectre mitigation (which I have set to disabled anyway)
 #endif
 
 /*

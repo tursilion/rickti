@@ -194,6 +194,7 @@ static void game_exit(void);
 void
 game_run(char *path)
 {
+    (void)path;
 #ifndef GFXTI
     sys_printf("xrick/game: path='%s'\n", path ? path : "");
 #endif
@@ -201,7 +202,7 @@ game_run(char *path)
 #ifdef USE_DATA_FILES
     data_setpath(path);
 #endif
-	loadData(); /* load cached data - TI port does some system init */
+	loadData(); /* load cached data */
 
 	game_period = sysarg_args_period ? sysarg_args_period : GAME_PERIOD;
 	tm = sys_gettime();

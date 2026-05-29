@@ -35,14 +35,24 @@ extern sprite_data_t sprite_table[ENT_ENTSNUM+1];
 // timer updated by VDP interrupt - making it 32 bit so it can represent milliseconds better
 // without wrapping very often. Note we are doing milliseconds*10 (so we can count by 16.6ms)
 // TODO: this is wrong for PAL, obviously, which counts at 20ms
+#ifndef CLASSIC99
 volatile U16 vdpCount;
+#else
+// warning: there is a chance of race here between the two bytes...
+U16 getVdpCount() { return ReadByteFromClassic99(0xa102)*256 + ReadByteFromClassic99(0xa103); }
+void setVdpCount(U16 val) { WriteWordToClassic99(0xa102, val); }
+#endif
 
 // current bank, used so we can switch and switch back
 unsigned int nBank;
 
 // reset time at startup
 void sys_resettime() {
+#ifndef CLASSIC99
     vdpCount = 0;
+#else
+    setVdpCount(0);
+#endif
 }
 
 // gcc doesn't support naked functions, so we need to write the interrupt handler in assembly...
@@ -69,14 +79,15 @@ static void setConsole()
 #endif
 }
 
-
-
  /*
   * Initialize system
   */
 void
 sys_init(int argc, char** argv)
 {
+    (void)argc;
+    (void)argv;
+
 #ifndef GFXTI
 	setConsole();
 	sys_printf("xrick\n");
@@ -125,12 +136,59 @@ sys_init(int argc, char** argv)
     vdpmemset(gImage, 0, 768);
 
     sys_resettime();
+#ifndef CLASSIC99
     VDP_INT_CTRL = VDP_INT_CTRL_DISABLE_ALL;
     VDP_INT_HOOK_SET(sys_vdpint);
-    VDP_CLEAR_VBLANK;
+#else
+    WriteByteToClassic99(0x83C2, VDP_INT_CTRL_DISABLE_ALL);
+    // We NEED the interrupt routine for this to work
+    // So first we need to load one
+/*
+   1            * some hacks for Classic99 debug:
+   2                AORG >a080
+   3            * use a dedicated workspace, but use the main stack pointer
+   4  A080 02E0     lwpi >8320
+   4  A082 8320  
+   5  A084 C2A0     mov @>8314,R10      * get the real stack pointer
+   5  A086 8314  
+   6            
+   7  A088 0200     li r0,166           * ms*10
+   7  A08A 00A6  
+   8  A08C A800     a r0,@>A102      * hacked so vdpCount is at A102
+   8  A08E A102  
+   9            
+  10            * Can't do this right now - the sprite table is in PC RAM, not Classic99
+  11            *    li r3,>80
+  12            *    li r2,sprite_table
+  13            *    mov @gSprite,r1
+  14            *    bl @vdpmemcpy
+  15            
+  16  A090 02E0     lwpi >83E0
+  16  A092 83E0  
+  17  A094 045B     b *r11
+*/
+    WriteWordToClassic99(0xA080 , 0x02E0);
+    WriteWordToClassic99(0xA082 , 0x8320);
+    WriteWordToClassic99(0xA084 , 0xC2A0);
+    WriteWordToClassic99(0xA086 , 0x8314);
+    WriteWordToClassic99(0xA088 , 0x0200);
+    WriteWordToClassic99(0xA08A , 0x00A6);
+    WriteWordToClassic99(0xA08C , 0xA800);
+    WriteWordToClassic99(0xA08E , 0xA102);
+    WriteWordToClassic99(0xA090 , 0x02E0);
+    WriteWordToClassic99(0xA092 , 0x83E0);
+    WriteWordToClassic99(0xA094 , 0x045B);
 
-    sysarg_init(0, 0);
+    // set the screen timeout to an odd value so it never expires
+    WriteByteToClassic99(0x83d7, 1);
 
+    // Load the pointer
+    WriteWordToClassic99(0x83c4, 0xa080);
+#endif                            
+    VDP_CLEAR_VBLANK;             
+                                  
+    sysarg_init(0, 0); 
+                       
 #ifdef ENABLE_JOYSTICK
 	sysjoy_init();
 #endif
@@ -195,9 +253,22 @@ main(int argc, char *argv[])
 /*
  * main
  */
+#ifdef CLASSIC99
+extern void classic99_main();
+#endif
+
 int
 main()
 {
+#ifdef CLASSIC99
+    // this is a stupid hack and causes a little recursion, but it's just for test
+    static int first = 1;
+    if (first) {
+        first = 0;
+        classic99_main();
+    }
+#endif
+
 	sys_init(0, 0);
 
 	game_run(0);

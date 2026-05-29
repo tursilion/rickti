@@ -57,6 +57,8 @@ e_bullet_init(U16 x, U16 y)
 void
 e_bullet_action(UNUSED(U8 e))
 {
+    (void)e;
+
   /* move bullet */
   E_BULLET_ENT.x += e_bullet_offsx;
 

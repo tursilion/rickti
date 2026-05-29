@@ -56,7 +56,7 @@ extern void img_paintPic(U16, U16, U16, U16, U32 *);
  * copy a bitmap image of size <width>,<height> with data in <pic> and color at <col> at
  * position <x>,<y> (fb/px). NOTE: character (8x8) boundaries!
  */
-extern void img_paintPic(U16, U16, U16, U16, const U8*, const U8*);
+extern void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8* pat, const U8* col, U16 chroff);
 #endif
 
 #endif /* _IMG_H */

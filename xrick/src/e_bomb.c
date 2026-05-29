@@ -91,6 +91,8 @@ void e_bomb_init(U16 x, U16 y)
 void
 e_bomb_action(UNUSED(U8 e))
 {
+    (void)e;
+
 	/* tick */
 	e_bomb_ticker--;
 

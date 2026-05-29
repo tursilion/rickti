@@ -80,28 +80,33 @@ void img_paintImg(img_t *img)
  * If it is too slow, we can rewrite the SIT only for the pattern part
  */
 #ifdef GFXTI
-void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8 *pic, const U8 *col)
+void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8 *pic, const U8 *col, U16 chroff)
 {
     U16 i,v, v2;
     U16 sz = width/8;
     U8 chr;
 
     // using character offset, not bitmap bytes
-    v = (y/8)*32 + (x/8);
+    v = (y/8)*32 + (x/8) + chroff;
 
     // this one is bitmap bytes, assuming bitmap layout
-    chr = (U8)((y/8)*32+(x/8));
+    chr = (U8)(v);
     v2 = gPattern + v*8;       // asuming pattern at 0 and color at 2000
-    v += gImage;
+    v += gImage - chroff;      // preserve position - assume caller knows what they are doing
 
     VDP_INT_DISABLE;
     for (i=0; i<height; i+=8) {
         vdpwriteinc(v, chr, sz);    // SIT
-        if (pic) vdpmemcpy(v2, pic, sz*8);   // pattern
-        if (col) vdpmemcpy(v2+0x2000, col, sz*8);   // col
-        pic+=sz;
-        col+=sz;
-        v+=32;
+        if (pic) {
+            vdpmemcpy(v2, pic, sz*8);   // pattern
+            pic += sz*8;
+        }
+        if (col) {
+            vdpmemcpy(v2+0x2000, col, sz*8);   // col
+            col += sz*8;
+        }
+        v+=32;      // one full row down
+        v2+=32*8;   // one full row down
         chr+=32;
     }
     VDP_INT_ENABLE;

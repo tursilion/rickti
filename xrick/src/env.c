@@ -20,6 +20,7 @@
 
 #ifdef GFXTI
 #include <vdp.h>
+#include <conio.h>
 #endif
 
 U8 env_trainer = FALSE;
@@ -103,8 +104,9 @@ void env_paintGame(void)
 #else
     
     VDP_INT_DISABLE;
-    VDP_SET_ADDRESS_WRITE(gImage + VDP_SCREEN_POS(DRAW_STATUS_Y, DRAW_STATUS_SCORE_X));
-    printf("%02d%04d", env_score_hi, env_score_lo);
+    // TODO: conio might be too slow here?
+    gotoxy(DRAW_STATUS_SCORE_X, DRAW_STATUS_Y);
+    cprintf("%02d%04d", env_score_hi, env_score_lo);
     hchar(DRAW_STATUS_Y, DRAW_STATUS_BULLETS_X, TILES_BULLET, env_bullets);
     hchar(DRAW_STATUS_Y, DRAW_STATUS_BOMBS_X, TILES_BOMB, env_bombs);
     hchar(DRAW_STATUS_Y, DRAW_STATUS_LIVES_X, TILES_RICK, env_lives);

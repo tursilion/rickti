@@ -63,6 +63,7 @@ screen_xrick(void)
         // why is this loaded twice - was it just for convenience?
         draw_titlepage();
 #endif
+        // TODO: this whole game_rects concept can be removed
 		game_rects = &draw_SCREENRECT;
 		seq = 1;
 	}

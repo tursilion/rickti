@@ -74,6 +74,8 @@ void tiles_setFilter(U16 filter)
 {
 #ifndef GFXTI
 	tiles_filter = filter;
+#else
+    (void)filter;
 #endif
 }
 
@@ -87,20 +89,22 @@ void tiles_setFilter(U16 filter)
  */
 U8 *tiles_paint(U8 tileNumber, U8 *fb)
 {
-	U16 i, k;
+	U16 i;
 #ifdef GFXPC
+    U16 k;
 	U16 x;
     U8 *f;
 	f = fb;
 #endif
 #ifdef GFXST
+    U16 k;
 	U32 x;
     U8 *f;
 	f = fb;
 #endif
 #ifdef GFXTI
 	U16 x,y;
-    U16 f = (U16)fb;
+    U8 f = ((U16)fb)&0x3fff;     // I know this looks wrong, but fb is a VDP address, not a CPU one
 #endif
 
 	for (i = 0; i < 8; i++) /* 8 pixel lines */

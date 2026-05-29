@@ -134,7 +134,7 @@ void sprites_paint(U16 spriteNumber, U16 x, U16 y)
             unsigned int spritePage = spriteNumber / 48;
             unsigned int spriteIdx = spriteNumber % 48;
             // Note: page index 0x6006 is determined by dat_sprintesTI0.o in the linker file
-            *(volatile unsigned int*)(0x6006 + (spritePage*2))=nBank;
+            SWITCH_IN_BANK((0x6006 + (spritePage*2)));
             vdpmemcpy(gSpritePat+(i*16)*8, spriteIdx*128+sprites_data0, 128);
             // restore the previous page
             SWITCH_IN_BANK(nOldBank);

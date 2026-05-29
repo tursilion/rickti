@@ -64,8 +64,8 @@ extern tile_t tiles_banks[TILES_BANKS_COUNT][256];
 #endif
 #ifdef GFXTI
 #define TILES_BANKS_COUNT 3
-extern tile_t tiles_banks_col[TILES_BANKS_COUNT*256*8];
-extern tile_t tiles_banks_pat[TILES_BANKS_COUNT*256*8];
+extern const tile_t tiles_banks_col[TILES_BANKS_COUNT*256*8];
+extern const tile_t tiles_banks_pat[TILES_BANKS_COUNT*256*8];
 #endif
 
 /*
