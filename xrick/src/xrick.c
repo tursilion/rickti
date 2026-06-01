@@ -119,6 +119,15 @@ sys_init(int argc, char** argv)
 #endif
 
 #ifdef GFXTI
+    // VRAM map
+    //      0000    pattern
+    //      1800    image table
+    //      1B00    sprite
+    //      1B80    -- free --
+    //      2000    color
+    //      3800    sprite patterns (192 chars)
+    //      3E00    -- free --
+
     // make sure interrupts are off during init
     VDP_INT_DISABLE;
 
@@ -129,6 +138,8 @@ sys_init(int argc, char** argv)
     // have access to all sprites. It will use palettes. Also set up for 8 color sprites.
     VDP_SET_REGISTER(VDP_REG_COL, COLOR_BLACK);
     set_bitmap(VDP_SPR_16x16);
+	VDP_SET_REGISTER(VDP_REG_SDT, 7);	// remap sprite pattern table to not overlap the SIT
+    gSpritePat = 0x3800;
     // get a blank screen up by initializing all three char 0 to blank and then writing all zeros to the SIT
     vdpmemset(gPattern, 0, 8);
     vdpmemset(gPattern+0x800, 0, 8);

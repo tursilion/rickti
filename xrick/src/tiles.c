@@ -32,7 +32,17 @@ static U16 tiles_filter;
  */
 void tiles_setBank(U8 bank)
 {
+    static U8 lastSetBank = 0xff;
     unsigned int nOldBank;
+
+    if (lastSetBank == bank) {
+        return;
+    }
+    lastSetBank = bank;
+    if (bank == 0xff) {
+        // magic for reset - needed for the title page and HOF
+        return;
+    }
 
 	if (bank >= TILES_BANKS_COUNT)
 		sys_panic("xrick/tiles: invalid bank number %d\n", bank);
@@ -174,16 +184,14 @@ U8 *tiles_paintList(U8 *tilesList, U8 *fb)
 
 		if (*tilesList == TILES_CRLF) /* crlf */
 		{
-			fb += 8 * FB_WIDTH;
+			fb += 32;
 			f = fb;
 			tilesList++;
 			continue;
 		}
 
 		/* else paint */
-		tiles_paint(*tilesList, f);
-		f += 8;
-		tilesList++;
+		f = tiles_paint(*(tilesList++), f);
 	}
 }
 

@@ -47,6 +47,8 @@ void draw_titlepage()
 	img_paintPic(0, 0, 256, 192, 0, (U8*)pic_splash_col, 0);
     // restore
     SWITCH_IN_BANK(nOldBank);
+    // tell the tile banking page to reload on next request
+    tiles_setBank(0xff);
 }
 
 /*
@@ -174,6 +176,9 @@ screen_introMain(void)
 			img_paintPic(0, 0, 256, 24, 0, (U8*)pic_haf_col, 128);
             // restore
             SWITCH_IN_BANK(nOldBank);
+            // tell the bank engine it needs to reload on next request
+            tiles_setBank(0xff);
+
 #endif
 
 			/* hall of fame content */

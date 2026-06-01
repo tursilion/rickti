@@ -86,7 +86,9 @@ void env_paintGame(void)
 	U32 sv;
 	static U8 s[7] = {0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0xfe};
 
-	tiles_setBank(0);
+    // TODO: this was used because the FONT characters aren't in the level graphics bank!
+    // Maybe we can fix this by spreading out the banks a bit, not sure
+	//tiles_setBank(0);
 
     // TODO: this loop not ported to the 16 bit scores
 	for (i = 5, sv = env_score; i >= 0; i--)
@@ -133,7 +135,9 @@ void env_paintXtra(void)
 	static U8 s[8] = {'M', 0x30, 0x30, TILES_CRLF, 'S', 0x30, 0x30, TILES_NULL};
 	static U8 c[8] = {'@', '@', '@', TILES_CRLF, '@', '@', '@', TILES_NULL};
 
-	tiles_setBank(0);
+    // TODO: this was used because the FONT characters aren't in the level graphics bank!
+    // Maybe we can fix this by spreading out the banks a bit, not sure
+	//tiles_setBank(0);
 
 #ifdef GFXPC
 	tiles_setFilter(0xffff);
@@ -177,10 +181,12 @@ env_clearGame(void)
 	tiles_setBank(0);
 #endif
 #ifdef GFXTI
-	tiles_setBank(0);
+    // TODO: we can't do this here... might not need this one even for text
+	//tiles_setBank(0);
 #endif
-
-  f = fb_at(DRAW_STATUS_SCORE_X, DRAW_STATUS_Y);
+  
+  // TODO: and I think this part just erases the status bar very slowly...
+  //f = fb_at(DRAW_STATUS_SCORE_X, DRAW_STATUS_Y);
 #ifdef GFXPC
 	for (i = 0; i < DRAW_STATUS_LIVES_X/8 + 6 - DRAW_STATUS_SCORE_X/8; i++)
 		f = tile_paint(map_map[MAP_ROW_SCRTOP + (DRAW_STATUS_Y / 8)][i], f);
@@ -190,8 +196,8 @@ env_clearGame(void)
 		f = tiles_paint('@', f);
 #endif
 #ifdef GFXTI
-	for (i = 0; i < DRAW_STATUS_LIVES_X/8 + 6 - DRAW_STATUS_SCORE_X/8; i++)
-		f = tiles_paint('@', f);
+	//for (i = 0; i < DRAW_STATUS_LIVES_X/8 + 6 - DRAW_STATUS_SCORE_X/8; i++)
+//		f = tiles_paint('@', f);
 #endif
 }
 

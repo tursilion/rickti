@@ -85,12 +85,12 @@ U8 screen_introMap(void)
 #endif
             nOldBank = nBank;
             SWITCH_IN_BANK14;
-			tiles_paintListAt(maps_intros[env_map].title, 32, 0);
+			tiles_paintListAt(maps_intros[env_map].title, 8, 0);
 
 #ifdef GFXPC
 			tiles_setFilter(0x5555);
 #endif
-			tiles_paintListAt(maps_intros[env_map].body, 32, 96);
+			tiles_paintListAt(maps_intros[env_map].body, 8, 96);
             SWITCH_IN_BANK(nOldBank);
 
 #ifdef GFXPC
@@ -190,17 +190,18 @@ drawtb(void)
 	flipflop++;
 	if (flipflop & 0x01)
 	{
+        // TODO: these could be hchars...
 		for (i = 0; i < 6; i++)
-			tiles_paintAt(0x40, 128 + i * 8, 16);
+			tiles_paintAt(0x40, 104 + i * 8, 16);
 		for (i = 0; i < 6; i++)
-			tiles_paintAt(0x06, 128 + i * 8, 72);
+			tiles_paintAt(0x06, 104 + i * 8, 72);
 	}
 	else
 	{
 		for (i = 0; i < 6; i++)
-			tiles_paintAt(0x05, 128 + i * 8, 16);
+			tiles_paintAt(0x05, 104 + i * 8, 16);
 		for (i = 0; i < 6; i++)
-			tiles_paintAt(0x40, 128 + i * 8, 72);
+			tiles_paintAt(0x40, 104 + i * 8, 72);
 	}
 }
 
@@ -216,18 +217,19 @@ drawlr(void)
 
 	if (flipflop & 0x02)
 	{
+        // TODO: these could be vchars
 		for (i = 0; i < 8; i++)
 		{
-			tiles_paintAt(0x04, 120, 16 + i * 8);
-			tiles_paintAt(0x04, 176, 16 + i * 8);
+			tiles_paintAt(0x04, 96, 16 + i * 8);
+			tiles_paintAt(0x04, 152, 16 + i * 8);
 		}
 	}
 	else
 	{
 		for (i = 0; i < 8; i++)
 		{
-			tiles_paintAt(0x2B, 120, 16 + i * 8);
-			tiles_paintAt(0x2B, 176, 16 + i * 8);
+			tiles_paintAt(0x2B, 96, 16 + i * 8);
+			tiles_paintAt(0x2B, 152, 16 + i * 8);
 		}
 	}
 }
@@ -240,7 +242,7 @@ drawlr(void)
 static void
 drawsprite(void)
 {
-	U8 x = 128 + ((spx << 1) & 0x1C);
+	U8 x = 104 + ((spx << 1) & 0x1C);
 	U8 y = 24 + (spy << 1);
 	sprites_paint(spnum, x, y);
 }
@@ -260,7 +262,7 @@ drawcenter(void)
 	tn = tn0[env_map];
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 6; j++)
-			tiles_paintAt(tn++, 128 + 8 * j, 24 + 8 * i);
+			tiles_paintAt(tn++, 104 + 8 * j, 24 + 8 * i);
 }
 
 
@@ -304,7 +306,8 @@ anim(void)
 			spoffs = 0;
 			i = screen_imapsl[spbase];
 		}
-		spnum = i;
+		spnum = i;  // TODO
+        spnum=48;
 		spoffs++;
 		spx += spdx;
 		spy += spdy;

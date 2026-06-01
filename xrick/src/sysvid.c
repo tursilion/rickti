@@ -448,8 +448,20 @@ void sysvid_setGamma(U8 g)
 #else // GFXTI
 
 #include <vdp.h>
+#ifdef CLASSIC99
+#include "sprites.h"
+#endif
 
-void sysvid_update(void *rects) { (void)rects; }    // game_rects - can delete this
+void sysvid_update(void *rects) { 
+    (void)rects; 
+#ifdef CLASSIC99
+    // we don't have a interrupt sprite copy loop anymore, so copy it here
+    // Well, the first part of it anyway
+    VDP_INT_DISABLE;
+    vdpmemcpy(gSprite,(unsigned char*)&sprite_table[0], 128);
+    VDP_INT_ENABLE;
+#endif
+}    // game_rects - can delete this (except using it in the classic99 version
 void sysvid_shutdown(void) { }  // nothing to really do here
 
 // game often uses 0 and 255 to turn screen on and off, so we could implement that!

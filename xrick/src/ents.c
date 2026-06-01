@@ -470,15 +470,6 @@ void ents_paintAll()
 				ent_ents[i].x, ent_ents[i].y);
 		}
 	}
-
-#ifdef CLASSIC99
-    // we don't have a interrupt sprite copy loop anymore, so copy it here
-    // Well, the first part of it anyway
-    VDP_INT_DISABLE;
-    vdpmemcpy(gSprite, &sprite_table[0], 128);
-    VDP_INT_ENABLE;
-#endif
-
 }
 #endif
 

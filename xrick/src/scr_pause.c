@@ -36,7 +36,9 @@ screen_pause(U8 pause)
 {
 	if (pause == TRUE)
 	{
-		tiles_setBank(0);
+        // TODO: this was used because the FONT characters aren't in the level graphics bank!
+        // Maybe we can fix this by spreading out the banks a bit, not sure
+		//tiles_setBank(0);
 #ifdef GFXPC
 		tiles_setFilter(0xaaaa);
 #endif

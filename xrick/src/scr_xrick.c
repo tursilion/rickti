@@ -61,6 +61,7 @@ screen_xrick(void)
 		img_paintImg(IMG_SPLASH);
 #else
         // why is this loaded twice - was it just for convenience?
+        // I think the first one just loads for init, which used to include disk access
         draw_titlepage();
 #endif
         // TODO: this whole game_rects concept can be removed

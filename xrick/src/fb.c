@@ -21,6 +21,7 @@
 
 #ifdef GFXTI
 #include <vdp.h>
+#include "sprites.h"
 #endif
 
 #ifndef GFXTI
@@ -99,10 +100,13 @@ void fb_clear()
 	memset(fb, 0, FB_WIDTH * FB_HEIGHT);
 #else
     // Clear by wiping tile 0 and clear to tile 0
+    // good place to wipe sprite table too
     VDP_INT_DISABLE;
     vdpmemset(gPattern, 0, 8);
     vdpmemset(gImage, 0, 768);
     VDP_INT_ENABLE;
+    // this is the CPU buffer, so it's safe without VDP
+    sprites_clear();
 #endif
 }
 
