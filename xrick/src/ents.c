@@ -451,7 +451,6 @@ void ents_paintAll()
 
 #ifdef GFXTI
 // Instead of dealing with rects and redraws and the like, we just need to load up the sprite table
-// Is Rick an ent? I assume he is??
 // Don't use the rect system, it's not compiled in.
 void ents_paintAll()
 {
@@ -465,8 +464,8 @@ void ents_paintAll()
 	{
 		if (ent_ents[i].n && (env_highlight || ent_ents[i].sprite))
 		{
-			/* if entitiy is active, draw the sprite. */
-			sprites_paint(ent_ents[i].sprite,
+			/* if entity is active, draw the sprite. */
+			sprites_paint2(ent_ents[i].sprite,
 				ent_ents[i].x, ent_ents[i].y);
 		}
 	}

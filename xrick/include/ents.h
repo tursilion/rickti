@@ -20,6 +20,7 @@
 
 extern void ents_paintAll();
 
+// this is only used in e_sbonus.c. Everywhere else uses ent_ents[1] literally
 #define ENT_XRICK ent_ents[1]
 
 #define ENT_NBR_ENTDATA 0x4a

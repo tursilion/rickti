@@ -36,7 +36,7 @@
  */
 void sprites_setDepth(U8);
 void sprites_paint(U16, U16, U16);
-void sprites_paint2(U16, U16, U16, U8);
+void sprites_paint2(U16, U16, U16);
 
 #ifndef GFXTI
 void sprites_clear(U16, U16);
@@ -92,7 +92,7 @@ typedef struct spr_ {
     U8 col;
 } sprite_data_t;
 
-extern sprite_data_t sprite_table[ENT_ENTSNUM+1];
+extern sprite_data_t sprite_table[(ENT_ENTSNUM+1)*4];
 
 #endif
 

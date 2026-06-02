@@ -60,7 +60,6 @@ U8 map_tilesBank;
  */
 static void map_eflg_expand(U8);
 
-
 /*
  * Fill in map_map with tile numbers by expanding blocks.
  *
@@ -284,16 +283,16 @@ map_resetMarks(void)
  */
 void maps_paint(void)
 {
-	U16 i, j;
-	U8 *f;
+	U16 i;
+	int f;
     unsigned int nOldBank = nBank;
 
-    // TODO: we can't do this every frame! this actually loads the font
+    // only reloads if it needs to
 	tiles_setBank(map_tilesBank);
 
     SWITCH_IN_BANK12;
 
-	for (i = 0; i < 0x18; i++) /* 0x18 rows */
+	for (i = 1; i < 24; i++) /* 23 rows, cause we skip the status row 0 */
 	{
 #ifdef GFXPC
 		f = fb_at(0x20, i * 8);
@@ -310,7 +309,7 @@ void maps_paint(void)
         }
 #endif
 #ifdef GFXTI
-		f = fb_at(0, (i + 1) * 8);   // gets VDP offset into gImage
+		f = fb_at(0, i * 8);   // gets VDP offset into gImage
         vdpmemcpy(gImage+f, map_map[i+8], 32);
 #endif
 	}
@@ -329,7 +328,7 @@ void maps_paint(void)
 void maps_paintRect(U16 x, U16 y, U16 width, U16 height)
 {
 	U16 x_fb, y_fb;
-	U8 *fb;
+	int fb;
 	U8 r, c;
 
 	/* align to tiles */

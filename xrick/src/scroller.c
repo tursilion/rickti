@@ -29,6 +29,8 @@
 
 static U8 period;
 
+// TODO: Looks like sprites are 8 pixels too low when scrolling, also we get some garbled sprites
+
 /*
  * Scroll up
  *
@@ -73,7 +75,7 @@ scroll_up(void)
   }
 
   /* display */
-	maps_paint();
+  maps_paint();
   ents_paintAll();
   env_paintGame();
   map_frow++;

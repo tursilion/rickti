@@ -21,9 +21,9 @@
  */
 void tiles_setBank(U8);
 void tiles_setFilter(U16);
-U8 *tiles_paint(U8, U8 *);
+int tiles_paint(U8, int);
 void tiles_paintAt(U8, U16, U16);
-U8 *tiles_paintList(U8 *, U8 *);
+int tiles_paintList(U8 *, int);
 void tiles_paintListAt(U8 *, U16, U16);
 
 /*

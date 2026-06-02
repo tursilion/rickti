@@ -34,7 +34,11 @@ extern U8 fb[FB_HEIGHT][FB_WIDTH];
  * returns the fb pointer at <x>, <y>.
  * <x>, <y> are fb-coordinates.
  */
-extern U8 *fb_at(U16, U16);
+#ifndef GFXTI
+extern int fb_at(U16, U16);
+#else
+#define fb_at(x,y) ((y/8)*32+(x/8))
+#endif
 
 /*
  * clears the frame buffer

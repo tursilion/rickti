@@ -171,9 +171,6 @@ void env_paintXtra(void)
 void
 env_clearGame(void)
 {
-	U16 i;
-    U8 *f;
-
 #ifdef GFXPC
 	tiles_setBank(map_tilesBank);
 #endif

@@ -106,9 +106,13 @@ screen_getname(void)
 #endif
     name_draw();
     pointer_show(TRUE);
+    sysvid_setGamma(255);
     seq = 2;
     break;
 
+    // TODO: check autorepeat delay or better, kill autorepeat
+    // TODO: when name is full, jump automatically to END
+    // TODO: if you fill the name AAAAAAAAAA then backspace and type a shorter name, the "A"s are still there
   case 2:  /* wait for key pressed */
     if (control_status & CONTROL_FIRE)
       seq = 3;

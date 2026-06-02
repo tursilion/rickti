@@ -98,7 +98,7 @@ void tiles_setFilter(U16 filter)
  * returns next <fb> value.
  */
 // TODO: it's likely everything that calls this can be replaced with a vdpmemcpy or hchar or vchar
-U8 *tiles_paint(U8 tileNumber, U8 *fb)
+int tiles_paint(U8 tileNumber, int fb)
 {
 #ifdef GFXPC
 	U16 i;
@@ -116,7 +116,7 @@ U8 *tiles_paint(U8 tileNumber, U8 *fb)
 #endif
 #ifdef GFXTI
     // TODO: could optimize by not converting to/from pointer
-    U16 f = ((U16)fb)&0x3fff;     // I know this looks wrong, but fb is a VDP address, not a CPU one
+    U16 f = fb&0x3fff;     // I know this looks wrong, but fb is a VDP address, not a CPU one
 #endif
 
 #ifdef GFXPC
@@ -171,9 +171,9 @@ void tiles_paintAt(U8 tileNumber, U16 x, U16 y)
  *
  * returns next <fb> value.
  */
-U8 *tiles_paintList(U8 *tilesList, U8 *fb)
+int tiles_paintList(U8 *tilesList, int fb)
 {
-	U8 *f;
+	int f;
 
 	f = fb;
 

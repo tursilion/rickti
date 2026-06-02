@@ -88,7 +88,8 @@ void sprites_paint(U8 spriteNumber, U16 x, U16 y)
 }
 #endif
 #ifdef GFXTI
-sprite_data_t sprite_table[ENT_ENTSNUM+1];
+// there are four hardware sprites for every entity
+sprite_data_t sprite_table[(ENT_ENTSNUM+1)*4];
 
 // TODO: need to draw actual sprites... sprites are 32x32 (so four sprites each)
 // There are up to 12 sprites in game (though our hardware supports 8). We'll let
@@ -135,7 +136,26 @@ void sprites_paint(U16 spriteNumber, U16 x, U16 y)
             unsigned int spriteIdx = spriteNumber % 48;
             // Note: page index 0x6006 is determined by dat_sprintesTI0.o in the linker file
             SWITCH_IN_BANK((0x6006 + (spritePage*2)));
-            vdpmemcpy(gSpritePat+(i*16)*8, spriteIdx*128+sprites_data0, 128);
+            // in the math below:
+            // spriteIdx is the 128 byte object index on the Rick side
+            // i is the starting 32 byte sprite tile index on the TI side (multiple of four, see above)
+#ifndef CLASSIC99
+            vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data0, 128);
+#else
+            // Classic99 build doesn't have banks to switch!
+            switch(spritePage) {
+                case 0:
+                    vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data0, 128); break;
+                case 1:
+                    vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data1, 128); break;
+                case 2:
+                    vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data2, 128); break;
+                case 3:
+                    vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data3, 128); break;
+                case 4:
+                    vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data4, 128); break;
+            }
+#endif
             // restore the previous page
             SWITCH_IN_BANK(nOldBank);
 
@@ -150,6 +170,30 @@ void sprites_clear() {
     memset(sprite_table, 0xd1, sizeof(sprite_table));
 }
 
+// still not doing 'front' management, but we can clip and map adjust
+void sprites_paint2(U16 spriteNumber, U16 x, U16 y) {
+	U16 x_map, y_map;
+	U16 x_fb, y_fb;
+	U16 width, height;
+
+	/* get map/px */
+	x_map = x;
+	y_map = y;
+
+	/* sprite dimension in px */
+	width = 0x20; /* width = 4 tile columns, 8 pixels each */
+	height = 0x15; /* height = 0x15 pixels */
+
+	/* clip */
+	if (maps_clip(&x_map, &y_map, &width, &height))  /* return if not visible */
+		return;
+
+	/* convert to fb/px */
+	x_fb = x_map + MAPS_FB_X + 32;  // fix offset
+	y_fb = y_map - MAPS_FB_Y; // fix offset
+
+    sprites_paint(spriteNumber, x_fb, y_fb);
+}
 #endif
 
 
@@ -339,7 +383,7 @@ sprites_clear(U16 x, U16 y)
 	U16 rmax, cmax;
 	U16 xmap, ymap;
 	U16 xs, ys;
-	U8 *fb;
+	int fb;
 
   	/* align to column and row */
 	xmap = x & 0xFFF8;

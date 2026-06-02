@@ -132,7 +132,7 @@ sys_panic(char *err, ...)
 	va_end(argptr);
 
 	/* print message and die */
-	printf("%s\npanic!\n", s);
+	fprintf(stdout, "%s\npanic!\n", s);
 #endif
 
     // We don't have vararg support, so we're kind of out of luck, but we can display panic and lockup - data should be
@@ -165,7 +165,7 @@ sys_printf(char *msg, ...)
 	va_start(argptr, msg);
 	vsprintf(s, msg, argptr);
 	va_end(argptr);
-	printf(s);
+	fprintf(stdout, "%s", s);
 #endif
 #endif
 }

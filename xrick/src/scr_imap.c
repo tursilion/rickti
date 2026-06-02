@@ -244,6 +244,8 @@ drawsprite(void)
 {
 	U8 x = 104 + ((spx << 1) & 0x1C);
 	U8 y = 24 + (spy << 1);
+    // make sure slot 0 is free for this only sprite
+    sprite_table[0].y = 0xd1;
 	sprites_paint(spnum, x, y);
 }
 
@@ -306,9 +308,8 @@ anim(void)
 			spoffs = 0;
 			i = screen_imapsl[spbase];
 		}
-		spnum = i;  // TODO
-        spnum=48;
-		spoffs++;
+		spnum = i;
+        spoffs++;
 		spx += spdx;
 		spy += spdy;
 		count--;

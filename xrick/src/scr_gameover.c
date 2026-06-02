@@ -32,6 +32,8 @@
 U8
 screen_gameover(void)
 {
+    // TODO: I don't think this works at all
+
 	static U8 seq = 0;
 	static U8 period = 0;
 #ifdef GFXST

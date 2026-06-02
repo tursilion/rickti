@@ -801,7 +801,7 @@ init(void)
 	    map_connect[i].dir != RIGHT))
       i++;
     map_frow = map_connect[i].rowin - 0x10; // WHY 0x10??
-    ent_ents[1].y = 0x10 << 3; // FIXME?
+    ent_ents[1].y = 0x10 << 3; // FIXME? (TODO: doesn't this just get replaced below?)
   }
 
   ent_ents[1].x = map_maps[env_map].x;

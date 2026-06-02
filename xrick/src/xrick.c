@@ -30,7 +30,6 @@
 
 #ifdef GFXTI
 #include <vdp.h>
-extern sprite_data_t sprite_table[ENT_ENTSNUM+1];
 
 // timer updated by VDP interrupt - making it 32 bit so it can represent milliseconds better
 // without wrapping very often. Note we are doing milliseconds*10 (so we can count by 16.6ms)

@@ -76,20 +76,16 @@ static U8 BLUE[] = {	0x00, 0x00, 0x68, 0x68,
 
 
 /*
- * returns the fb pointer at <x>, <y>.
+ * returns the fb offset at <x>, <y>.
  * <x>, <y> are fb-coordinates.
  */
-U8 *fb_at(U16 x, U16 y)
-{
 #ifndef GFXTI
+int fb_at(U16 x, U16 y)
+{
 	return ((U8*)&fb) + x + y * FB_WIDTH;
 	//return &fb + x + y * FB_WIDTH;
-#else
-    // return it as a character offset, gImage is not added here
-    // Not into the tile set, but into the SIT
-    return (U8*)((y/8)*32+(x/8));
-#endif
 }
+#endif
 
 /*
  * clears the frame buffer
