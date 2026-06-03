@@ -27,11 +27,11 @@
  * if either pic or col is 0, don't copy that part (we still rewrite the SIT, but that's okay)
  * If it is too slow, we can rewrite the SIT only for the pattern part
  */
-void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8 *pic, const U8 *col, U16 chroff)
+void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8* pic, const U8* col, U16 chroff)
 {
     U16 i,v, v2;
     U16 sz = width/8;
-    U8 chr;
+    U8 chr;     // starting character for SIT write
 
     // using character offset, not bitmap bytes
     v = (y/8)*32 + (x/8) + chroff;

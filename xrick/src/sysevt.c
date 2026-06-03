@@ -43,7 +43,7 @@
 static int processEvent()
 {
     int ret = 0;
-    U8 key;
+    U16 key;
 
     // Keyboard first
     kscanfast(0);

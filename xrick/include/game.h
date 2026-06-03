@@ -25,7 +25,9 @@
 #define LEFT 1
 #define RIGHT 0
 
-#define GAME_PERIOD 75
+// defines the minimum frame time. But due to 60hz counting, 75 is actually closer to 83 when adjusted to frames (12fps).
+// we count at 16.6ms per frame. 75 wants 13.3fps. 66 should be closer to 15fps.
+#define GAME_PERIOD 30
 
 #define GAME_BOMBS_INIT 6
 #define GAME_BULLETS_INIT 6
@@ -38,16 +40,16 @@ typedef struct {
 
 extern hscore_t game_hscores[8];  /* highest scores (hall of fame) */
 
-extern U8 game_dir;        /* direction (LEFT, RIGHT) */
+extern U16 game_dir;        /* direction (LEFT, RIGHT) */
 
-extern U8 game_waitevt;    /* wait for events (TRUE, FALSE) */
-extern U8 game_period;     /* time between each frame, in millisecond */
+extern U16 game_waitevt;    /* wait for events (TRUE, FALSE) */
+extern U16 game_period;     /* time between each frame, in millisecond */
 
 extern rect_t *game_rects; /* rectangles to redraw at each frame */
 
 extern void game_run(char *path);
 
-extern void game_toggleCheat(U8);
+extern void game_toggleCheat(U16);
 
 #endif
 

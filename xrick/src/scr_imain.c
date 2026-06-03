@@ -52,17 +52,16 @@ void draw_titlepage()
  *
  * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT
  */
-U8
-screen_introMain(void)
+U16 screen_introMain(void)
 {
-	static U8 seq = 0;
-	static U8 seen = 0;
-	static U8 first = TRUE;
-	static U8 period = 0;
+	static U16 seq = 0;
+	static U16 seen = 0;
+	static U16 first = TRUE;
+	static U16 period = 0;
 	static U32 tm = 0;
     unsigned int nOldBank = 0;
 	U16 i;
-    //U8 s[32];
+    //U16 s[32];
 
 	if (seq == 0)
 	{

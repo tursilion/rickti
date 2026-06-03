@@ -26,9 +26,10 @@
 // without wrapping very often. Note we are doing milliseconds*10 (so we can count by 16.6ms)
 // TODO: this is wrong for PAL, obviously, which counts at 20ms
 #ifndef CLASSIC99
-volatile U16 vdpCount;
+volatile U16 vdpCountH, vdpCountL;
 #else
 // warning: there is a chance of race here between the two bytes...
+// we'll see if we can get away without vdpCountH
 U16 getVdpCount() { return ReadByteFromClassic99(0xa102)*256 + ReadByteFromClassic99(0xa103); }
 void setVdpCount(U16 val) { WriteWordToClassic99(0xa102, val); }
 #endif
@@ -39,7 +40,10 @@ unsigned int nBank;
 // reset time at startup
 void sys_resettime() {
 #ifndef CLASSIC99
-    vdpCount = 0;
+    VDP_INT_DISABLE;
+    vdpCountL = 0;
+    vdpCountH = 0;
+    VDP_INT_ENABLE;
 #else
     setVdpCount(0);
 #endif
@@ -99,10 +103,7 @@ sys_init(int argc, char** argv)
 	VDP_SET_REGISTER(VDP_REG_SDT, 7);	// remap sprite pattern table to not overlap the SIT
     gSpritePat = 0x3800;
     // get a blank screen up by initializing all three char 0 to blank and then writing all zeros to the SIT
-    vdpmemset(gPattern, 0, 8);
-    vdpmemset(gPattern+0x800, 0, 8);
-    vdpmemset(gPattern+0x1000, 0, 8);
-    vdpmemset(gImage, 0, 768);
+    fb_clear();
 
     sys_resettime();
 #ifndef CLASSIC99

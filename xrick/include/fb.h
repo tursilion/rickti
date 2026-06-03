@@ -36,18 +36,18 @@ extern void fb_clear();
  * ramp the fb from black to visible.
  * returns TRUE when done, FALSE when ongoing.
  */
-extern U8 fb_fadeIn();
+extern U16 fb_fadeIn();
 
 /*
  * ramp the fb from visible to black.
  * returns TRUE when done, FALSE when ongoing.
  */
-extern U8 fb_fadeOut();
+extern U16 fb_fadeOut();
 
 /*
  * sets fb visibility to black (FALSE) or full (TRUE).
  */
-extern void fb_setVisible(U8);
+extern void fb_setVisible(U16);
 
 /*
  * initializes the video layer with the game palette

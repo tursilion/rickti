@@ -16,7 +16,7 @@
 
 #include "ricksystem.h"
 
-extern U8 devtools_run(void);
+extern U16 devtools_run(void);
 
 #endif
 

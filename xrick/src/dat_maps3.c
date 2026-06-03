@@ -14,7 +14,7 @@
 #include "maps.h"
 #include "tiles.h"
 
-U8 map_marks_ent[MAP_NBR_MARKS];
+U16 map_marks_ent[MAP_NBR_MARKS];
 
 const mark_t map_marks[MAP_NBR_MARKS] = {
   {0x18, 0x16, 0000, 0x08, 0x08}, /* 0 */

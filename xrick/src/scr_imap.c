@@ -28,18 +28,20 @@
 #include "sprites.h"
 #include "fb.h"
 
+#include <vdp.h>
+
 /*
  * local vars
  */
 static U16 step;              /* current step */
 static U16 count;             /* number of loops for current step */
 static U16 run;               /* 1 = run, 0 = no more step */
-static U8 flipflop;           /* flipflop for top, bottom, left, right */
-static U8 spnum;             /* sprite number */
+static U16 flipflop;           /* flipflop for top, bottom, left, right */
+static U16 spnum;             /* sprite number */
 static U16 spx, spdx;         /* sprite x position and delta */
 static U16 spy, spdy;         /* sprite y position and delta */
 static U16 spbase, spoffs;    /* base, offset for sprite numbers table */
-static U8 seq = 0;            /* anim sequence */
+static U16 seq = 0;            /* anim sequence */
 
 static rect_t anim_rect = { 120, 16, 64, 64, NULL }; /* anim rectangle */
 
@@ -59,7 +61,7 @@ static void init(void);
  *
  * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT
  */
-U8 screen_introMap(void)
+U16 screen_introMap(void)
 {
     unsigned int nOldBank = 0;
 
@@ -167,6 +169,9 @@ drawtb(void)
 	U16 i;
 
 	flipflop++;
+    
+    VDP_INT_DISABLE;
+
 	if (flipflop & 0x01)
 	{
         // TODO: these could be hchars...
@@ -182,6 +187,8 @@ drawtb(void)
 		for (i = 0; i < 6; i++)
 			tiles_paintAt(0x40, 104 + i * 8, 72);
 	}
+
+    VDP_INT_ENABLE;
 }
 
 
@@ -193,6 +200,8 @@ static void
 drawlr(void)
 {
 	U16 i;
+
+    VDP_INT_DISABLE;
 
 	if (flipflop & 0x02)
 	{
@@ -211,6 +220,8 @@ drawlr(void)
 			tiles_paintAt(0x2B, 152, 16 + i * 8);
 		}
 	}
+
+    VDP_INT_ENABLE;
 }
 
 
@@ -221,8 +232,8 @@ drawlr(void)
 static void
 drawsprite(void)
 {
-	U8 x = 104 + ((spx << 1) & 0x1C);
-	U8 y = 24 + (spy << 1);
+	U16 x = 104 + ((spx << 1) & 0x1C);
+	U16 y = 24 + (spy << 1);
     // make sure slot 0 is free for this only sprite
     sprite_table[0].y = 0xd1;
 	sprites_paint(spnum, x, y);
@@ -236,14 +247,19 @@ drawsprite(void)
 static void
 drawcenter(void)
 {
-	static U8 tn0[] = { 0x07, 0x5B, 0x7F, 0xA3, 0xC7 };
+	static U16 tn0[] = { 0x07, 0x5B, 0x7F, 0xA3, 0xC7 };
 	U16 i, j;
-    U8 tn;
+    U16 tn;
 
 	tn = tn0[env_map];
+
+    VDP_INT_DISABLE;
+
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 6; j++)
 			tiles_paintAt(tn++, 104 + 8 * j, 24 + 8 * i);
+
+    VDP_INT_ENABLE;
 }
 
 

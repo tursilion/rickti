@@ -24,16 +24,16 @@ typedef struct {
 #endif
 	U8* buf;
 	U32 len;
-	U8 dispose;
+	U16 dispose;
 } sound_t;
 
 extern void syssnd_init(void);
 extern void syssnd_shutdown(void);
-extern void syssnd_vol(S8);
+extern void syssnd_vol(S16);
 extern void syssnd_toggleMute(void);
-extern S8 syssnd_play(sound_t*, S8);
-extern void syssnd_pause(U8, U8);
-extern void syssnd_stopchan(S8);
+extern S8 syssnd_play(sound_t*, S16);
+extern void syssnd_pause(U16, U16);
+extern void syssnd_stopchan(S16);
 extern void syssnd_stopsound(sound_t*);
 extern void syssnd_stopall();
 extern int syssnd_isplaying(sound_t*);
@@ -53,9 +53,9 @@ extern void syssnd_free(sound_t*);
 
 typedef struct {
 	sound_t *snd;
-	U8 *buf;
+	U8* buf;
 	U32 len;
-	S8 loop;
+	S16 loop;
 } channel_t;
 
 #endif /* ENABLE_SOUND */

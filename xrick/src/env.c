@@ -21,21 +21,21 @@
 #include <vdp.h>
 #include <conio.h>
 
-U8 env_trainer = FALSE;
-U8 env_invicible = FALSE;
-U8 env_highlight = FALSE;
+U16 env_trainer = FALSE;
+U16 env_invicible = FALSE;
+U16 env_highlight = FALSE;
 
-U8 env_depth = TRUE;
+U16 env_depth = TRUE;
 
-U8 env_lives = 0;
-U8 env_bombs = 0;
-U8 env_bullets = 0;
+U16 env_lives = 0;
+U16 env_bombs = 0;
+U16 env_bullets = 0;
 U16 env_score_lo = 0;
 U16 env_score_hi = 0;
 
 U16 env_map = 0;
 U16 env_submap = 0;
-U8 env_changeSubmap = FALSE;
+U16 env_changeSubmap = FALSE;
 
 
 /*
@@ -83,7 +83,7 @@ void env_paintGame(void)
  */
 void env_paintXtra(void)
 {
-	S8 i;
+	S16 i;
 	U16 sv;
 	static U8 s[8] = {'M', 0x30, 0x30, TILES_CRLF, 'S', 0x30, 0x30, TILES_NULL};
 	static U8 c[8] = {'@', '@', '@', TILES_CRLF, '@', '@', '@', TILES_NULL};
@@ -92,19 +92,23 @@ void env_paintXtra(void)
     // Maybe we can fix this by spreading out the banks a bit, not sure
 	//tiles_setBank(0);
 
+    VDP_INT_DISABLE;
+
 	tiles_paintAt(env_trainer ? 'T' : '@', 0, DRAW_STATUS_Y);
 	tiles_paintAt(env_invicible ? 'I' : '@', 8, DRAW_STATUS_Y);
 	tiles_paintAt(env_highlight ? 'H' : '@', 16, DRAW_STATUS_Y);
 
+    VDP_INT_ENABLE;
+
 	/* show map number */
 	for (i = 2, sv = env_map; i >= 1; i--) {
-		s[i] = 0x30 + (U8)(sv % 10);
+		s[i] = 0x30 + (U16)(sv % 10);
 		sv /= 10;
 	}
 
 	/* show submap number */
 	for (i = 6, sv = env_submap; i >= 5; i--) {
-		s[i] = 0x30 + (U8)(sv % 10);
+		s[i] = 0x30 + (U16)(sv % 10);
 		sv /= 10;
 	}
 

@@ -100,9 +100,9 @@ void sounds_free(void)
  *
  * sets the current background music.
  */
-void sounds_setMusic(char* name, U8 loop)
+void sounds_setMusic(char* name, U16 loop)
 {
-	U8 channel;
+	U16 channel;
 
 	if (music_snd)
 		sounds_stopMusic();

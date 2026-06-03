@@ -32,23 +32,23 @@
  */
 U16 e_rick_stop_x = 0;
 U16 e_rick_stop_y = 0;
-U8 e_rick_state = 0;
-U8 e_rick_atExit = FALSE; // TRUE when rick is exiting the submap
+U16 e_rick_state = 0;
+U16 e_rick_atExit = FALSE; // TRUE when rick is exiting the submap
 
 /*
  * local vars
  */
-static U8 scrawl;
+static U16 scrawl;
 
-static U8 trigger = FALSE;
+static U16 trigger = FALSE;
 
-static S8 offsx;
-static U8 ylow;
+static S16 offsx;
+static U16 ylow;
 static S16 offsy;
 
-static U8 seq;
+static U16 seq;
 
-static U8 save_crawl;
+static U16 save_crawl;
 static U16 save_x, save_y;
 
 
@@ -61,8 +61,7 @@ static U16 save_x, save_y;
  *    is assumed to point to rick).
  * ret: TRUE/intersect, FALSE/not.
  */
-U8
-e_rick_boxtest(U8 e)
+U16 e_rick_boxtest(U16 e)
 {
 	/*
 	 * rick: x+0x05 to x+0x11, y+[0x08 if rick's crawling] to y+0x14
@@ -123,13 +122,13 @@ e_rick_z_action(void)
 	E_RICK_ENT.x += offsx;
 
 	/* y */
-	i = (E_RICK_ENT.y << 8) + offsy + ylow;
-	E_RICK_ENT.y = i >> 8;
+	i = (U32)(E_RICK_ENT.y << 8) + offsy + ylow;
+	E_RICK_ENT.y = (U16)(i >> 8);
 	offsy += 0x80;
-	ylow = i;
+	ylow = (U8)i;
 
 	/* dead when out of screen */
-	if (E_RICK_ENT.y < 0 || E_RICK_ENT.y > 0x0140)
+	if (E_RICK_ENT.y < 0 || E_RICK_ENT.y > 0xdc)
 		E_RICK_STSET(E_RICK_STDEAD);
 }
 
@@ -142,7 +141,7 @@ e_rick_z_action(void)
 void
 e_rick_action2(void)
 {
-	U8 env0, env1;
+	U16 env0, env1;
 	U16 x, y;
 	U32 i;
 
@@ -164,7 +163,7 @@ e_rick_action2(void)
 	E_RICK_STRST(E_RICK_STJUMP);
 	/* calc y */
 	i = (E_RICK_ENT.y << 8) + offsy + ylow;
-	y = i >> 8;
+	y = (U16)(i >> 8);
 	/* test environment */
 	u_envtest(E_RICK_ENT.x, y, E_RICK_STTST(E_RICK_STCRAWL), &env0, &env1);
 	/* stand up, if possible */
@@ -187,7 +186,7 @@ e_rick_action2(void)
 	}
 	/* save */
 	E_RICK_ENT.y = y;
-	ylow = i;
+	ylow = (U8)i;
 	/* climb? */
 	if ((env1 & MAP_EFLG_CLIMB) &&
 			(control_status & (CONTROL_UP|CONTROL_DOWN))) {
@@ -445,11 +444,11 @@ e_rick_action2(void)
  *
  * ASM 12CA
  */
-void e_rick_action(UNUSED(U8 e))
+void e_rick_action(UNUSED(U16 e))
 {
     (void)e;
 
-	static U8 stopped = FALSE; /* is this the most elegant way? */
+	static U16 stopped = FALSE; /* is this the most elegant way? */
 
 	e_rick_action2();
 

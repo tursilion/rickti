@@ -17,14 +17,14 @@
 #include "config.h"
 
 /* a color */
-typedef U8 img_color_t;
+typedef U16 img_color_t;
 
 /* an image */
 typedef struct {
   U16 w, h;
   U16 ncolors;
   const img_color_t *colors;
-  const U8 *pixels;
+  const U8* pixels;
 } img_t;
 
 /* the splash image */

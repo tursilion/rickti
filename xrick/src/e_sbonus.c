@@ -27,8 +27,8 @@
 /*
  * public vars
  */
-U8 e_sbonus_counting = FALSE;
-U8 e_sbonus_counter = 0;
+U16 e_sbonus_counting = FALSE;
+U16 e_sbonus_counter = 0;
 U16 e_sbonus_bonus = 0;
 
 
@@ -38,7 +38,7 @@ U16 e_sbonus_bonus = 0;
  * ASM 2182
  */
 void
-e_sbonus_start(U8 e)
+e_sbonus_start(U16 e)
 {
 	ent_ents[e].sprite = 0; /* invisible */
 	if (u_trigbox(e, ENT_XRICK.x + 0x0C, ENT_XRICK.y + 0x0A)) {
@@ -60,7 +60,7 @@ e_sbonus_start(U8 e)
  * ASM 2143
  */
 void
-e_sbonus_stop(U8 e)
+e_sbonus_stop(U16 e)
 {
 	ent_ents[e].sprite = 0; /* invisible */
 

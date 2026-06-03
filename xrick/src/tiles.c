@@ -23,9 +23,9 @@
  *
  * sets current tiles bank to <bank>.
  */
-void tiles_setBank(U8 bank)
+void tiles_setBank(U16 bank)
 {
-    static U8 lastSetBank = 0xff;
+    static U16 lastSetBank = 0xff;
     unsigned int nOldBank;
 
     if (lastSetBank == bank) {
@@ -81,13 +81,15 @@ void tiles_setFilter(U16 filter)
  * returns next <fb> value.
  */
 // TODO: it's likely everything that calls this can be replaced with a vdpmemcpy or hchar or vchar
-int tiles_paint(U8 tileNumber, int fb)
+// CALL WITH INTS DISABLED
+// TODO: JUST INLINE THIS
+int tiles_paint(U16 tileNumber, int fb)
 {
     // TODO: could optimize by not converting to/from pointer
     U16 f = fb&0x3fff;     // I know this looks wrong, but fb is a VDP address, not a CPU one
 
     // TODO: We don't want to "paint tiles", we use the loaded tle and just place it
-    vdpchar(gImage+f, tileNumber);
+    vdpchar(gImage+f, tileNumber&0xff);
 
 	return fb + 1;
 }
@@ -100,7 +102,9 @@ int tiles_paint(U8 tileNumber, int fb)
  * paints tile <tileNumber> at the position indicated by <x>, <y>.
  * <x>, <y> are fb-coordinates.
  */
-void tiles_paintAt(U8 tileNumber, U16 x, U16 y)
+// CALL WITH INTS DISABLED
+// TODO: JUST INLINE THIS
+void tiles_paintAt(U16 tileNumber, U16 x, U16 y)
 {
 	tiles_paint(tileNumber, fb_at(x, y));
 }
@@ -116,16 +120,20 @@ void tiles_paintAt(U8 tileNumber, U16 x, U16 y)
  *
  * returns next <fb> value.
  */
-int tiles_paintList(U8 *tilesList, int fb)
+int tiles_paintList(U8* tilesList, int fb)
 {
 	int f;
 
 	f = fb;
 
+    VDP_INT_DISABLE;
+
 	while (1)
 	{
-		if (*tilesList == TILES_NULL) /* end of list */
+		if (*tilesList == TILES_NULL) /* end of list */ {
+            VDP_INT_ENABLE;
 			return f;
+        }
 
 		if (*tilesList == TILES_CRLF) /* crlf */
 		{
@@ -150,7 +158,7 @@ int tiles_paintList(U8 *tilesList, int fb)
  * produce crlf.
  * <x>, <y> are fb-coordinates.
  */
-void tiles_paintListAt(U8 *tilesList, U16 x, U16 y)
+void tiles_paintListAt(U8* tilesList, U16 x, U16 y)
 {
 	tiles_paintList(tilesList, fb_at(x, y));
 }

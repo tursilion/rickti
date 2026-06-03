@@ -31,7 +31,7 @@
 /*
  * public vars
  */
-U32 e_them_rndseed = 0;
+U16 e_them_rndseed = 0;
 
 /*
  * local vars
@@ -48,7 +48,7 @@ static U16 e_them_rndnbr = 0;
  * ret: TRUE/boxtests, FALSE/not
  */
 U8
-u_themtest(U8 e) {
+u_themtest(U16 e) {
     U16 i;
 
     if ((ent_ents[0].n & ENT_LETHAL) && u_boxtest(e, 0))
@@ -68,7 +68,7 @@ u_themtest(U8 e) {
  * ASM 237B
  */
 void
-e_them_gozombie(U8 e) {
+e_them_gozombie(U16 e) {
 #define offsx c1
     ent_ents[e].n = 0x47;  /* zombie entity */
     ent_ents[e].front = TRUE;
@@ -97,16 +97,16 @@ e_them_gozombie(U8 e) {
  * ASM 2242
  */
 void
-e_them_t1_action2(U8 e, U8 type) {
+e_them_t1_action2(U16 e, U16 type) {
 #define offsx c1
 #define step_count c2
     U32 i;
     U16 x, y;
-    U8 env0, env1;
+    U16 env0, env1;
 
     /* by default, try vertical move. calculate new y */
     i = (ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
-    y = i >> 8;
+    y = (U16)(i >> 8);
 
     /* deactivate if outside vertical boundaries */
     /* no need to test zero since e_them _t1a/b don't go up */
@@ -128,7 +128,7 @@ e_them_t1_action2(U8 e, U8 type) {
         }
         /* save, cleanup and return */
         ent_ents[e].y = y;
-        ent_ents[e].ylow = i;
+        ent_ents[e].ylow = (U8)i;
         ent_ents[e].offsy += 0x0080;
         if (ent_ents[e].offsy > 0x0800)
             ent_ents[e].offsy = 0x0800;
@@ -212,7 +212,7 @@ e_them_t1_action2(U8 e, U8 type) {
  * ASM 21CF
  */
 void
-e_them_t1_action(U8 e, U8 type) {
+e_them_t1_action(U16 e, U16 type) {
     e_them_t1_action2(e, type);
 
     /* lethal entities kill them */
@@ -253,7 +253,7 @@ e_them_t1_action(U8 e, U8 type) {
  * ASM 2452
  */
 void
-e_them_t1a_action(U8 e) {
+e_them_t1a_action(U16 e) {
     e_them_t1_action(e, TYPE_1A);
 }
 
@@ -264,7 +264,7 @@ e_them_t1a_action(U8 e) {
  * ASM 21CA
  */
 void
-e_them_t1b_action(U8 e) {
+e_them_t1b_action(U16 e) {
     e_them_t1_action(e, TYPE_1B);
 }
 
@@ -275,7 +275,7 @@ e_them_t1b_action(U8 e) {
  * ASM 23B8
  */
 void
-e_them_z_action(U8 e) {
+e_them_z_action(U16 e) {
 #define offsx c1
     U32 i;
 
@@ -287,15 +287,15 @@ e_them_z_action(U8 e) {
     i = (ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
 
     /* deactivate if out of vertical boundaries */
-    if (ent_ents[e].y < 0 || ent_ents[e].y > 0x0140) {
+    if (ent_ents[e].y < 0 || ent_ents[e].y > 0x140) {
         ent_ents[e].n = 0;
         return;
     }
 
     /* save */
     ent_ents[e].offsy += 0x0080;
-    ent_ents[e].ylow = i;
-    ent_ents[e].y = i >> 8;
+    ent_ents[e].ylow = (U8)i;
+    ent_ents[e].y = (U16)(i >> 8);
 
     /* calc new x */
     ent_ents[e].x += ent_ents[e].offsx;
@@ -317,13 +317,13 @@ e_them_z_action(U8 e) {
  * ASM 2792
  */
 void
-e_them_t2_action2(U8 e) {
+e_them_t2_action2(U16 e) {
 #define flgclmb c1
 #define offsx c2
     U32 i;
     U16 x, y;
     S16 yd;
-    U8 env0, env1;
+    U16 env0, env1;
 
     /*
      * vars required by the Black Magic (tm) performance at the
@@ -380,7 +380,7 @@ ymove:
   /* calc new y and test environment */
     yd = ent_ents[e].y < E_RICK_ENT.y ? 0x02 : -0x02;
     y = ent_ents[e].y + yd;
-    if (y < 0 || y > 0x0140) {
+    if (y < 0 || y > 0x140) {
         ent_ents[e].n = 0;
         return;
     }
@@ -405,7 +405,7 @@ climbing_not:
 
     /* calc new y (falling) and test environment */
     i = (ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
-    y = i >> 8;
+    y = (U16)(i >> 8);
     u_envtest(ent_ents[e].x, y, FALSE, &env0, &env1);
     if (!(env1 & (MAP_EFLG_SOLID | MAP_EFLG_SPAD | MAP_EFLG_WAYUP))) {
       /*sys_printf("e_them_t2 y move OK\n");*/
@@ -414,14 +414,14 @@ climbing_not:
             e_them_gozombie(e);
             return;
         }
-        if (y > 0x0140) {  /* deactivate if outside */
+        if (y > 0x140) {  /* deactivate if outside */
             ent_ents[e].n = 0;
             return;
         }
         if (!(env1 & MAP_EFLG_VERT)) {
       /* save */
             ent_ents[e].y = y;
-            ent_ents[e].ylow = i;
+            ent_ents[e].ylow = (U8)i;
             ent_ents[e].offsy += 0x0080;
             if (ent_ents[e].offsy > 0x0800)
                 ent_ents[e].offsy = 0x0800;
@@ -506,7 +506,7 @@ climbing_not:
  * ASM 2718
  */
 void
-e_them_t2_action(U8 e) {
+e_them_t2_action(U16 e) {
     e_them_t2_action2(e);
 
     /* they kill rick */
@@ -560,7 +560,7 @@ void fetch_mvstep(int step, mvstep_t *pmv) {
  *
  * ASM: 255A
  */
-void e_them_t3_action2(U8 e) {
+void e_them_t3_action2(U16 e) {
 #define sproffs c1
 #define step_count c2
     U16 i;
@@ -604,7 +604,7 @@ void e_them_t3_action2(U8 e) {
                     y += ent_ents[e].y;
                     */
                     y = ent_ents[e].y + tmp_mvstep.dy;
-                    if (y > 0 && y < 0x0140) {
+                    if (y > 0 && y < 0xdc) {
                         ent_ents[e].y = y;
                         return;
                     }
@@ -709,7 +709,7 @@ wakeup:
  * ASM 2546
  */
 void
-e_them_t3_action(U8 e) {
+e_them_t3_action(U16 e) {
     e_them_t3_action2(e);
 
     /* if lethal, can kill rick */

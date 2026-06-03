@@ -22,13 +22,14 @@
 #include "tiles.h"
 #include "fb.h"
 #include "sysvid.h"
+#include <vdp.h>
 
 /*
  * local vars
  */
-static U8 seq = 0;
-static U8 x, y, p;
-static U8 name[10];
+static U16 seq = 0;
+static U16 x, y, p;
+static U16 name[10];
 
 #define TILE_POINTER '\072'
 #define TILE_CURSOR '\073'
@@ -42,7 +43,7 @@ static U8 name[10];
 /*
  * prototypes
  */
-static void pointer_show(U8);
+static void pointer_show(U16);
 static void name_update(void);
 static void name_draw(void);
 
@@ -52,8 +53,7 @@ static void name_draw(void);
  *
  * return: 0 while running, 1 when finished.
  */
-U8
-screen_getname(void)
+U16 screen_getname(void)
 {
 #if 1
     // TODO: temporarily removed to save code space
@@ -83,11 +83,17 @@ screen_getname(void)
 	switch (seq) {
 	case 1:  /* prepare screen */
 		fb_clear();
-		tiles_paintListAt((U8 *)"PLEASE@ENTER@YOUR@NAME\376", 76, 40);
-	for (i = 0; i < 6; i++)
+		tiles_paintListAt((U8* )"PLEASE@ENTER@YOUR@NAME\376", 76, 40);
+	
+    VDP_INT_DISABLE;
+    
+    for (i = 0; i < 6; i++)
 		for (j = 0; j < 4; j++)
 			tiles_paintAt('A' + i + j * 6, TOPLEFT_X + i * 8 * 2, TOPLEFT_Y + j * 8 * 2);
-    tiles_paintListAt((U8 *)"Y@Z@.@@@\074\373\374\375\376", TOPLEFT_X, TOPLEFT_Y + 64);
+
+    VDP_INT_ENABLE;
+
+    tiles_paintListAt((U8* )"Y@Z@.@@@\074\373\374\375\376", TOPLEFT_X, TOPLEFT_Y + 64);
     name_draw();
     pointer_show(TRUE);
     sysvid_setGamma(255);
@@ -220,10 +226,14 @@ screen_getname(void)
 
 
 static void
-pointer_show(U8 show)
+pointer_show(U16 show)
 {
+    VDP_INT_DISABLE;
+
 	tiles_paintAt(show == TRUE ? TILE_POINTER : '@',
 		TOPLEFT_X + x * 8 * 2, TOPLEFT_Y + y * 8 * 2 + 8);
+
+    VDP_INT_ENABLE;
 }
 
 static void
@@ -250,6 +260,8 @@ name_draw(void)
 {
 	U16 i;
 
+    VDP_INT_DISABLE;
+
 	for (i = 0; i < p; i++)
 		tiles_paintAt(name[i], NAMEPOS_X + i * 8, NAMEPOS_Y);
 	for (i = p; i < 10; i++)
@@ -258,6 +270,8 @@ name_draw(void)
 	for (i = 0; i < 10; i++)
 		tiles_paintAt('@', NAMEPOS_X + i * 8, NAMEPOS_Y + 8);
 	tiles_paintAt(TILE_POINTER, NAMEPOS_X + 8 * (p < 9 ? p : 9), NAMEPOS_Y + 8);
+
+    VDP_INT_ENABLE;
 }
 
 

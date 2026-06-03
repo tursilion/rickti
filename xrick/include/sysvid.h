@@ -24,17 +24,17 @@
 extern void sysvid_init(U16 width, U16 height);
 extern void sysvid_shutdown(void);
 extern void sysvid_update(rect_t*);
-extern void sysvid_zoom(S8);
+extern void sysvid_zoom(S16);
 extern void sysvid_toggleFullscreen(void);
 extern void sysvid_setDisplayPalette(void);
 //extern void sysvid_setPalette(img_color_t*, U16);
 extern void sysvid_setPaletteFromImg(img_t* img);
 extern void sysvid_setPaletteFromRGB(U8* r, U8* g, U8* b, U16 n);
 
-extern U8 *sysvid_fb;  /* frame buffer */
-extern void sysvid_setGamma(U8 g);
-//extern U8 sysvid_fadeIn(void);
-//extern U8 sysvid_fadeOut(void);
+extern U8* sysvid_fb;  /* frame buffer */
+extern void sysvid_setGamma(U16 g);
+//extern U16 sysvid_fadeIn(void);
+//extern U16 sysvid_fadeOut(void);
 
 #endif /* _SYSVID_H */
 

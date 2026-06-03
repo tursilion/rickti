@@ -25,9 +25,9 @@
 #define CONTROL_EXIT 0x20
 #define CONTROL_FIRE 0x10
 
-extern U8 control_status;
-extern U8 control_last;
-extern U8 control_active;
+extern U16 control_status;
+extern U16 control_last;
+extern U16 control_active;
 
 #endif
 

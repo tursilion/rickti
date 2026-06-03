@@ -21,14 +21,14 @@
  * for instance left on an AZERTY keyboard will be 'w' instead of 'z'.
  */
 
-U8 syskbd_up = 'E';
-U8 syskbd_down = 'X';
-U8 syskbd_left = 'S';
-U8 syskbd_right = 'D';
-U8 syskbd_pause = 'P';
-U8 syskbd_end = '.';
-U8 syskbd_xtra = ',';
-U8 syskbd_fire = ' ';
+U16 syskbd_up = 'E';
+U16 syskbd_down = 'X';
+U16 syskbd_left = 'S';
+U16 syskbd_right = 'D';
+U16 syskbd_pause = 'P';
+U16 syskbd_end = '.';
+U16 syskbd_xtra = ',';
+U16 syskbd_fire = ' ';
 
 /* eof */
 

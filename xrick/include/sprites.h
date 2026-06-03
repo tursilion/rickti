@@ -34,7 +34,7 @@
 /*
  * methods
  */
-void sprites_setDepth(U8);
+void sprites_setDepth(U16);
 void sprites_paint(U16, U16, U16);
 void sprites_paint2(U16, U16, U16);
 

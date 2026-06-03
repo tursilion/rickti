@@ -29,12 +29,12 @@
 
 #define ADJVOL(S) (((S)*sndVol)/SDL_MIX_MAXVOLUME)
 
-static U8 isAudioActive = FALSE;
+static U16 isAudioActive = FALSE;
 static channel_t channel[SYSSND_MIXCHANNELS];
 
-static U8 sndVol = SDL_MIX_MAXVOLUME;  /* internal volume */
-static U8 sndUVol = SYSSND_MAXVOL;  /* user-selected volume */
-static U8 sndMute = FALSE;  /* mute flag */
+static U16 sndVol = SDL_MIX_MAXVOLUME;  /* internal volume */
+static U16 sndUVol = SYSSND_MAXVOL;  /* user-selected volume */
+static U16 sndMute = FALSE;  /* mute flag */
 
 static SDL_AudioDeviceID device;
 static SDL_mutex *sndlock;
@@ -47,7 +47,7 @@ static int sdlRWops_seek(SDL_RWops *context, int offset, int whence);
 static int sdlRWops_read(SDL_RWops *context, void *ptr, int size, int maxnum);
 static int sdlRWops_write(SDL_RWops *context, const void *ptr, int size, int num);
 static int sdlRWops_close(SDL_RWops *context);
-static void end_channel(U8);
+static void end_channel(U16);
 
 /*
  * Callback -- this is also where all sound mixing is done
@@ -56,9 +56,9 @@ static void end_channel(U8);
  * may be more efficient to mix samples every frame, or maybe everytime a
  * new sound is sent to be played. I don't know.
  */
-void syssnd_callback(UNUSED(void *userdata), U8 *stream, int len)
+void syssnd_callback(UNUSED(void *userdata), U8* stream, int len)
 {
-	U8 c;
+	U16 c;
 	S16 s;
 	U32 i;
 
@@ -107,7 +107,7 @@ void syssnd_callback(UNUSED(void *userdata), U8 *stream, int len)
 			s += 0x80;
 			if (s > 0xff) s = 0xff;
 			if (s < 0x00) s = 0x00;
-			stream[i] = (U8)s;
+			stream[i] = (U16)s;
 		}
 	}
 
@@ -119,7 +119,7 @@ void syssnd_callback(UNUSED(void *userdata), U8 *stream, int len)
 }
 
 static void
-end_channel(U8 c)
+end_channel(U16 c)
 {
 	channel[c].loop = 0;
 	if (channel[c].snd->dispose)
@@ -206,7 +206,7 @@ syssnd_toggleMute(void)
 }
 
 void
-syssnd_vol(S8 d)
+syssnd_vol(S16 d)
 {
   if ((d < 0 && sndUVol > 0) ||
       (d > 0 && sndUVol < SYSSND_MAXVOL)) {
@@ -227,10 +227,9 @@ syssnd_vol(S8 d)
  * twice the same sound playing -- tends to become noisy when too many
  * bad guys die at the same time).
  */
-S8
-syssnd_play(sound_t *sound, S8 loop)
+S16 syssnd_play(sound_t *sound, S16 loop)
 {
-  S8 c;
+  S16 c;
 
   if (!isAudioActive) return -1;
   if (sound == NULL) return -1;
@@ -270,9 +269,9 @@ syssnd_play(sound_t *sound, S8 loop)
  * clear: TRUE to cleanup all sounds and make sure we start from scratch
  */
 void
-syssnd_pause(U8 pause, U8 clear)
+syssnd_pause(U16 pause, U16 clear)
 {
-  U8 c;
+  U16 c;
 
   if (!isAudioActive) return;
 
@@ -293,7 +292,7 @@ syssnd_pause(U8 pause, U8 clear)
  * Stop a channel
  */
 void
-syssnd_stopchan(S8 chan)
+syssnd_stopchan(S16 chan)
 {
   if (chan < 0 || chan > SYSSND_MIXCHANNELS)
     return;

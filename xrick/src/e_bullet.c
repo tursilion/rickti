@@ -23,7 +23,7 @@
 /*
  * public vars (for performance reasons)
  */
-S8 e_bullet_offsx;
+S16 e_bullet_offsx;
 U16 e_bullet_xc, e_bullet_yc;
 
 /*
@@ -55,7 +55,7 @@ e_bullet_init(U16 x, U16 y)
  * ASM 1883, 0F97
  */
 void
-e_bullet_action(UNUSED(U8 e))
+e_bullet_action(UNUSED(U16 e))
 {
     (void)e;
 

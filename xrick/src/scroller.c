@@ -23,7 +23,7 @@
 #include "maps.h"
 #include "ents.h"
 
-static U8 period;
+static U16 period;
 
 // TODO: Looks like sprites are 8 pixels too low when scrolling, also we get some garbled sprites
 
@@ -31,11 +31,10 @@ static U8 period;
  * Scroll up
  *
  */
-U8
-scroll_up(void)
+U16 scroll_up(void)
 {
   U16 i, j;
-  static U8 n = 0;
+  static U16 n = 0;
 
   /* last call: restore */
   if (n == 8) {
@@ -99,11 +98,10 @@ scroll_up(void)
  * Scroll down
  *
  */
-U8
-scroll_down(void)
+U16 scroll_down(void)
 {
   U16 i, j;
-  static U8 n = 0;
+  static U16 n = 0;
 
   /* last call: restore */
   if (n == 8) {
@@ -129,7 +127,7 @@ scroll_down(void)
       ent_ents[i].ysave += 8;
       ent_ents[i].trig_y += 8;
       ent_ents[i].y += 8;
-      if (ent_ents[i].y > 0x0140) {  /* map coord. from 0x0000 to 0x0140 */
+      if (ent_ents[i].y > 0x140) {  /* map coord. from 0x0000 to 0x0140 */
 	IFDEBUG_SCROLLER(
 	  sys_printf("xrick/scroller: entity %#04X is gone\n", i);
 	  );

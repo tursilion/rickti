@@ -22,7 +22,7 @@
 extern void maps_paint(void);
 extern void maps_paintRect(U16, U16, U16, U16);
 extern void maps_alignRect(U16 *, U16 *, U16 *, U16 *);
-extern U8 maps_clip(U16 *, U16 *, U16 *, U16 *);
+extern U16 maps_clip(U16 *, U16 *, U16 *, U16 *);
 
 /* map dimensions */
 #define MAPS_WIDTH_PX 0x0100
@@ -89,10 +89,10 @@ extern const submap_t map_submaps[MAP_NBR_SUBMAPS];
  * connections
  */
 typedef struct {
-  U8 dir;
-  U8 rowout;
-  U8 submap;
-  U8 rowin;
+  U16 dir;
+  U16 rowout;
+  U16 submap;
+  U16 rowin;
 } connect_t;
 
 extern const connect_t map_connect[MAP_NBR_CONNECT];
@@ -115,15 +115,15 @@ extern const block_t map_blocks[MAP_NBR_BLOCKS];
  * mark structure
  */
 typedef struct {
-  U8 row;
-  U8 ent;     // the only non-const value, gets copied out
-  U8 flags;
-  U8 xy;  /* bits XXXX XYYY (from b03) with X->x, Y->y */
-  U8 lt;  /* bits XXXX XNNN (from b04) with X->trig_x, NNN->lat & trig_y */
+  U16 row;
+  U16 ent;     // the only non-const value, gets copied out
+  U16 flags;
+  U16 xy;  /* bits XXXX XYYY (from b03) with X->x, Y->y */
+  U16 lt;  /* bits XXXX XNNN (from b04) with X->trig_x, NNN->lat & trig_y */
 } mark_t;
 
 extern const mark_t map_marks[MAP_NBR_MARKS];
-extern U8 map_marks_ent[MAP_NBR_MARKS];
+extern U16 map_marks_ent[MAP_NBR_MARKS];
 
 /*
  * block numbers, i.e. array of rows of 8 blocks
@@ -157,16 +157,16 @@ extern U8 map_eflg[0x100];  /* current */
 /*
  * map_map top row within the submap
  */
-extern U8 map_frow;
+extern U16 map_frow;
 
 /*
  * tiles offset
  */
-extern U8 map_tilesBank;
+extern U16 map_tilesBank;
 
 extern void map_expand(void);
 extern void map_init(void);
-extern U8 map_chain(void);
+extern U16 map_chain(void);
 extern void map_resetMarks(void);
 
 
@@ -175,8 +175,8 @@ extern void map_resetMarks(void);
  */
 typedef struct
 {
-	U8 *title;
-	U8 *body;
+	U8* title;
+	U8* body;
 } maps_intros_t;
 
 extern const maps_intros_t maps_intros[];

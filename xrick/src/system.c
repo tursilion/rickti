@@ -22,8 +22,12 @@
 #include <vdp.h>
 #include <system.h>
 #ifndef CLASSIC99
-extern volatile U16 vdpCount;
+// vdpCountL is a 15.4 bit count. vdpCountH is 16.0
+extern volatile U16 vdpCountL;
+extern volatile U16 vdpCountH;
 #else
+// vdpCount is still a divide by 10 here and there's no high
+// I might have to change that next time I debug...
 extern U16 getVdpCount();
 extern void setVdpCount(U16 val);
 #endif
@@ -85,14 +89,12 @@ sys_printf(char *msg, ...)
 /*
  * Return number of milliseconds elapsed since first call - note FRAME accurate
  */
-U16
-sys_gettime(void)
+U32 sys_gettime(void)
 {
     // vdpCount is initialized to 0, so we don't need to subtract an
-    // offset. But we do need to divide by 10!
-    // Here's where we find out if the compiler has a decent 32-bit divide... (spoiler: it didn't)
+    // offset. But we do need to divide! There are 4 bits of fraction to remove
 #ifndef CLASSIC99
-	return vdpCount / 10;
+    return (vdpCountL>>4) | ((U32)vdpCountH<<12);
 #else
     return getVdpCount()/10;
 #endif
@@ -102,30 +104,25 @@ sys_gettime(void)
  * Sleep a number of milliseconds
  */
 void
-sys_sleep(int s)
+sys_sleep(U16 s)
 {
 #ifndef CLASSIC99
-    U16 now = vdpCount;
+    U32 now = vdpCountL | ((U32)vdpCountH<<16);
+    U32 target = now + (s*16);
 #else
-    U16 now = getVdpCount();
+    U32 now = getVdpCount();
+    U32 target = now + (s*10);
 #endif
 
-    U16 target = now + (s*10);
-
-    // wraparound case
+    // wraparound case - just run this one frame fast. Shouldn't be noticable.
+    // should be exceptionally rare - wrap at 24.85 days
     if (target < now) {
-        // wait till the wrap happens
-        // the spin is fine, the CPU isn't doing anything anyway
-#ifndef CLASSIC99
-        while (vdpCount > target) { }
-#else
-        while (getVdpCount() > now) { }
-#endif
+        return;
     }
 
     // wait for the target
 #ifndef CLASSIC99
-    while (vdpCount < target) { }
+    while ((vdpCountL | ((U32)vdpCountH<<16)) < target) { }
 #else
     U16 x;
     do {

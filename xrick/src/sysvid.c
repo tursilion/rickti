@@ -41,7 +41,7 @@ void sysvid_shutdown(void) { }  // nothing to really do here
 
 // game often uses 0 and 255 to turn screen on and off, so we could implement that!
 // all non zero is treated as visible
-void sysvid_setGamma(U8 g) {
+void sysvid_setGamma(U16 g) {
     VDP_INT_DISABLE;
 
     if (g) {

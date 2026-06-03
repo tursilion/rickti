@@ -16,7 +16,7 @@
 
 #include "ricksystem.h"
 
-extern void e_box_action(U8);
+extern void e_box_action(U16);
 
 #endif
 

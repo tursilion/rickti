@@ -50,8 +50,8 @@ rect_t *ent_rects = NULL;
  * prototypes
  */
 static void ent_addrect(U16, U16, U16, U16);
-static U8 ent_creat1(U8 *);
-static U8 ent_creat2(U8 *, U16);
+static U16 ent_creat1(U16* );
+static U16 ent_creat2(U16* , U16);
 
 
 /*
@@ -83,8 +83,8 @@ ent_reset(void)
  * e: anything, CHANGED to the allocated entity number.
  * return: TRUE/OK FALSE/not
  */
-static U8
-ent_creat1(U8 *e)
+static U16
+ent_creat1(U16* e)
 {
   /* look for a slot */
   for (*e = 0x04; *e < 0x09; (*e)++)
@@ -108,8 +108,8 @@ ent_creat1(U8 *e)
  * m: number of the mark triggering the creation of the entity.
  * ret: TRUE/OK FALSE/not
  */
-static U8
-ent_creat2(U8 *e, U16 m)
+static U16
+ent_creat2(U16* e, U16 m)
 {
   /* make sure the entity created by this mark is not active already */
   for (*e = 0x09; *e < 0x0c; (*e)++)
@@ -140,10 +140,10 @@ ent_creat2(U8 *e, U16 m)
  * lrow: last visible row of the map -- absolute map coordinate
  */
 void
-ent_actvis(U8 frow, U8 lrow)
+ent_actvis(U16 frow, U16 lrow)
 {
 	U16 m;
-	U8 e;
+	U16 e;
 	U16 y;
     unsigned int nOldBank = nBank;
     U16 tmpMark;
@@ -259,9 +259,9 @@ ent_actvis(U8 frow, U8 lrow)
     ent_ents[e].w = ent_entdata[map_marks_ent[m]].w;
     ent_ents[e].h = ent_entdata[map_marks_ent[m]].h;
     ent_ents[e].sprbase = ent_entdata[map_marks_ent[m]].spr;
-    ent_ents[e].sprite = (U8)ent_entdata[map_marks_ent[m]].spr;
+    ent_ents[e].sprite = (U16)ent_entdata[map_marks_ent[m]].spr;
     ent_ents[e].step_no_i = ent_entdata[map_marks_ent[m]].sni;
-    ent_ents[e].trigsnd = (U8)ent_entdata[map_marks_ent[m]].snd;
+    ent_ents[e].trigsnd = (U16)ent_entdata[map_marks_ent[m]].snd;
 
     /*
      * FIXME what is this? when all trigger flags are up, then
@@ -277,7 +277,7 @@ ent_actvis(U8 frow, U8 lrow)
 (ENT_FLG_TRIGBOMB|ENT_FLG_TRIGBULLET|ENT_FLG_TRIGSTOP|ENT_FLG_TRIGRICK)
     if ((ent_ents[e].flags & ENT_FLG_TRIGGERS) == ENT_FLG_TRIGGERS
 	&& e >= 0x09)
-      ent_ents[e].sprbase = (U8)(ent_entdata[map_marks_ent[m]].sni & 0x00ff);
+      ent_ents[e].sprbase = (U16)(ent_entdata[map_marks_ent[m]].sni & 0x00ff);
 #undef ENT_FLG_TRIGGERS
 
     ent_ents[e].trig_x = map_marks[m].lt & 0xf8;
@@ -346,7 +346,7 @@ ent_clprev(void)
 /*
  * Table containing entity action function pointers.
  */
-void (*ent_actf[])(U8) = {
+void (*ent_actf[])(U16) = {
   NULL,        /* 00 - zero means that the slot is free */
   e_rick_action,   /* 01 - 12CA */
   e_bullet_action,  /* 02 - 1883 */
@@ -397,11 +397,11 @@ ent_action(void)
     if (ent_ents[i].n) {
       k = ent_ents[i].n & 0x7f;
       if (k == 0x47)
-	e_them_z_action(i);
+	    e_them_z_action(i);
       else if (k >= 0x18)
         e_them_t3_action(i);
       else
-	ent_actf[k](i);
+    	ent_actf[k](i);
     }
   }
 }

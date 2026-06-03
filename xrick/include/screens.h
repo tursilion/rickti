@@ -16,7 +16,7 @@
 
 #include "ricksystem.h"
 
-#define SCREEN_TIMEOUT 4000
+#define SCREEN_TIMEOUT (U32)4000
 #define SCREEN_RUNNING 0
 #define SCREEN_DONE 1
 #define SCREEN_EXIT 2
@@ -30,7 +30,7 @@ typedef struct {
 extern const U8 screen_imapsl[];  /* sprite lists */
 extern const screen_imapsteps_t screen_imapsteps[];  /* map intro steps */
 extern const U8 screen_imapsofs[];  /* first step for each map */
-extern U8 *screen_imaptext[];  /* map intro texts */
+extern U8* screen_imaptext[];  /* map intro texts */
 extern const U8 screen_imainhoft[];  /* hall of fame title */
 extern const U8 screen_imainrdt[];  /* rick dangerous title */
 extern const U8 screen_imaincdc[];  /* core design copyright text */
@@ -38,12 +38,12 @@ extern const U8 screen_gameovertxt[];  /* game over */
 extern const U8 screen_pausedtxt[];  /* paused */
 extern const U8 screen_congrats[];  /* congratulations */
 
-extern U8 screen_xrick(void);  /* splash */
-extern U8 screen_introMain(void);  /* main intro */
-extern U8 screen_introMap(void);  /* map intro */
-extern U8 screen_gameover(void);  /* gameover */
-extern U8 screen_getname(void);  /* enter you name */
-extern void screen_pause(U8);  /* pause indicator */
+extern U16 screen_xrick(void);  /* splash */
+extern U16 screen_introMain(void);  /* main intro */
+extern U16 screen_introMap(void);  /* map intro */
+extern U16 screen_gameover(void);  /* gameover */
+extern U16 screen_getname(void);  /* enter you name */
+extern void screen_pause(U16);  /* pause indicator */
 
 #endif
 

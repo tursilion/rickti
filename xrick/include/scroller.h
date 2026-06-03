@@ -19,8 +19,8 @@
 
 #define SCROLL_PERIOD 24
 
-extern U8 scroll_up(void);
-extern U8 scroll_down(void);
+extern U16 scroll_up(void);
+extern U16 scroll_down(void);
 
 #endif
 

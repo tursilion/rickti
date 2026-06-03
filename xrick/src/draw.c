@@ -38,7 +38,7 @@
  *
  * The map is a 0x0100 by 0x0140 pixels rectangle that represents the active
  * game area, it is a subset of the entire map, beginning at map_frow pixels
- * from the top.
+ * from the top. (TI: However, Rick dies at > 220 (0xdc), since 320 (0x140) wraps around)
  *
  * Its width is MAP_WIDTH and it is composed of (in pixels):
  * - a hidden top, of height MAPS_TOPHEIGHT (0x40)
@@ -54,7 +54,7 @@
  * A tile is an 8x8 pixels rectangle, a map is composed of rows of 0x20 tiles.
  *
  * Coordinates in "map/tl" (tiles) go from 0x00,0x00 to 0x1f,0x27 and therefore
- * are U8,U8.
+ * are U16,U8.
  *
  * Entities are positionned relative to the map, with coordinates in map/px.
  *

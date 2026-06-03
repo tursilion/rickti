@@ -71,10 +71,10 @@ extern void sys_init(int, char **);
 extern void sys_shutdown(void);
 extern void sys_panic(char *, ...);
 extern void sys_printf(char *, ...);
-extern void sys_sleep(int);
+extern void sys_sleep(U16);
 
 void sys_resettime();
-extern U16 sys_gettime(void);
+extern U32 sys_gettime(void);
 
 #endif
 

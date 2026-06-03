@@ -1,7 +1,8 @@
 * VDP Interrupt handler
 
  def sys_vdpint
- ref vdpCount
+ ref vdpCountL
+ ref vdpCountH
  ref sprite_table
  ref gSprite
  ref vdpmemcpy
@@ -15,8 +16,13 @@ sys_vdpint:
     lwpi >8320
     mov @>8314,R10      * get the real stack pointer
 
-    li r0,166           * ms*10
-    a r0,@vdpCount
+    mov @vdpCountL,r1
+    li r2,0x10a           * ms*10 at 60fps - 16.666666 roughly (0x10.A)
+    a r2,@vdpCountL
+    c r1,@vdpCountL
+    jl sk1
+    inc @vdpCountH
+sk1
 
 *#ifdef ENABLE_SOUND
 *    // TODO: update sound engine (guess a push and a call will work, might not even need the push)

@@ -49,14 +49,14 @@
  */
 U8 map_map[0x2C][0x20];
 U8 map_eflg[0x100];
-U8 map_frow;
-U8 map_tilesBank;
+U16 map_frow;
+U16 map_tilesBank;
 
 
 /*
  * prototypes
  */
-static void map_eflg_expand(U8);
+static void map_eflg_expand(U16);
 
 /*
  * Fill in map_map with tile numbers by expanding blocks.
@@ -70,7 +70,7 @@ void
 map_expand(void)
 {
   U16 i, j, k, l;
-  U8 row, col;
+  U16 row, col;
   U16 pbnum;
   int tmpbnum;
   unsigned int nOldBank = nBank;
@@ -151,7 +151,7 @@ map_init(void)
  * ASM 1117
  */
 void
-map_eflg_expand(U8 offs)
+map_eflg_expand(U16 offs)
 {
   U16 i, j, k;
 
@@ -174,8 +174,7 @@ map_eflg_expand(U8 offs)
  * return: TRUE/next submap OK, FALSE/map finished
  FIXME should return next submap number, or 0.
  */
-U8
-map_chain(void)
+U16 map_chain(void)
 {
   U16 c, t;
   unsigned int nOldBank;
@@ -281,11 +280,15 @@ void maps_paint(void)
 
     SWITCH_IN_BANK12;
 
+    VDP_INT_DISABLE;
+
 	for (i = 1; i < 24; i++) /* 23 rows, cause we skip the status row 0 */
 	{
 		f = fb_at(0, i * 8);   // gets VDP offset into gImage
         vdpmemcpy(gImage+f, map_map[i+8], 32);
 	}
+
+    VDP_INT_ENABLE;
 
     SWITCH_IN_BANK(nOldBank);
 }
@@ -302,7 +305,7 @@ void maps_paintRect(U16 x, U16 y, U16 width, U16 height)
 {
 	U16 x_fb, y_fb;
 	int fb;
-	U8 r, c;
+	U16 r, c;
 
 	/* align to tiles */
 	maps_alignRect(&x, &y, &width, &height);
@@ -371,7 +374,7 @@ void maps_alignRect(U16 *x, U16 *y, U16 *width, U16 *height)
  * <x>, <y> expressed in map/px.
  * returns TRUE if fully clipped, FALSE if still (at least partly) visible.
  */
-U8 maps_clip(U16 *x, U16 *y, U16 *width, U16 *height)
+U16 maps_clip(U16 *x, U16 *y, U16 *width, U16 *height)
 {
 	if (*x < 0)
 	{

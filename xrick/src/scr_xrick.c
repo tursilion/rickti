@@ -42,11 +42,10 @@ extern void draw_titlepage();
  *
  * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT
  */
-U8
-screen_xrick(void)
+U16 screen_xrick(void)
 {
-	static U8 seq = 0;
-	static U8 wait = 0;
+	static U16 seq = 0;
+	static U16 wait = 0;
 
 	if (seq == 0)
 	{

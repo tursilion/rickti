@@ -17,20 +17,20 @@
 #include "ricksystem.h"
 
 /* cheat modes */
-extern U8 env_trainer;
-extern U8 env_invicible;
-extern U8 env_highlight;
+extern U16 env_trainer;
+extern U16 env_invicible;
+extern U16 env_highlight;
 
 /*
  * depth mode, TRUE if managed (sprites can be hidden by foreground tiles)
  * and FALSE if not (sprites are always before anything else).
  */
-extern U8 env_depth;
+extern U16 env_depth;
 
 /* number of lives, bombs and bullets currently available */
-extern U8 env_lives;
-extern U8 env_bombs;
-extern U8 env_bullets;
+extern U16 env_lives;
+extern U16 env_bombs;
+extern U16 env_bullets;
 
 /* game score */
 extern U16 env_score_lo;
@@ -40,7 +40,7 @@ extern void addscore(U16 val);
 /* current map and submap */
 extern U16 env_map;
 extern U16 env_submap;
-extern U8 env_changeSubmap; /* change submap request (TRUE, FALSE) */
+extern U16 env_changeSubmap; /* change submap request (TRUE, FALSE) */
 
 extern void env_paintGame(void);
 extern void env_paintXtra(void);

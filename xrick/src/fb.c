@@ -28,7 +28,7 @@
 #ifdef GFXST
 // TODO: Need to use these palettes to convert the graphics for GFXTI
 #define FB_PALSZ 32
-static U8 RED[] = {		0x00, 0xd8, 0xb0, 0xf8,
+static U16 RED[] = {		0x00, 0xd8, 0xb0, 0xf8,
 						0x20, 0x00, 0x00, 0x20,
 						0x48, 0x48, 0x90, 0xd8,
 						0x48, 0x68, 0x90, 0xb0,
@@ -38,7 +38,7 @@ static U8 RED[] = {		0x00, 0xd8, 0xb0, 0xf8,
 						0x80, 0x80, 0xb0, 0xe0,
 						0x80, 0x98, 0xb0, 0xc8
 };
-static U8 GREEN[] = {	0x00, 0x00, 0x6c, 0x90,
+static U16 GREEN[] = {	0x00, 0x00, 0x6c, 0x90,
 						0x24, 0x48, 0x6c, 0x48,
 						0x6c, 0x24, 0x48, 0x6c,
 						0x48, 0x6c, 0x90, 0xb4,
@@ -48,7 +48,7 @@ static U8 GREEN[] = {	0x00, 0x00, 0x6c, 0x90,
 						0x9c, 0x6c, 0x84, 0x9c,
 						0x84, 0x9c, 0xb4, 0xcc
 };
-static U8 BLUE[] = {	0x00, 0x00, 0x68, 0x68,
+static U16 BLUE[] = {	0x00, 0x00, 0x68, 0x68,
 						0x20, 0xb0, 0xd8, 0x00,
 						0x20, 0x00, 0x00, 0x00,
 						0x48, 0x68, 0x90, 0xb0,
@@ -65,10 +65,12 @@ static U8 BLUE[] = {	0x00, 0x00, 0x68, 0x68,
  */
 void fb_clear()
 {
-    // Clear by wiping tile 0 and clear to tile 0
+    // Clear by wiping tile 0 (all three) and clear to tile 0
     // good place to wipe sprite table too
     VDP_INT_DISABLE;
     vdpmemset(gPattern, 0, 8);
+    vdpmemset(gPattern+0x800, 0, 8);
+    vdpmemset(gPattern+0x1000, 0, 8);
     vdpmemset(gImage, 0, 768);
     VDP_INT_ENABLE;
     // this is the CPU buffer, so it's safe without VDP
@@ -79,7 +81,7 @@ void fb_clear()
  * ramp the fb from black to visible.
  * returns TRUE when done, FALSE when ongoing.
  */
-U8 fb_fadeIn()
+U16 fb_fadeIn()
 {
     // TOOD: we could potentially do a pixel dither, loading the tile graphics.
     // If we did that, then we COULD enable fb_clear as clearing the tiles
@@ -91,7 +93,7 @@ U8 fb_fadeIn()
  * ramp the fb from visible to black.
  * returns TRUE when done, FALSE when ongoing.
  */
-U8 fb_fadeOut()
+U16 fb_fadeOut()
 {
 	sysvid_setGamma(0);
 	return TRUE;
@@ -100,7 +102,7 @@ U8 fb_fadeOut()
 /*
  * sets fb visibility to black (FALSE) or full (TRUE).
  */
-void fb_setVisible(U8 vis)
+void fb_setVisible(U16 vis)
 {
 	sysvid_setGamma(vis ? 255 : 0);
 }

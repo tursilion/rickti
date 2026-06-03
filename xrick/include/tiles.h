@@ -19,12 +19,12 @@
 /*
  * methods
  */
-void tiles_setBank(U8);
+void tiles_setBank(U16);
 void tiles_setFilter(U16);
-int tiles_paint(U8, int);
-void tiles_paintAt(U8, U16, U16);
-int tiles_paintList(U8 *, int);
-void tiles_paintListAt(U8 *, U16, U16);
+int tiles_paint(U16, int);
+void tiles_paintAt(U16, U16, U16);
+int tiles_paintList(U8* , int);
+void tiles_paintListAt(U8* , U16, U16);
 
 /*
  * one single tile

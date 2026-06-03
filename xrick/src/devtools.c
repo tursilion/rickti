@@ -32,11 +32,11 @@
 U8
 devtools_run(void)
 {
-	static U8 seq = 0;
-	static U8 pos = 0;
-	static U8 pos2 = 0;
+	static U16 seq = 0;
+	static U16 pos = 0;
+	static U16 pos2 = 0;
 	U16 i, j, k, l;
-	U8 s[128];
+	U16 s[128];
     unsigned int nOldBank = 0;
 
 	if (seq == 0)
@@ -54,17 +54,22 @@ devtools_run(void)
 			sprintf(s, "TILES@BANK@%d\376", pos);
 			tiles_paintListAt(s, 4, 4);
 			k = 0;
-			for (i = 0; i < 0x10; i++)
+            
+            VDP_INT_DISABLE;
+
+            for (i = 0; i < 0x10; i++)
 			{
 				tiles_paintAt((i<10?0x30:'A'-10) + i, 80 + i * 0x0a, 14);
 				draw_tile((i<10?0x30:'A'-10) + i, 64, 30 + i * 0x0a);
 			}
 			tiles_setBank(pos);
 			for (i = 0; i < 0x10; i++)
-			for (j = 0; j < 0x10; j++)
-			{
-				tiles_paintAt(k++, 80 + j * 0x0a, 30 + i * 0x0a);
-			}
+			    for (j = 0; j < 0x10; j++)
+			    {
+				    tiles_paintAt(k++, 80 + j * 0x0a, 30 + i * 0x0a);
+			    }
+
+            VDP_INT_ENABLE;
 			seq = 10;
 			break;
 
@@ -108,6 +113,9 @@ devtools_run(void)
 			tiles_setBank(0);
 			sprintf(s, "SPRITES\376");
 			tiles_paintListAt(s, 4, 4);
+
+            VDP_INT_DISABLE;
+
 			for (i = 0; i < 8; i++)
 			{
 				tiles_paintAt((i<10?0x30:'A'-10) + i,
@@ -126,6 +134,9 @@ devtools_run(void)
 				tiles_paintAt((j<10?0x30:'A'-10) + j,
 					0x20 - 26, 0x08 + 0x30 + i * 0x20);
 			}
+
+            VDP_INT_ENABLE;
+
 			k = pos;
 			for (i = 0; i < 4; i++)
 				for (j = 0; j < 8; j++)
@@ -182,6 +193,9 @@ devtools_run(void)
 			tiles_setBank(pos2);
             nOldBank = nBank;
             SWITCH_IN_BANK15;   // map_blocks
+            
+            VDP_INT_DISABLE;
+
 			for (l = 0; l < 8; l++)
 				for (k = 0; k < 4; k++)
 					for (i = 0; i < 4; i++)
@@ -190,6 +204,9 @@ devtools_run(void)
 							tiles_paintAt(map_blocks[pos + l + k * 8][i * 4 + j],
 								20 + j * 8 + l * 36, 30 + i * 8 + k * 36);
 						}
+
+            VDP_INT_ENABLE;
+
 			SWITCH_IN_BANK(nOldBank);
             seq = 41;
 			break;

@@ -32,7 +32,7 @@
  * Display the pause indicator
  */
 void
-screen_pause(U8 pause)
+screen_pause(U16 pause)
 {
 	if (pause == TRUE)
 	{

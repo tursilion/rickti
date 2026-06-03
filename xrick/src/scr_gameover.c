@@ -29,17 +29,16 @@
  *
  * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT
  */
-U8
-screen_gameover(void)
+U16 screen_gameover(void)
 {
     // TODO: I don't think this works at all
 
-	static U8 seq = 0;
-	static U8 period = 0;
+	static U16 seq = 0;
+	static U16 period = 0;
 	static U32 tm = 0;
 #ifdef ENABLE_SOUND
 	static sound_t *snd;
-	static U8 chan;
+	static U16 chan;
 #endif
 
 	if (seq == 0) {

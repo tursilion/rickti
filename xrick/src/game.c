@@ -70,11 +70,11 @@ typedef enum {
 /*
  * global vars
  */
-U8 game_period = 0;
-U8 game_waitevt = FALSE;
+U16 game_period = 0;
+U16 game_waitevt = FALSE;
 rect_t *game_rects = NULL;
 
-U8 game_dir = 0;
+U16 game_dir = 0;
 
 hscore_t game_hscores[8] = {
   { 0, 8000, "TURSILION@" },
@@ -91,7 +91,7 @@ hscore_t game_hscores[8] = {
 /*
  * local vars
  */
-static U8 save_map_row;
+static U16 save_map_row;
 static game_state_t game_state;
 static U32 tm, tmx;
 
@@ -114,7 +114,7 @@ static void game_save(void);
  * toggles one of the three cheat options
  * FIXME weird dependencies here! + _state exclusion is not complete
  */
-void game_toggleCheat(U8 nbr)
+void game_toggleCheat(U16 nbr)
 {
 #ifdef ENABLE_CHEATS
 	if (game_state != MAIN_INTRO && game_state != MAP_INTRO &&
@@ -212,15 +212,18 @@ static void game_exit(void)
 static void game_loop(void)
 {
 	/* timer */
+    if ((game_state != SCROLL_DOWN) && (game_state != SCROLL_UP)) {
+        // this if doesn't help right now - scrolling is too slow, but it'll do
 #ifdef EMSCRIPTEN
-	// nothing - emscripten should invoke the loop every game_period
-	// and we should not sys_sleep in emscripten apps
-	// (see game_run above)
+	    // nothing - emscripten should invoke the loop every game_period
+	    // and we should not sys_sleep in emscripten apps
+	    // (see game_run above)
 #else
-	// sys_gettime() and sys_sleep() use milliseconds
-	tmx = tm; tm = sys_gettime(); tmx = tm - tmx;
-	if (tmx < game_period) sys_sleep(game_period - tmx);
+	    // sys_gettime() and sys_sleep() use milliseconds
+	    tmx = tm; tm = sys_gettime(); tmx = tm - tmx;
+	    if (tmx < game_period) sys_sleep(game_period - (tmx&0xffff));
 #endif
+    }
 
 	/* video */
 	/*DEBUG*//*game_rects=&draw_SCREENRECT;*//*DEBUG*/
@@ -274,7 +277,7 @@ static void game_cycle(void)
 
 		//if (game_state != game_state2)
 		//{
-		//	sys_printf("xrick/game: state = %d", (U8) game_state);
+		//	sys_printf("xrick/game: state = %d", (U16) game_state);
 		//	game_state2 = game_state;
 		//}
 
@@ -607,7 +610,7 @@ static void game_cycle(void)
             SWITCH_IN_BANK12;
 			    ent_ents[1].x = map_maps[env_map].x;
 			    ent_ents[1].y = map_maps[env_map].y;
-			    map_frow = (U8)map_maps[env_map].row;
+			    map_frow = (U16)map_maps[env_map].row;
 			    env_submap = map_maps[env_map].submap;
             SWITCH_IN_BANK(nOldBank);
 
@@ -754,7 +757,7 @@ init(void)
 
   if (sysarg_args_submap == 0) {
     env_submap = map_maps[env_map].submap;
-    map_frow = (U8)map_maps[env_map].row;
+    map_frow = (U16)map_maps[env_map].row;
   }
   else {
     /* dirty hack to determine frow by chaining submaps...*/

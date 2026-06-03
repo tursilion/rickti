@@ -19,7 +19,7 @@
 #define E_RICK_NO 1
 #define E_RICK_ENT ent_ents[E_RICK_NO]
 
-extern U8 e_rick_state, e_rick_atExit;
+extern U16 e_rick_state, e_rick_atExit;
 extern U16 e_rick_stop_x, e_rick_stop_y;
 
 #define E_RICK_STSTOP 0x01
@@ -36,9 +36,9 @@ extern U16 e_rick_stop_x, e_rick_stop_y;
 
 extern void e_rick_save(void);
 extern void e_rick_restore(void);
-extern void e_rick_action(U8);
+extern void e_rick_action(U16);
 extern void e_rick_gozombie(void);
-extern U8 e_rick_boxtest(U8);
+extern U16 e_rick_boxtest(U16);
 
 #endif
 

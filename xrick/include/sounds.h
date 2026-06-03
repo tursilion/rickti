@@ -37,7 +37,7 @@ extern sound_t* WAV_ENTITY[];
 extern void sounds_load(void);
 extern void sounds_free(void);
 extern void sounds_stopMusic(void);
-extern void sounds_setMusic(char* name, U8 loop);
+extern void sounds_setMusic(char* name, U16 loop);
 
 #endif /* ENABLE_SOUND */
 

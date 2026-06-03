@@ -16,14 +16,14 @@
 
 #include "ricksystem.h"
 
-extern U8 syskbd_up;
-extern U8 syskbd_down;
-extern U8 syskbd_left;
-extern U8 syskbd_right;
-extern U8 syskbd_pause;
-extern U8 syskbd_end;
-extern U8 syskbd_xtra;
-extern U8 syskbd_fire;
+extern U16 syskbd_up;
+extern U16 syskbd_down;
+extern U16 syskbd_left;
+extern U16 syskbd_right;
+extern U16 syskbd_pause;
+extern U16 syskbd_end;
+extern U16 syskbd_xtra;
+extern U16 syskbd_fire;
 
 #endif /* _SYSKBD_H */
 

@@ -13,9 +13,9 @@
 
 #include "control.h"
 
-U8 control_status = 0;
-U8 control_last = 0;
-U8 control_active = TRUE;
+U16 control_status = 0;
+U16 control_last = 0;
+U16 control_active = TRUE;
 
 /* eof */
 
