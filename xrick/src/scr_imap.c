@@ -13,10 +13,6 @@
 
 #include "config.h"
 
-#ifndef GFXTI
-#include <stdio.h>
-#endif
-
 #include "env.h"
 
 #include "screens.h"
@@ -73,29 +69,12 @@ U8 screen_introMap(void)
 			fb_clear();
 			sysvid_setGamma(0);
 
-#ifdef GFXPC
-			tiles_setBank(1);
-			tiles_setFilter(0xaaaa);
-#endif
-#ifdef GFXST
 			tiles_setBank(0);
-#endif
-#ifdef GFXTI
-			tiles_setBank(0);
-#endif
             nOldBank = nBank;
             SWITCH_IN_BANK14;
 			tiles_paintListAt(maps_intros[env_map].title, 8, 0);
-
-#ifdef GFXPC
-			tiles_setFilter(0x5555);
-#endif
 			tiles_paintListAt(maps_intros[env_map].body, 8, 96);
             SWITCH_IN_BANK(nOldBank);
-
-#ifdef GFXPC
-			tiles_setFilter(0xffff);
-#endif
 
 			init();
 			nextstep();

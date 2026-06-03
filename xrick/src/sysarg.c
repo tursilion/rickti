@@ -17,14 +17,8 @@
 
 #include "config.h"
 
-#ifndef GFXTI
-#include <stdlib.h>  /* atoi */
-#include <string.h>  /* strcasecmp */
-#include <SDL.h>
-#else
 #include <kscan.h>
 #include <system.h>
-#endif
 
 #include "syskbd.h"
 #include "syssnd.h"
@@ -35,18 +29,6 @@
 /* handle Microsoft Visual C (must come after system.h!) */
 #ifdef __MSVC__
 #define strcasecmp _stricmp
-#endif
-
-#ifndef GFXTI
-typedef struct {
-  char name[16];
-  int code;
-} sdlcodes_t;
-
-// these codes are exported from SDL
-static sdlcodes_t sdlcodes[] = {
-#include "sdlcodes.e"
-};
 #endif
 
 // Not too useful for TI port, but that's okay
@@ -65,92 +47,15 @@ char *sysarg_args_data = NULL;
 void
 sysarg_fail(char *msg)
 {
-#if !defined(GFXTI) || defined(CLASSIC99)
+#ifdef CLASSIC99
     #ifdef ENABLE_SOUND
 	    sys_printf("xrick [version #%s]: %s\nusage: xrick [<options>]\n<option> =\n  -h, -help : Display this information.\n-fullscreen : Run in fullscreen mode.\n    The default is to run in a window.\n  -speed <speed> : Run at speed <speed>. Speed must be an integer between 1\n    (fast) and 100 (slow). The default is %d\n  -zoom <zoom> : Display with zoom factor <zoom>. <zoom> must be an integer\n   between 1 (320x200) and x (x times bigger). The default is 2.\n  -map <map> : Start at map number <map>. <map> must be an integer between\n    1 and %d. The default is to start at map number 1\n  -submap <submap> : Start at submap <submap>. <submap> must be an integer\n    between 1 and %d. The default is to start at submap number 1 or, if a map\n    was specified, at the first submap of that map.\n  -keys <left>-<right>-<up>-<down>-<fire> : Override the default key\n    bindings (cf. KeyCodes)\n  -nosound : Disable sounds. The default is to play with sounds enabled.\n  -vol <vol> : Play sounds at volume <vol>. <vol> must be an integer\n    between 0 (silence) and %d (max). The default is to play sounds\n    at maximal volume (%d).\n", VERSION, msg, GAME_PERIOD, MAP_NBR_MAPS-1, MAP_NBR_SUBMAPS, SYSSND_MAXVOL, SYSSND_MAXVOL);
     #else
 	    sys_printf("xrick [version #%s]: %s\nusage: xrick [<options>]\n<option> =\n  -h, -help : Display this information.\n-fullscreen : Run in fullscreen mode.\n    The default is to run in a window.\n  -speed <speed> : Run at speed <speed>. Speed must be an integer between 1\n    (fast) and 100 (slow). The default is %d\n  -zoom <zoom> : Display with zoom factor <zoom>. <zoom> must be an integer\n   between 1 (320x200) and x (x times bigger). The default is 2.\n  -map <map> : Start at map number <map>. <map> must be an integer between\n    1 and %d. The default is to start at map number 1\n  -submap <submap> : Start at submap <submap>. <submap> must be an integer\n    between 1 and %d. The default is to start at submap number 1 or, if a map\n    was specified, at the first submap of that map.\n  -keys <left>-<right>-<up>-<down>-<fire> : Override the default key\n    bindings (cf. KeyCodes)\n", VERSION, msg, GAME_PERIOD, MAP_NBR_MAPS-1, MAP_NBR_SUBMAPS);
     #endif
 #endif
-#ifdef GFXTI
     exit();
-#else
-	exit(1);
-#endif
 }
-
-#ifndef GFXTI
-/*
- * Get SDL key code
- */
-static int
-sysarg_sdlcode(char *k)
-{
-  int i, result;
-
-  i = 0;
-  result = 0;
-
-  while (sdlcodes[i].code) {
-    if (!strcasecmp(sdlcodes[i].name, k)) {
-      result = sdlcodes[i].code;
-      break;
-    }
-    i++;
-  }
-
-  return result;
-}
-
-/*
- * Scan key codes sequence
- */
-int
-sysarg_scankeys(char *keys)
-{
-  char k[16];
-  int i, j;
-
-  i = 0;
-
-  j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < sizeof k) k[j++] = keys[i++];
-  if (keys[i++] == '\0') return -1;
-  k[j] = '\0';
-  syskbd_left = sysarg_sdlcode(k);
-  if (!syskbd_left) return -1;
-
-  j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < sizeof k) k[j++] = keys[i++];
-  if (keys[i++] == '\0') return -1;
-  k[j] = '\0';
-  syskbd_right = sysarg_sdlcode(k);
-  if (!syskbd_right) return -1;
-
-  j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < sizeof k) k[j++] = keys[i++];
-  if (keys[i++] == '\0') return -1;
-  k[j] = '\0';
-  syskbd_up = sysarg_sdlcode(k);
-  if (!syskbd_up) return -1;
-
-  j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < sizeof k) k[j++] = keys[i++];
-  if (keys[i++] == '\0') return -1;
-  k[j] = '\0';
-  syskbd_down = sysarg_sdlcode(k);
-  if (!syskbd_down) return -1;
-
-  j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < sizeof k) k[j++] = keys[i++];
-  if (keys[i] != '\0') return -1;
-  k[j] = '\0';
-  syskbd_fire = sysarg_sdlcode(k);
-  if (!syskbd_fire) return -1;
-
-  return 0;
-}
-#endif
 
 
 /*
@@ -162,91 +67,6 @@ sysarg_init(int argc, char **argv)
     (void)argc;
     (void)argv;
 
-#ifndef GFXTI
-  int i;
-
-  for (i = 1; i < argc; i++) {
-
-    if (!strcmp(argv[i], "-fullscreen")) {
-      sysarg_args_fullscreen = 1;
-    }
-
-    else if (!strcmp(argv[i], "-help") ||
-	     !strcmp(argv[i], "-h")) {
-      sysarg_fail("help");
-    }
-
-    else if (!strcmp(argv[i], "-speed")) {
-      if (++i == argc) sysarg_fail("missing speed value");
-      sysarg_args_period = atoi(argv[i]) - 1;
-      if (sysarg_args_period < 0 || sysarg_args_period > 99)
-	sysarg_fail("invalid speed value");
-    }
-
-    else if (!strcmp(argv[i], "-keys")) {
-      if (++i == argc) sysarg_fail("missing key codes");
-      if (sysarg_scankeys(argv[i]) == -1)
-	sysarg_fail("invalid key codes");
-    }
-
-    else if (!strcmp(argv[i], "-zoom")) {
-      if (++i == argc) sysarg_fail("missing zoom value");
-      sysarg_args_zoom = atoi(argv[i]);
-      if (sysarg_args_zoom < 1)
-	sysarg_fail("invalid zoom value");
-    }
-
-    else if (!strcmp(argv[i], "-map")) {
-      if (++i == argc) sysarg_fail("missing map number");
-      sysarg_args_map = atoi(argv[i]) - 1;
-      if (sysarg_args_map < 0 || sysarg_args_map >= MAP_NBR_MAPS-1)
-	sysarg_fail("invalid map number");
-    }
-
-    else if (!strcmp(argv[i], "-submap")) {
-      if (++i == argc) sysarg_fail("missing submap number");
-      sysarg_args_submap = atoi(argv[i]) - 1;
-      if (sysarg_args_submap < 0 || sysarg_args_submap >= MAP_NBR_SUBMAPS)
-	sysarg_fail("invalid submap number");
-    }
-#ifdef ENABLE_SOUND
-    else if (!strcmp(argv[i], "-vol")) {
-      if (++i == argc) sysarg_fail("missing volume");
-      sysarg_args_vol = atoi(argv[i]) - 1;
-      if (sysarg_args_submap < 0 || sysarg_args_submap >= SYSSND_MAXVOL)
-	sysarg_fail("invalid volume");
-    }
-
-    else if (!strcmp(argv[i], "-nosound")) {
-      sysarg_args_nosound = 1;
-    }
-#endif
-	else if (!strcmp(argv[i], "-data")) {
-		if (++i == argc) sysarg_fail("missing data");
-		sysarg_args_data = argv[i];
-	}
-
-    else {
-      sysarg_fail("invalid argument(s)");
-    }
-
-  }
-
-  /* FIXME this is dirty (sort of) */
-  if (sysarg_args_submap > 0 && sysarg_args_submap < 9)
-    sysarg_args_map = 0;
-  if (sysarg_args_submap >= 9 && sysarg_args_submap < 20)
-    sysarg_args_map = 1;
-  if (sysarg_args_submap >= 20 && sysarg_args_submap < 38)
-    sysarg_args_map = 2;
-  if (sysarg_args_submap >= 38)
-    sysarg_args_map = 3;
-  if (sysarg_args_submap == 9 ||
-      sysarg_args_submap == 20 ||
-      sysarg_args_submap == 38)
-    sysarg_args_submap = 0;
-
-#endif
 
 }
 

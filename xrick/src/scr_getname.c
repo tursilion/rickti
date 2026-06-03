@@ -21,6 +21,7 @@
 #include "control.h"
 #include "tiles.h"
 #include "fb.h"
+#include "sysvid.h"
 
 /*
  * local vars
@@ -54,6 +55,10 @@ static void name_draw(void);
 U8
 screen_getname(void)
 {
+#if 1
+    // TODO: temporarily removed to save code space
+    return SCREEN_DONE;
+#else
   static U16 tm = 0;
   U16 i, j;
 
@@ -68,9 +73,6 @@ screen_getname(void)
 
     /* prepare */
     tiles_setBank(0);
-#ifdef GFXPC
-    tiles_setFilter(0xffff);
-#endif
     for (i = 0; i < 10; i++)
       name[i] = '@';
     x = y = p = 0;
@@ -81,29 +83,11 @@ screen_getname(void)
 	switch (seq) {
 	case 1:  /* prepare screen */
 		fb_clear();
-#ifdef GFXPC
-		tiles_setFilter(0xaaaa); /* red */
-		tiles_paintListAt(screen_congrats, 32, 8);
-#endif
-#ifdef GFXPC
-		tiles_setFilter(0xffff); /* yellow */
-#endif
 		tiles_paintListAt((U8 *)"PLEASE@ENTER@YOUR@NAME\376", 76, 40);
-#ifdef GFXPC
-		tiles_setFilter(0x5555); /* green */
-#endif
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 4; j++)
 			tiles_paintAt('A' + i + j * 6, TOPLEFT_X + i * 8 * 2, TOPLEFT_Y + j * 8 * 2);
-#ifdef GFXST
     tiles_paintListAt((U8 *)"Y@Z@.@@@\074\373\374\375\376", TOPLEFT_X, TOPLEFT_Y + 64);
-#endif
-#ifdef GFXPC
-    tiles_paintListAt((U8 *)"Y@Z@.@@@\074@\075@\376", TOPLEFT_X, TOPLEFT_Y + 64);
-#endif
-#ifdef GFXTI
-    tiles_paintListAt((U8 *)"Y@Z@.@@@\074\373\374\375\376", TOPLEFT_X, TOPLEFT_Y + 64);
-#endif
     name_draw();
     pointer_show(TRUE);
     sysvid_setGamma(255);
@@ -231,15 +215,13 @@ screen_getname(void)
   }
   else
     return SCREEN_RUNNING;
+#endif
 }
 
 
 static void
 pointer_show(U8 show)
 {
-#ifdef GFXPC
-	tiles_setFilter(0xaaaa); /* red */
-#endif
 	tiles_paintAt(show == TRUE ? TILE_POINTER : '@',
 		TOPLEFT_X + x * 8 * 2, TOPLEFT_Y + y * 8 * 2 + 8);
 }
@@ -268,24 +250,14 @@ name_draw(void)
 {
 	U16 i;
 
-#ifdef GFXPC
-	tiles_setFilter(0xaaaa); /* red */
-#endif
 	for (i = 0; i < p; i++)
 		tiles_paintAt(name[i], NAMEPOS_X + i * 8, NAMEPOS_Y);
 	for (i = p; i < 10; i++)
 		tiles_paintAt(TILE_CURSOR, NAMEPOS_X + i * 8, NAMEPOS_Y);
 
-#ifdef GFXST
 	for (i = 0; i < 10; i++)
 		tiles_paintAt('@', NAMEPOS_X + i * 8, NAMEPOS_Y + 8);
 	tiles_paintAt(TILE_POINTER, NAMEPOS_X + 8 * (p < 9 ? p : 9), NAMEPOS_Y + 8);
-#endif
-#ifdef GFXTI
-	for (i = 0; i < 10; i++)
-		tiles_paintAt('@', NAMEPOS_X + i * 8, NAMEPOS_Y + 8);
-	tiles_paintAt(TILE_POINTER, NAMEPOS_X + 8 * (p < 9 ? p : 9), NAMEPOS_Y + 8);
-#endif
 }
 
 

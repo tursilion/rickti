@@ -39,16 +39,10 @@ screen_pause(U8 pause)
         // TODO: this was used because the FONT characters aren't in the level graphics bank!
         // Maybe we can fix this by spreading out the banks a bit, not sure
 		//tiles_setBank(0);
-#ifdef GFXPC
-		tiles_setFilter(0xaaaa);
-#endif
 		tiles_paintListAt((U8*)screen_pausedtxt, 120, 80);
 	}
 	else
 	{
-#ifdef GFXPC
-		tiles_setFilter(0xffff);
-#endif
 		maps_paint();
 		ents_paintAll();
 		env_paintGame();

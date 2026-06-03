@@ -22,10 +22,6 @@
 #include "img.h"
 #include "fb.h"
 
-#ifndef GFXTI
-#include "img_splash.e"
-#endif
-#ifdef GFXTI
 #include "pics.h"
 
 #if 0
@@ -37,7 +33,6 @@ static img_t IMG_SPLASH_OBJECT = {
 };
 
 img_t *IMG_SPLASH = &IMG_SPLASH_OBJECT;
-#endif
 #endif
 
 extern void draw_titlepage();
@@ -57,13 +52,10 @@ screen_xrick(void)
 	{
 		fb_clear();
 		sysvid_setGamma(255);
-#ifndef GFXTI
-		img_paintImg(IMG_SPLASH);
-#else
         // why is this loaded twice - was it just for convenience?
         // I think the first one just loads for init, which used to include disk access
         draw_titlepage();
-#endif
+
         // TODO: this whole game_rects concept can be removed
 		game_rects = &draw_SCREENRECT;
 		seq = 1;

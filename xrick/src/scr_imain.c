@@ -13,12 +13,8 @@
 
 #include "config.h"
 
-#ifndef GFXTI
-#include <stdio.h>  /* sprintf */
-#else
 #include <vdp.h>
 #include <conio.h>
-#endif
 
 #include "game.h"
 #include "screens.h"
@@ -90,22 +86,7 @@ screen_introMain(void)
 			sysvid_setGamma(0);
 			tm = sys_gettime();
 
-#ifdef GFXPC
-			/* Rick Dangerous title */
-			tiles_setFilter(0xaaaa);
-			tiles_paintList(screen_imainrdt, fb_at(32, 16));
-
-			/* Core Design copyright + press space to start */
-			tiles_setFilter(0x5555);
-			tiles_paintList(screen_imaincdc, fb_at(64, 80));
-#endif
-
-#ifdef GFXST
-			img_paintPic(0, 0, 0x140, 0xc8, pic_splash);
-#endif
-#ifdef GFXTI
             draw_titlepage();
-#endif
 
 			game_period = period/2;
 			seq = 2;
@@ -159,14 +140,6 @@ screen_introMain(void)
             tiles_setBank(0);
 
 			/* hall of fame title */
-#ifdef GFXPC
-			tiles_setFilter(0xaaaa);
-			tiles_paintListAt(screen_imainhoft, 32, 0);
-#endif
-#ifdef GFXST
-			img_paintPic(0, 0, 0x140, 0x20, pic_haf);
-#endif
-#ifdef GFXTI
             nOldBank = nBank;
             // pattern
             SWITCH_IN_BANK10;
@@ -179,26 +152,14 @@ screen_introMain(void)
             // tell the bank engine it needs to reload on next request
             tiles_setBank(0xff);
 
-#endif
-
 			/* hall of fame content */
-#ifdef GFXPC
-			tiles_setFilter(0x5555);
-#endif
             VDP_INT_DISABLE;
 			for (i = 0; i < 8; i++)
 			{
-#ifndef GFXTI
-				sprintf((char *)s, "%06d@@@....@@@%s",
-					game_hscores[i].score, game_hscores[i].name);
-				s[26] = TILES_NULL;
-				tiles_paintListAt(s, 56, 40 + i*2*8);
-#else
                 // conio is slow, but this will work
                 gotoxy(4, 5+i*2);
                 cprintf("%02d%04d@@@....@@@%s",
 					game_hscores[i].score_hi, game_hscores[i].score_lo, game_hscores[i].name);
-#endif
 			}
             VDP_INT_ENABLE;
 

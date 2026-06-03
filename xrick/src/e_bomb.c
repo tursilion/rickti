@@ -68,17 +68,11 @@ void e_bomb_init(U16 x, U16 y)
     e_bomb_lethal = FALSE;
 
     /*
-     * Atari ST dynamite sprites are not centered the
+     * Atari ST & TI dynamite sprites are not centered the
      * way IBM PC sprites were ... need to adjust things a little bit
      */
-#ifdef GFXST
     E_BOMB_ENT.x += 4;
     E_BOMB_ENT.y += 5;
-#endif
-#ifdef GFXTI
-    E_BOMB_ENT.x += 4;
-    E_BOMB_ENT.y += 5;
-#endif
 
 }
 
@@ -113,19 +107,11 @@ e_bomb_action(UNUSED(U8 e))
 		if ((e_bomb_ticker & 0x03) == 0x02)
 			syssnd_play(WAV_BOMBSHHT, 1);
 #endif
-#ifdef GFXST
-		/* ST bomb sprites sequence is longer */
+		/* ST/TI bomb sprites sequence is longer */
 		if (e_bomb_ticker < 40)
 			E_BOMB_ENT.sprite = 0x99 + 19 - (e_bomb_ticker >> 1);
 		else
-#endif
-#ifdef GFXTI
-		/* ST bomb sprites sequence is longer */
-		if (e_bomb_ticker < 40)
-			E_BOMB_ENT.sprite = 0x99 + 19 - (e_bomb_ticker >> 1);
-		else
-#endif
-		E_BOMB_ENT.sprite = (e_bomb_ticker & 0x01) ? 0x23 : 0x22;
+    		E_BOMB_ENT.sprite = (e_bomb_ticker & 0x01) ? 0x23 : 0x22;
 	}
 	else if (e_bomb_ticker == 0x09)
 	{
@@ -135,22 +121,12 @@ e_bomb_action(UNUSED(U8 e))
 #ifdef ENABLE_SOUND
 		syssnd_play(WAV_EXPLODE, 1);
 #endif
-#ifdef GFXPC
-		E_BOMB_ENT.sprite = 0x24 + 4 - (e_bomb_ticker >> 1);
-#endif
-#ifdef GFXST
 		/* See above: fixing alignment */
 		E_BOMB_ENT.x -= 4;
 		E_BOMB_ENT.y -= 5;
 		E_BOMB_ENT.sprite = 0xa8 + 4 - (e_bomb_ticker >> 1);
-#endif
-#ifdef GFXTI
-		/* See above: fixing alignment */
-		E_BOMB_ENT.x -= 4;
-		E_BOMB_ENT.y -= 5;
-		E_BOMB_ENT.sprite = 0xa8 + 4 - (e_bomb_ticker >> 1);
-#endif
-		e_bomb_xc = E_BOMB_ENT.x + 0x0C;
+
+        e_bomb_xc = E_BOMB_ENT.x + 0x0C;
 		e_bomb_yc = E_BOMB_ENT.y + 0x000A;
 		e_bomb_lethal = TRUE;
 		if (e_bomb_hit(E_RICK_NO))
@@ -161,16 +137,9 @@ e_bomb_action(UNUSED(U8 e))
 		/*
 		 * exploding
 		 */
-#ifdef GFXPC
-		E_BOMB_ENT.sprite = 0x24 + 4 - (e_bomb_ticker >> 1);
-#endif
-#ifdef GFXST
 		E_BOMB_ENT.sprite = 0xa8 + 4 - (e_bomb_ticker >> 1);
-#endif
-#ifdef GFXTI
-		E_BOMB_ENT.sprite = 0xa8 + 4 - (e_bomb_ticker >> 1);
-#endif
-		/* exploding, hence lethal */
+
+        /* exploding, hence lethal */
 		if (e_bomb_hit(E_RICK_NO))
 			e_rick_gozombie();
 	}

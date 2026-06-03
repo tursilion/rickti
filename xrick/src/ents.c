@@ -13,11 +13,7 @@
 
 #include "config.h"
 
-#ifndef GFXTI
-#include <stdlib.h>
-#else
 #include <math.h>
-#endif
 
 #include "env.h"
 
@@ -300,51 +296,6 @@ ent_actvis(U8 frow, U8 lrow)
     SWITCH_IN_BANK(nOldBank);
 }
 
-
-#ifndef GFXTI
-/*
- * Add a tile-aligned rectangle containing the given rectangle (indicated
- * by its MAP coordinates) to the list of rectangles. Clip the rectangle
- * so it fits into the display zone.
- */
-static void
-ent_addrect(U16 x, U16 y, U16 width, U16 height)
-{
-  U16 x0, y0;
-  U16 w0, h0;
-
-  /*sys_printf("rect %#04x,%#04x %#04x %#04x ", x, y, width, height);*/
-
-  /* align to tiles */
-  x0 = x & 0xfff8;
-  y0 = y & 0xfff8;
-  w0 = width;
-  h0 = height;
-  if (x - x0) w0 = (w0 + (x - x0)) | 0x0007;
-  if (y - y0) h0 = (h0 + (y - y0)) | 0x0007;
-
-  /* clip */
-  if (maps_clip(&x0, &y0, &w0, &h0)) {  /* do not add if fully clipped */
-    /*sys_printf("-> [clipped]\n");*/
-    return;
-  }
-
-  /*sys_printf("-> %#04x,%#04x %#04x %#04x\n", x0, y0, w0, h0);*/
-
-#ifdef GFXST
-  y0 += 8;
-#endif
-
-  /* get to screen */
-  x0 -= DRAW_XYMAP_SCRLEFT;
-  y0 -= DRAW_XYMAP_SCRTOP;
-
-  /* add rectangle to the list */
-  ent_rects = rects_new(x0, y0, w0, h0, ent_rects);
-}
-#endif
-
-
 /*
  * Draw all entities onto the frame buffer.
  *
@@ -357,99 +308,7 @@ void ents_clearAll()
 {
 }
 
-#ifndef GFXTI
-void ents_paintAll()
-{
-	U16 i;
-	U16 dx, dy;
-	static U8 prev_h = FALSE;
 
-	tiles_setBank(map_tilesBank);
-
-	/* reset rectangles list */
-	rects_free(ent_rects);
-	ent_rects = NULL;
-
-	/* background loop : erase all entities that were visible */
-	for (i = 0; ent_ents[i].n != 0xff; i++)
-	{
-	    if (ent_ents[i].prev_n && (prev_h || ent_ents[i].prev_s))
-	    {
-			/* if entity was active, then erase it (redraw the map) */
-			maps_paintRect(ent_ents[i].prev_x, ent_ents[i].prev_y, 0x20, 0x15);
-		}
-	}
-
-	/* foreground loop : draw all entities that are visible */
-	for (i = 0; ent_ents[i].n != 0xff; i++)
-	{
-		if (ent_ents[i].n && (env_highlight || ent_ents[i].sprite))
-		{
-			/* if entitiy is active, draw the sprite. */
-			sprites_paint2(ent_ents[i].sprite,
-				ent_ents[i].x, ent_ents[i].y,
-				ent_ents[i].front);
-		}
-	}
-
-	/*
-	* rectangles loop : figure out which parts of the screen have been
-	* impacted and need to be refreshed, then save state
-	*/
-	for (i = 0; ent_ents[i].n != 0xff; i++)
-	{
-		if (ent_ents[i].prev_n && (prev_h || ent_ents[i].prev_s))
-		{
-			/* (1) if entity was active and has been painted... */
-			if (ent_ents[i].n && (env_highlight || ent_ents[i].sprite))
-			{
-				/* (1.1) ... and is still active now and still needs to be */
-				/*       painted, then check if rectangles intersect */
-				dx = abs(ent_ents[i].x - ent_ents[i].prev_x);
-				dy = abs(ent_ents[i].y - ent_ents[i].prev_y);
-				if (dx < 0x20 && dy < 0x16)
-				{
-					/* (1.1.1) if they do, then create one rectangle */
-					ent_addrect((ent_ents[i].prev_x < ent_ents[i].x) ?
-						ent_ents[i].prev_x : ent_ents[i].x,
-						(ent_ents[i].prev_y < ent_ents[i].y) ?
-						ent_ents[i].prev_y : ent_ents[i].y,
-						dx + 0x20, dy + 0x15);
-				}
-				else
-				{
-					/* (1.1.2) else, create two rectangles */
-					ent_addrect(ent_ents[i].x, ent_ents[i].y, 0x20, 0x15);
-					ent_addrect(ent_ents[i].prev_x, ent_ents[i].prev_y, 0x20, 0x15);
-				}
-			}
-			else
-			{
-				/* (1.2) ... and is not active anymore or does not need to be */
-				/*       painted then create one single rectangle */
-				ent_addrect(ent_ents[i].prev_x, ent_ents[i].prev_y, 0x20, 0x15);
-			}
-		}
-		else
-		if (ent_ents[i].n && (env_highlight || ent_ents[i].sprite))
-		{
-			/* (2) if entity is active and needs to be painted, */
-			/*     then create one rectangle */
-			ent_addrect(ent_ents[i].x, ent_ents[i].y, 0x20, 0x15);
-		}
-
-		/* save state */
-		ent_ents[i].prev_x = ent_ents[i].x;
-		ent_ents[i].prev_y = ent_ents[i].y;
-		ent_ents[i].prev_n = ent_ents[i].n;
-		ent_ents[i].prev_s = ent_ents[i].sprite;
-	}
-
-	prev_h = env_highlight;
-}
-#endif
-
-#ifdef GFXTI
 // Instead of dealing with rects and redraws and the like, we just need to load up the sprite table
 // Don't use the rect system, it's not compiled in.
 void ents_paintAll()
@@ -470,7 +329,6 @@ void ents_paintAll()
 		}
 	}
 }
-#endif
 
 /*
  * Clear entities previous state

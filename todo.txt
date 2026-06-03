@@ -1,0 +1,11 @@
+TI build is currently crashing at C2D4 with a bad jump... just set break on illegal opcode (when the game starts).
+The HOF screen is corrupt.
+The intro screen has improperly defined sprites.
+
+First assumption is compiler bug. Don't even bother.
+
+- Remove all the non GFXTI code to simplify
+- convert all U8 code to U16 for stability
+- see if that helps.
+
+Once it's working, we can work on optimizing functions for performance.

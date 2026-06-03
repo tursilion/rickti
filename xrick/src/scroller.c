@@ -13,10 +13,6 @@
 
 #include "config.h"
 
-#ifndef GFXTI
-#include <stdlib.h>
-#endif
-
 #include "game.h"
 #include "env.h"
 

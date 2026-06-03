@@ -36,12 +36,7 @@ screen_gameover(void)
 
 	static U8 seq = 0;
 	static U8 period = 0;
-#ifdef GFXST
 	static U32 tm = 0;
-#endif
-#ifdef GFXTI
-	static U32 tm = 0;
-#endif
 #ifdef ENABLE_SOUND
 	static sound_t *snd;
 	static U8 chan;
@@ -59,17 +54,8 @@ screen_gameover(void)
 
 	switch (seq) {
 	case 1:  /* display banner */
-#ifdef GFXST
 		fb_clear();
 		tm = sys_gettime();
-#endif
-#ifdef GFXPC
-		tiles_setFilter(0xaaaa);
-#endif
-#ifdef GFXTI
-		fb_clear();
-		tm = sys_gettime();
-#endif
 		tiles_paintListAt((U8*)screen_gameovertxt, 120, 80);
 
 		game_rects = &draw_SCREENRECT;
@@ -79,14 +65,8 @@ screen_gameover(void)
 	case 2:  /* wait for key pressed */
 		if (control_status & CONTROL_FIRE)
 			seq = 3;
-#ifdef GFXST
 		else if (sys_gettime() - tm > SCREEN_TIMEOUT)
 			seq = 4;
-#endif
-#ifdef GFXTI
-		else if (sys_gettime() - tm > SCREEN_TIMEOUT)
-			seq = 4;
-#endif
 		else
 			sys_sleep(50);
 		break;

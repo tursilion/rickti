@@ -134,25 +134,13 @@
     <ClCompile Include="src\dat_ents.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\dat_picsPC.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dat_picsST.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\dat_screens.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\dat_snd.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\dat_spritesPC.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\dat_spritesST.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dat_tilesPC.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\dat_tilesST.c">

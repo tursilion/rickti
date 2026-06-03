@@ -18,10 +18,8 @@
 #include "fb.h"
 #include "tiles.h"
 
-#ifdef GFXTI
 #include <vdp.h>
 #include <conio.h>
-#endif
 
 U8 env_trainer = FALSE;
 U8 env_invicible = FALSE;
@@ -43,27 +41,11 @@ U8 env_changeSubmap = FALSE;
 /*
  * FIXME counters positions in fp/px
  */
-#ifdef GFXPC
-#define DRAW_STATUS_SCORE_X 0x28
-#define DRAW_STATUS_BULLETS_X 0x68
-#define DRAW_STATUS_BOMBS_X 0xA8
-#define DRAW_STATUS_LIVES_X 0xE8
-#define DRAW_STATUS_Y 0x08
-#endif
-#ifdef GFXST
-#define DRAW_STATUS_SCORE_X 0x20
-#define DRAW_STATUS_BULLETS_X 0x68
-#define DRAW_STATUS_BOMBS_X 0xA8
-#define DRAW_STATUS_LIVES_X 0xF0
-#define DRAW_STATUS_Y 0
-#endif
-#ifdef GFXTI
 #define DRAW_STATUS_SCORE_X 24
 #define DRAW_STATUS_BULLETS_X 80
 #define DRAW_STATUS_BOMBS_X 136
 #define DRAW_STATUS_LIVES_X 192
 #define DRAW_STATUS_Y 0
-#endif
 
 // break up the 32 bit score into two 16s
 void addscore(U16 val) {
@@ -81,34 +63,6 @@ void addscore(U16 val) {
  */
 void env_paintGame(void)
 {
-#ifndef GFXTI
-	S8 i;
-	U32 sv;
-	static U8 s[7] = {0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0xfe};
-
-    // TODO: this was used because the FONT characters aren't in the level graphics bank!
-    // Maybe we can fix this by spreading out the banks a bit, not sure
-	//tiles_setBank(0);
-
-    // TODO: this loop not ported to the 16 bit scores
-	for (i = 5, sv = env_score; i >= 0; i--)
-	{
-		s[i] = 0x30 + (U8)(sv % 10);
-		sv /= 10;
-	}
-
-	tiles_paintListAt(s, DRAW_STATUS_SCORE_X, DRAW_STATUS_Y);
-
-	for (i = 0; i < env_bullets; i++)
-		tiles_paintAt(TILES_BULLET, DRAW_STATUS_BULLETS_X + i * 8, DRAW_STATUS_Y);
-
-	for (i = 0; i < env_bombs; i++)
-		tiles_paintAt(TILES_BOMB, DRAW_STATUS_BOMBS_X + i * 8, DRAW_STATUS_Y);
-
-	for (i = 0; i < env_lives; i++)
-		tiles_paintAt(TILES_RICK, DRAW_STATUS_LIVES_X + i * 8, DRAW_STATUS_Y);
-#else
-    
     VDP_INT_DISABLE;
     // TODO: conio might be too slow here?
     // TODO: we don't have text or the correct characters in the game tileset - how do we get text?
@@ -119,7 +73,6 @@ void env_paintGame(void)
     hchar(DRAW_STATUS_Y/8, DRAW_STATUS_BOMBS_X/8, TILES_BOMB, env_bombs);
     hchar(DRAW_STATUS_Y/8, DRAW_STATUS_LIVES_X/8, TILES_RICK, env_lives);
     VDP_INT_ENABLE;
-#endif
 }
 
 
@@ -138,10 +91,6 @@ void env_paintXtra(void)
     // TODO: this was used because the FONT characters aren't in the level graphics bank!
     // Maybe we can fix this by spreading out the banks a bit, not sure
 	//tiles_setBank(0);
-
-#ifdef GFXPC
-	tiles_setFilter(0xffff);
-#endif
 
 	tiles_paintAt(env_trainer ? 'T' : '@', 0, DRAW_STATUS_Y);
 	tiles_paintAt(env_invicible ? 'I' : '@', 8, DRAW_STATUS_Y);
@@ -171,31 +120,14 @@ void env_paintXtra(void)
 void
 env_clearGame(void)
 {
-#ifdef GFXPC
-	tiles_setBank(map_tilesBank);
-#endif
-#ifdef GFXST
-	tiles_setBank(0);
-#endif
-#ifdef GFXTI
     // TODO: we can't do this here... might not need this one even for text
 	//tiles_setBank(0);
-#endif
   
   // TODO: and I think this part just erases the status bar very slowly...
   //f = fb_at(DRAW_STATUS_SCORE_X, DRAW_STATUS_Y);
-#ifdef GFXPC
-	for (i = 0; i < DRAW_STATUS_LIVES_X/8 + 6 - DRAW_STATUS_SCORE_X/8; i++)
-		f = tile_paint(map_map[MAP_ROW_SCRTOP + (DRAW_STATUS_Y / 8)][i], f);
-#endif
-#ifdef GFXST
-	for (i = 0; i < DRAW_STATUS_LIVES_X/8 + 6 - DRAW_STATUS_SCORE_X/8; i++)
-		f = tiles_paint('@', f);
-#endif
-#ifdef GFXTI
-	//for (i = 0; i < DRAW_STATUS_LIVES_X/8 + 6 - DRAW_STATUS_SCORE_X/8; i++)
+
+  //for (i = 0; i < DRAW_STATUS_LIVES_X/8 + 6 - DRAW_STATUS_SCORE_X/8; i++)
 //		f = tiles_paint('@', f);
-#endif
 }
 
 

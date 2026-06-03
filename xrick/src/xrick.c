@@ -20,15 +20,6 @@
 #include "fb.h"
 #include "sprites.h"
 
-#ifndef GFXTI
-    #include <SDL.h>
-    #include <signal.h>
-    #ifdef __WIN32__
-    #include <windows.h>
-    #endif
-#endif
-
-#ifdef GFXTI
 #include <vdp.h>
 
 // timer updated by VDP interrupt - making it 32 bit so it can represent milliseconds better
@@ -56,7 +47,6 @@ void sys_resettime() {
 
 // gcc doesn't support naked functions, so we need to write the interrupt handler in assembly...
 extern void sys_vdpint();
-#endif
 
 /*
  * Sets a console, if possible
@@ -87,37 +77,6 @@ sys_init(int argc, char** argv)
     (void)argc;
     (void)argv;
 
-#ifndef GFXTI
-	setConsole();
-	sys_printf("xrick\n");
-
-	// FIXME not writing to stdxxx.txt files anymore?
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) < 0)
-		sys_panic("xrick/video: could not init SDL\n");
-
-	// FIXME logging
-	// Solved (embarrassingly simple) :
-	// SDL 1.2 did that outputting into files, SDL 2 does not.However most information(toturials and such) on the net is about SDL 1.2 since SDL 2 is new.
-	// Furthermore compiling with -mwindows sends all stdout and stderr to null.
-	// Compiling without solves my problem.
-
-	//SDL_Log("SDL!");
-
-	sysvid_init(FB_WIDTH, FB_HEIGHT);
-#ifdef ENABLE_JOYSTICK
-	sysjoy_init();
-#endif
-#ifdef ENABLE_SOUND
-	if (sysarg_args_nosound == 0)
-		syssnd_init();
-#endif
-
-	atexit(sys_shutdown);
-	signal(SIGINT, exit);
-	signal(SIGTERM, exit);
-#endif
-
-#ifdef GFXTI
     // VRAM map
     //      0000    pattern
     //      1800    image table
@@ -148,7 +107,7 @@ sys_init(int argc, char** argv)
     sys_resettime();
 #ifndef CLASSIC99
     VDP_INT_CTRL = VDP_INT_CTRL_DISABLE_ALL;
-    VDP_INT_HOOK_SET(sys_vdpint);
+    setUserIntHook(sys_vdpint);
 #else
     WriteByteToClassic99(0x83C2, VDP_INT_CTRL_DISABLE_ALL);
     // We NEED the interrupt routine for this to work
@@ -210,7 +169,6 @@ sys_init(int argc, char** argv)
 
     // Note: we run with interrupts enabled, but we expect no VDP activity during blank
     VDP_INT_ENABLE;
-#endif
 }
 
 
@@ -231,35 +189,9 @@ sys_shutdown(void)
 
 	sysvid_shutdown();
 
-#ifndef GFXTI
-	SDL_Quit();
-#endif
 }
 
 
-#ifndef GFXTI
-/*
- * main
- */
-int
-main(int argc, char *argv[])
-{
-	sys_init(argc, argv);
-
-	char* path;
-	if (sysarg_args_data)
-		path = sysarg_args_data;
-	else
-		path = "data.zip";
-
-	game_run(path);
-
-	sys_shutdown();
-	return 0;
-}
-#endif
-
-#ifdef GFXTI
 /*
  * main
  */
@@ -286,6 +218,5 @@ main()
 	sys_shutdown();
 	return 0;
 }
-#endif
 
 /* eof */

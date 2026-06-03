@@ -16,14 +16,7 @@
 #include "tiles.h"
 #include "fb.h"
 
-#ifdef GFXTI
 #include <vdp.h>
-#endif
-
-#ifndef GFXTI
-static tile_t *tiles_bank;
-static U16 tiles_filter;
-#endif
 
 /*
  * tiles_setBank
@@ -47,11 +40,6 @@ void tiles_setBank(U8 bank)
 	if (bank >= TILES_BANKS_COUNT)
 		sys_panic("xrick/tiles: invalid bank number %d\n", bank);
 
-#ifndef GFXTI
-	tiles_bank = tiles_banks[bank];
-#endif
-
-#ifdef GFXTI
     U16 off = bank*0x800;
     nOldBank = nBank;
 
@@ -72,7 +60,6 @@ void tiles_setBank(U8 bank)
     // restore bank
     SWITCH_IN_BANK(nOldBank);
     VDP_INT_ENABLE;
-#endif
 }
 
 /*
@@ -82,11 +69,7 @@ void tiles_setBank(U8 bank)
  */
 void tiles_setFilter(U16 filter)
 {
-#ifndef GFXTI
-	tiles_filter = filter;
-#else
     (void)filter;
-#endif
 }
 
 
@@ -100,49 +83,11 @@ void tiles_setFilter(U16 filter)
 // TODO: it's likely everything that calls this can be replaced with a vdpmemcpy or hchar or vchar
 int tiles_paint(U8 tileNumber, int fb)
 {
-#ifdef GFXPC
-	U16 i;
-    U16 k;
-	U16 x;
-    U8 *f;
-	f = fb;
-#endif
-#ifdef GFXST
-	U16 i;
-    U16 k;
-	U32 x;
-    U8 *f;
-	f = fb;
-#endif
-#ifdef GFXTI
     // TODO: could optimize by not converting to/from pointer
     U16 f = fb&0x3fff;     // I know this looks wrong, but fb is a VDP address, not a CPU one
-#endif
 
-#ifdef GFXPC
-	for (i = 0; i < 8; i++) /* 8 pixel lines */
-	{
-		/* map CGA 2 bits per pixel to frame buffer 8 bits per pixels */
-		x = tiles_bank[tileNumber][i] & tiles_filter;
-		for (k = 8; k--; x >>= 2)
-			f[k] = x & 3;
-		f += FB_WIDTH; /* next line */
-    }
-#endif
-#ifdef GFXST
-	for (i = 0; i < 8; i++) /* 8 pixel lines */
-	{
-		/* map ST 4 bits per pixel to frame buffer 8 bits per pixels */
-		x = tiles_bank[tileNumber][i];
-		for (k = 8; k--; x >>= 4)
-			f[k] = x & 0x0f;
-		f += FB_WIDTH; /* next line */
-    }
-#endif
-#ifdef GFXTI
     // TODO: We don't want to "paint tiles", we use the loaded tle and just place it
     vdpchar(gImage+f, tileNumber);
-#endif
 
 	return fb + 1;
 }

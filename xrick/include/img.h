@@ -17,13 +17,7 @@
 #include "config.h"
 
 /* a color */
-#ifndef GFXTI
-typedef struct {
-  U8 r, g, b, nothing;
-} img_color_t;
-#else
 typedef U8 img_color_t;
-#endif
 
 /* an image */
 typedef struct {
@@ -43,21 +37,11 @@ extern img_t *IMG_SPLASH;
  */
 extern void img_paintImg(img_t *);
 
-#ifdef GFXST
-/*
- * paints an image of size <width>,<height> with data in <pic> at
- * position <x>,<y> (fb/px).
- */
-extern void img_paintPic(U16, U16, U16, U16, U32 *);
-#endif
-
-#ifdef GFXTI
 /*
  * copy a bitmap image of size <width>,<height> with data in <pic> and color at <col> at
  * position <x>,<y> (fb/px). NOTE: character (8x8) boundaries!
  */
 extern void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8* pat, const U8* col, U16 chroff);
-#endif
 
 #endif /* _IMG_H */
 

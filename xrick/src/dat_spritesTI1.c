@@ -13,8 +13,6 @@
 
 #include "config.h"
 
-#ifdef GFXTI
-
 #include "ricksystem.h"
 #include "sprites.h"
 
@@ -417,7 +415,5 @@ const sprite_t sprites_data1[SPRITE_PAGE_SIZE*SPRITE_SIZE] =
 	 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00	// 000017F0 ................ //
 
 };
-
-#endif /* GFXTI */
 
 /* eof */

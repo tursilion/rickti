@@ -13,11 +13,6 @@
 
 #include "config.h"
 
-#ifndef GFXTI
-#include <stdlib.h>  /* malloc */
-#include <string.h>
-#endif
-
 #include "data.h"
 #include "unzip.h"
 

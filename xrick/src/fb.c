@@ -19,26 +19,12 @@
 #include "draw.h"
 #include "game.h"
 
-#ifdef GFXTI
 #include <vdp.h>
 #include "sprites.h"
-#endif
-
-#ifndef GFXTI
-#include <string.h> /* memset */
-// note: we don't have a FB for the TI version, we just write direct to VRAM
-U8 fb[FB_HEIGHT][FB_WIDTH];
-#endif
 
 /*
  * color tables (palettes)
  */
-#ifdef GFXPC
-#define FB_PALSZ 8
-static U8 RED[] = { 0x00, 0x50, 0xf0, 0xf0, 0x00, 0x50, 0xf0, 0xf0 };
-static U8 GREEN[] = { 0x00, 0xf8, 0x50, 0xf8, 0x00, 0xf8, 0x50, 0xf8 };
-static U8 BLUE[] = { 0x00, 0x50, 0x50, 0x50, 0x00, 0xf8, 0xf8, 0xf8 };
-#endif
 #ifdef GFXST
 // TODO: Need to use these palettes to convert the graphics for GFXTI
 #define FB_PALSZ 32
@@ -74,27 +60,11 @@ static U8 BLUE[] = {	0x00, 0x00, 0x68, 0x68,
 #endif
 
 
-
-/*
- * returns the fb offset at <x>, <y>.
- * <x>, <y> are fb-coordinates.
- */
-#ifndef GFXTI
-int fb_at(U16 x, U16 y)
-{
-	return ((U8*)&fb) + x + y * FB_WIDTH;
-	//return &fb + x + y * FB_WIDTH;
-}
-#endif
-
 /*
  * clears the frame buffer
  */
 void fb_clear()
 {
-#ifndef GFXTI
-	memset(fb, 0, FB_WIDTH * FB_HEIGHT);
-#else
     // Clear by wiping tile 0 and clear to tile 0
     // good place to wipe sprite table too
     VDP_INT_DISABLE;
@@ -103,7 +73,6 @@ void fb_clear()
     VDP_INT_ENABLE;
     // this is the CPU buffer, so it's safe without VDP
     sprites_clear();
-#endif
 }
 
 /*
@@ -112,18 +81,6 @@ void fb_clear()
  */
 U8 fb_fadeIn()
 {
-#ifndef GFXTI
-	U8 fade = 0;
-	while (fade < 8)
-	{
-		/* const = 255 * 2 / (max_fade+2) */
-		sysvid_setGamma((U8)(56 + 255.0 * (1 - 2.0/(fade+2.0))));
-		fade++;
-		game_rects = &draw_SCREENRECT; // FIXME
-		return FALSE;
-	}
-#endif
-
     // TOOD: we could potentially do a pixel dither, loading the tile graphics.
     // If we did that, then we COULD enable fb_clear as clearing the tiles
 	sysvid_setGamma(255);
@@ -136,17 +93,6 @@ U8 fb_fadeIn()
  */
 U8 fb_fadeOut()
 {
-#ifndef GFXTI
-	U8 fade = 0;
-	while (fade < 8)
-	{
-		sysvid_setGamma((U8)(255.0 * 3.0/(fade+3.0)));
-		fade++;
-		game_rects = &draw_SCREENRECT; // FIXME
-		return FALSE;
-	}
-#endif
-
 	sysvid_setGamma(0);
 	return TRUE;
 }
@@ -165,9 +111,6 @@ void fb_setVisible(U8 vis)
  */
 void fb_initPalette()
 {
-#ifndef GFXTI
-	sysvid_setPaletteFromRGB(RED, GREEN, BLUE, FB_PALSZ);
-#endif
 }
 
 
@@ -178,9 +121,6 @@ void fb_initPalette()
 void fb_setPaletteFromImg(img_t* img)
 {
     (void)img;
-#ifndef GFXTI
-	sysvid_setPaletteFromImg(img);
-#endif
 }
 
 /* eof */

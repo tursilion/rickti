@@ -13,13 +13,6 @@
 
 #include "config.h"
 
-#ifndef GFXTI
-#include <SDL.h>
-#include <stdlib.h>
-#include <memory.h>
-#include <string.h> /* strlen, strncpy */
-#endif
-
 #include "syssnd.h"
 
 #ifdef ENABLE_SOUND

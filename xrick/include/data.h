@@ -14,10 +14,6 @@
 #ifndef _DATA_H
 #define _DATA_H
 
-#ifndef GFXTI
-#include <stdio.h>
-#endif
-
 #include "ricksystem.h"
 
 #ifdef USE_DATA_FILES

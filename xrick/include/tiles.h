@@ -34,15 +34,7 @@ void tiles_paintListAt(U8 *, U16, U16);
  * ST: encoding = 4 bits per pixel, one U32 per line.
  * TI: bitmap encoding, 8 bytes pattern then 8 bytes color - TODO but might not use this...
  */
-#ifdef GFXPC
-typedef U16 tile_t[8];
-#endif
-#ifdef GFXST
-typedef U32 tile_t[8];
-#endif
-#ifdef GFXTI
 typedef U8 tile_t;
-#endif
 
 /*
  * banks (each bank contains 256 (0x100) tiles)
@@ -54,19 +46,9 @@ typedef U8 tile_t;
  * bank 3: game tiles, page 0
  * bank 4: game tiles, page 1
  */
-#ifdef GFXPC
-#define TILES_BANKS_COUNT 4
-extern tile_t tiles_banks[TILES_BANKS_COUNT][256];
-#endif
-#ifdef GFXST
-#define TILES_BANKS_COUNT 3
-extern tile_t tiles_banks[TILES_BANKS_COUNT][256];
-#endif
-#ifdef GFXTI
 #define TILES_BANKS_COUNT 3
 extern const tile_t tiles_banks_col[TILES_BANKS_COUNT*256*8];
 extern const tile_t tiles_banks_pat[TILES_BANKS_COUNT*256*8];
-#endif
 
 /*
  * special tile numbers

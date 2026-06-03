@@ -13,11 +13,7 @@
 
 #include "config.h"
 
-#ifndef GFXTI
-#include <stdlib.h>
-#else
 #include <vdp.h>
-#endif
 
 #include "sysarg.h"
 #include "sysvid.h"
@@ -80,31 +76,6 @@ rect_t *game_rects = NULL;
 
 U8 game_dir = 0;
 
-#ifdef GFXST
-hscore_t game_hscores[8] = {
-  { 0, 8000, "SIMES@@@@@" },
-  { 0, 7000, "JAYNE@@@@@" },
-  { 0, 6000, "DANGERSTU@" },
-  { 0, 5000, "KEN@@@@@@@" },
-  { 0, 4000, "ROB@N@BOB@" },
-  { 0, 3000, "TELLY@@@@@" },
-  { 0, 2000, "NOBBY@@@@@" },
-  { 0, 1000, "JEZEBEL@@@" }
-};
-#endif
-#ifdef GFXPC
-hscore_t game_hscores[8] = {
-  { 0, 8000, "DANGERSTU@" },
-  { 0, 7000, "SIMES@@@@@" },
-  { 0, 6000, "KEN@T@ZEN@" },
-  { 0, 5000, "BOBBLE@@@@" },
-  { 0, 4000, "GREG@LAA@@" },
-  { 0, 3000, "TELLY@@@@@" },
-  { 0, 2000, "CHIGLET@@@" },
-  { 0, 1000, "ANDYSPLEEN" }
-};
-#endif
-#ifdef GFXTI
 hscore_t game_hscores[8] = {
   { 0, 8000, "TURSILION@" },
   { 0, 7000, "JAYNESIMES" },
@@ -115,7 +86,6 @@ hscore_t game_hscores[8] = {
   { 0, 2000, "NOBBY@KEN@" },
   { 0, 1000, "TI994A@@@@" }
 };
-#endif
 
 
 /*
@@ -195,9 +165,6 @@ void
 game_run(char *path)
 {
     (void)path;
-#ifndef GFXTI
-    sys_printf("xrick/game: path='%s'\n", path ? path : "");
-#endif
 
 #ifdef USE_DATA_FILES
     data_setpath(path);

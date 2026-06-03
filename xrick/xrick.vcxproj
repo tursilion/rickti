@@ -183,12 +183,9 @@
     <ClCompile Include="src\dat_maps3.c" />
     <ClCompile Include="src\dat_maps4.c" />
     <ClCompile Include="src\dat_picscTI.c" />
-    <ClCompile Include="src\dat_picsPC.c" />
     <ClCompile Include="src\dat_picspTI.c" />
-    <ClCompile Include="src\dat_picsST.c" />
     <ClCompile Include="src\dat_screens.c" />
     <ClCompile Include="src\dat_snd.c" />
-    <ClCompile Include="src\dat_spritesPC.c" />
     <ClCompile Include="src\dat_spritesST.c" />
     <ClCompile Include="src\dat_spritesTI0.c" />
     <ClCompile Include="src\dat_spritesTI1.c" />
@@ -196,7 +193,6 @@
     <ClCompile Include="src\dat_spritesTI3.c" />
     <ClCompile Include="src\dat_spritesTI4.c" />
     <ClCompile Include="src\dat_tilescTI.c" />
-    <ClCompile Include="src\dat_tilesPC.c" />
     <ClCompile Include="src\dat_tilespTI.c" />
     <ClCompile Include="src\dat_tilesST.c" />
     <ClCompile Include="src\devtools.c" />

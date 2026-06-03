@@ -42,9 +42,7 @@
 #include "tiles.h"
 #include "fb.h"
 
-#ifdef GFXTI
 #include <vdp.h>
-#endif
 
 /*
  * global vars
@@ -122,16 +120,7 @@ map_init(void)
   SWITCH_IN_BANK12;
 
 	/*sys_printf("xrick/map_init: map=%#04x submap=%#04x\n", g_map, env_submap);*/
-#ifdef GFXPC
-	tiles_setFilter(0xffff);
-	map_tilesBank = map_submaps[env_submap].page == 1 ? 3 : 2;
-#endif
-#ifdef GFXST
 	map_tilesBank = map_submaps[env_submap].page == 1 ? 2 : 1;
-#endif
-#ifdef GFXTI
-	map_tilesBank = map_submaps[env_submap].page == 1 ? 2 : 1;
-#endif
 	map_eflg_expand((map_submaps[env_submap].page == 1) ? 0x10 : 0x00);
 
     SWITCH_IN_BANK(nOldBank);
@@ -294,24 +283,8 @@ void maps_paint(void)
 
 	for (i = 1; i < 24; i++) /* 23 rows, cause we skip the status row 0 */
 	{
-#ifdef GFXPC
-		f = fb_at(0x20, i * 8);
-		for (j = 0; j < 0x20; j++) {
-            /* 0x20 tiles per row */
-			f = tiles_paint(map_map[i + 8][j], f);
-        }
-#endif
-#ifdef GFXST
-		f = fb_at(0x20, (i + 1) * 8);
-		for (j = 0; j < 0x20; j++) {
-            /* 0x20 tiles per row */
-			f = tiles_paint(map_map[i + 8][j], f);
-        }
-#endif
-#ifdef GFXTI
 		f = fb_at(0, i * 8);   // gets VDP offset into gImage
         vdpmemcpy(gImage+f, map_map[i+8], 32);
-#endif
 	}
 
     SWITCH_IN_BANK(nOldBank);
@@ -351,15 +324,7 @@ void maps_paintRect(U16 x, U16 y, U16 width, U16 height)
 	/* draw */
 	for (r = 0; r < height; r++) /* for each tile row */
 	{
-#ifdef GFXPC
-		fb = fb_at(x_fb, y_fb + r * 8);
-#endif
-#ifdef GFXST
 		fb = fb_at(x_fb, 8 + y_fb + r * 8); /* FIXME +8? */
-#endif
-#ifdef GFXTI
-		fb = fb_at(x_fb, 8 + y_fb + r * 8); /* FIXME +8? */
-#endif
 		for (c = 0; c < width; c++) /* for each tile column */
 		{
 			fb = tiles_paint(map_map[y + r][x + c], fb);

@@ -21,22 +21,6 @@
  * for instance left on an AZERTY keyboard will be 'w' instead of 'z'.
  */
 
-#ifndef GFXTI
-
-#include <SDL.h>
-#include "ricksystem.h"
-
-U8 syskbd_up = SDL_SCANCODE_O;
-U8 syskbd_down = SDL_SCANCODE_K;
-U8 syskbd_left = SDL_SCANCODE_Z;
-U8 syskbd_right = SDL_SCANCODE_X;
-U8 syskbd_pause = SDL_SCANCODE_P;
-U8 syskbd_end = SDL_SCANCODE_E;
-U8 syskbd_xtra = SDL_SCANCODE_ESCAPE;
-U8 syskbd_fire = SDL_SCANCODE_SPACE;
-
-#else
-
 U8 syskbd_up = 'E';
 U8 syskbd_down = 'X';
 U8 syskbd_left = 'S';
@@ -45,8 +29,6 @@ U8 syskbd_pause = 'P';
 U8 syskbd_end = '.';
 U8 syskbd_xtra = ',';
 U8 syskbd_fire = ' ';
-
-#endif
 
 /* eof */
 

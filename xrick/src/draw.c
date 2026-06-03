@@ -121,23 +121,11 @@ But not much of that really applies to the TI port ;)
 #include "draw.h"
 #include "fb.h"
 
-#ifdef GFXPC
-#define DRAW_STATUS_SCORE_X 0x28
-#define DRAW_STATUS_LIVES_X 0xE8
-#define DRAW_STATUS_Y 0x08
-#endif
 #define DRAW_STATUS_BULLETS_X 0x68
 #define DRAW_STATUS_BOMBS_X 0xA8
-#ifdef GFXST
 #define DRAW_STATUS_SCORE_X 0x20
 #define DRAW_STATUS_LIVES_X 0xF0
 #define DRAW_STATUS_Y 0
-#endif
-#ifdef GFXTI
-#define DRAW_STATUS_SCORE_X 0x20
-#define DRAW_STATUS_LIVES_X 0xF0
-#define DRAW_STATUS_Y 0
-#endif
 
 rect_t draw_STATUSRECT = {
   DRAW_STATUS_SCORE_X, DRAW_STATUS_Y,

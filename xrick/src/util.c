@@ -13,10 +13,6 @@
 
 #include "config.h"
 
-#ifndef GFXTI
-#include <stdlib.h>  /* NULL */
-#endif
-
 #include "env.h"
 
 #include "util.h"

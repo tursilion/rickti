@@ -38,39 +38,8 @@ void sprites_setDepth(U8);
 void sprites_paint(U16, U16, U16);
 void sprites_paint2(U16, U16, U16);
 
-#ifndef GFXTI
-void sprites_clear(U16, U16);
-#endif
-#ifdef GFXTI
 void sprites_clear();
-#endif
 
-#ifdef GFXPC
-
-#define SPRITES_NBR_SPRITES (0x9b)
-
-typedef struct {
-  U16 mask;
-  U16 pict;
-} spriteX_t;
-
-typedef spriteX_t sprite_t[4][0x15];   /* one sprite */
-
-extern sprite_t sprites_data[SPRITES_NBR_SPRITES];
-
-#endif
-
-#ifdef GFXST
-
-#define SPRITES_NBR_SPRITES (0xD5)
-
-typedef U32 sprite_t[0x54];  /* 0x15 per 0x04 */
-
-extern sprite_t sprites_data[SPRITES_NBR_SPRITES];
-
-#endif
-
-#ifdef GFXTI
 
 #define SPRITES_NBR_SPRITES (0xD5)
 #define SPRITE_SIZE (8*4*4)
@@ -93,8 +62,6 @@ typedef struct spr_ {
 } sprite_data_t;
 
 extern sprite_data_t sprite_table[(ENT_ENTSNUM+1)*4];
-
-#endif
 
 
 #endif

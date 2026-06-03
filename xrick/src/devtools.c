@@ -43,9 +43,6 @@ devtools_run(void)
 	{
 		sysvid_clear();
 		game_rects = &draw_SCREENRECT;
-#ifdef GFXPC
-		tiles_setFilter(0xffff);
-#endif
 		seq = 1;
 	}
 
@@ -177,15 +174,7 @@ devtools_run(void)
 
 		case 40:
 			sysvid_clear();
-#ifdef GFXPC
-			if (pos2 == 0) pos2 = 2;
-#endif
-#ifdef GFXST
 			if (pos2 == 0) pos2 = 1;
-#endif
-#ifdef GFXTI
-			if (pos2 == 0) pos2 = 1;
-#endif
 			sprintf(s, "BLOCKS@%#04X@TO@%#04X@WITH@BANK@%d\376",
 				pos, pos + 4*8-1, pos2);
 			tiles_setBank(0);
@@ -246,18 +235,8 @@ devtools_run(void)
 		case 45:
 			if (!(control_status & CONTROL_PAUSE))
 			{
-#ifdef GFXPC
-				if (pos2 == 2) pos2 = 3;
-				else pos2 = 2;
-#endif
-#ifdef GFXST
 				if (pos2 == 1) pos2 = 2;
 				else pos2 = 1;
-#endif
-#ifdef GFXTI
-				if (pos2 == 1) pos2 = 2;
-				else pos2 = 1;
-#endif
 				seq = 40;
 			}
 			break;

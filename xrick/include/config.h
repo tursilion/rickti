@@ -14,11 +14,6 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
-/* graphics (choose one) */
-#undef GFXST
-#undef GFXPC
-#define GFXTI
-
 #include "ricksystem.h"
 
 /* version */
