@@ -63,8 +63,8 @@ extern void ents_paintAll();
 typedef struct {
   U16 n;          /* b00 */
   /*U16 b01;*/    /* b01 in ASM code but never used */
-  U16 x;         /* b02 - position */
-  U16 y;         /* w04 - position */
+  S16 x;         /* b02 - position */
+  S16 y;         /* w04 - position */
   U16 sprite;     /* b08 - sprite number */
   /*U16 w0C;*/   /* w0C in ASM code but never used */
   U16 w;          /* b0E - width */

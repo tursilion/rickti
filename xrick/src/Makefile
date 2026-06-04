@@ -31,7 +31,7 @@ INCPATH=-I/mnt/d/work/libti99ALL -I/mnt/d/work/ti/vgmcomp2/Players/libtivgm2 -I.
 LIBPATH=-L/mnt/d/work/libti99ALL/buildti -L/mnt/d/work/ti/vgmcomp2/Players/libtivgm2
 LIBS=-lti99 -ltivgm2
 
-# Note: no-function-cse prevents gcc from preferring registers for bl calls
+# Note: no-function-cse prevents gcc from preferring registers for bl calls, -minline_rtl for rtl in asm, -fdump-rtl-expand for expand
 CFLAGS=-Os -std=c99 -c -s --save-temp -DTI99 -fno-builtin -fno-function-cse
 #-minline_rtl
 

@@ -100,12 +100,12 @@ void
 e_them_t1_action2(U16 e, U16 type) {
 #define offsx c1
 #define step_count c2
-    U32 i;
+    S32 i;
     U16 x, y;
     U16 env0, env1;
 
     /* by default, try vertical move. calculate new y */
-    i = (ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
+    i = ((S32)ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
     y = (U16)(i >> 8);
 
     /* deactivate if outside vertical boundaries */
@@ -277,17 +277,17 @@ e_them_t1b_action(U16 e) {
 void
 e_them_z_action(U16 e) {
 #define offsx c1
-    U32 i;
+    S32 i;
 
     /* calc new sprite */
     ent_ents[e].sprite = ent_ents[e].sprbase
         + ((ent_ents[e].x & 0x04) ? 0x07 : 0x06);
 
       /* calc new y */
-    i = (ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
+    i = ((S32)ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
 
     /* deactivate if out of vertical boundaries */
-    if (ent_ents[e].y < 0 || ent_ents[e].y > 0x140) {
+    if (ent_ents[e].y < 0 || ent_ents[e].y > 0xdc) {
         ent_ents[e].n = 0;
         return;
     }
@@ -320,7 +320,7 @@ void
 e_them_t2_action2(U16 e) {
 #define flgclmb c1
 #define offsx c2
-    U32 i;
+    S32 i;
     U16 x, y;
     S16 yd;
     U16 env0, env1;
@@ -404,7 +404,7 @@ climbing_not:
     ent_ents[e].flgclmb = FALSE;  /* not climbing */
 
     /* calc new y (falling) and test environment */
-    i = (ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
+    i = ((S32)ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
     y = (U16)(i >> 8);
     u_envtest(ent_ents[e].x, y, FALSE, &env0, &env1);
     if (!(env1 & (MAP_EFLG_SOLID | MAP_EFLG_SPAD | MAP_EFLG_WAYUP))) {

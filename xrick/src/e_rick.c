@@ -113,7 +113,7 @@ e_rick_gozombie(void)
 static void
 e_rick_z_action(void)
 {
-	U32 i;
+	S32 i;
 
 	/* sprite */
 	E_RICK_ENT.sprite = (E_RICK_ENT.x & 0x04) ? 0x1A : 0x19;
@@ -122,7 +122,7 @@ e_rick_z_action(void)
 	E_RICK_ENT.x += offsx;
 
 	/* y */
-	i = (U32)(E_RICK_ENT.y << 8) + offsy + ylow;
+	i = ((S32)E_RICK_ENT.y << 8) + offsy + ylow;
 	E_RICK_ENT.y = (U16)(i >> 8);
 	offsy += 0x80;
 	ylow = (U8)i;
@@ -143,7 +143,7 @@ e_rick_action2(void)
 {
 	U16 env0, env1;
 	U16 x, y;
-	U32 i;
+	S32 i;
 
 	E_RICK_STRST(E_RICK_STSTOP|E_RICK_STSHOOT);
 
@@ -162,7 +162,7 @@ e_rick_action2(void)
 	*/
 	E_RICK_STRST(E_RICK_STJUMP);
 	/* calc y */
-	i = (E_RICK_ENT.y << 8) + offsy + ylow;
+	i = ((S32)E_RICK_ENT.y << 8) + offsy + ylow;
 	y = (U16)(i >> 8);
 	/* test environment */
 	u_envtest(E_RICK_ENT.x, y, E_RICK_STTST(E_RICK_STCRAWL), &env0, &env1);

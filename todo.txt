@@ -1,11 +1,21 @@
-TI build is currently crashing at C2D4 with a bad jump... just set break on illegal opcode (when the game starts).
-The HOF screen is corrupt.
-The intro screen has improperly defined sprites.
+A lot of the game is working, but a lot of stuff still is not. Was able to play through a lot of egypt.
 
-First assumption is compiler bug. Don't even bother.
+- bad sprite flicker
+- not all objects drawn
+- intentional flicker not implemented
+- can't shoot
+- crashes if you go back a room
+- pretty slow (playable but could be better)
+- ?? some puzzles reset when screen scrolls up (the brick platform is the first one - impossible to proceed)
 
-- Remove all the non GFXTI code to simplify
-- convert all U8 code to U16 for stability
-- see if that helps.
+And stuff I deliberately need to deal with:
+- high score screen is disabled to save memory (less than 100 bytes needed)
+- top line status still has no solution
+- need to implement sound (that will require a lot more than 100 bytes, but there is bank memory free)
 
-Once it's working, we can work on optimizing functions for performance.
+And stretch goals:
+- fix those odd pixels on the title page
+- make climbable tiles more visible in sets 1 and 3 (ok in egypt)
+- F18A graphics (this will likely require going to 256k)
+    
+The trick is finding compiler bugs when I didn't write the code. Hand optimization to my style may help.

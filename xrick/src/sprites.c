@@ -50,7 +50,7 @@ void sprites_paint(U16 spriteNumber, U16 x, U16 y)
     // If we assume entities don't switch around order, we can probably base the pattern
     // on the sprite table entry (48*4 is only 192 characters)
     for (unsigned int i=0; i<(ENT_ENTSNUM+1)*4; i+=4) {
-        U8 chr = (U8)(i*4);   // work around compiler bug - if we put this inline with the .ch
+        U8 chr = (U8)(i*4);   // work around compiler bug - if we put this inline with the .ch (note: compiler bug is now fixed)
                         // there's also a weird inefficiency, it will use @1(r5) for sprite_table[i].x, but recalculates for .ch 
                         // instead of just doing @2(r5)
         if (sprite_table[i].y == 0xd1) {
