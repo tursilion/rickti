@@ -87,11 +87,11 @@ map_expand(void)
   for (i = 0; i < 0x0b; i++) {  /* 0x0b rows of blocks */
     for (j = 0; j < 0x08; j++) {  /* 0x08 blocks per row */
       for (k = 0, l = 0; k < 0x04; k++) {  /* expand one block */
-	map_map[row][col++] = map_blocks[tmpbnum][l++];    // map_map is local, ram, map_maps is banked ROM
-	map_map[row][col++] = map_blocks[tmpbnum][l++];
-	map_map[row][col++] = map_blocks[tmpbnum][l++];
-	map_map[row][col]   = map_blocks[tmpbnum][l++];
-	row += 1; col -= 3;
+	    map_map[row][col++] = map_blocks[tmpbnum][l++];    // map_map is local, ram, map_maps is banked ROM
+	    map_map[row][col++] = map_blocks[tmpbnum][l++];
+	    map_map[row][col++] = map_blocks[tmpbnum][l++];
+	    map_map[row][col]   = map_blocks[tmpbnum][l++];
+	    row += 1; col -= 3;
       }
       row -= 4; col += 4;
       pbnum++;
@@ -325,14 +325,20 @@ void maps_paintRect(U16 x, U16 y, U16 width, U16 height)
 	height >>= 3;
 
 	/* draw */
+    VDP_INT_DISABLE;
 	for (r = 0; r < height; r++) /* for each tile row */
 	{
 		fb = fb_at(x_fb, 8 + y_fb + r * 8); /* FIXME +8? */
+#if 0
 		for (c = 0; c < width; c++) /* for each tile column */
 		{
 			fb = tiles_paint(map_map[y + r][x + c], fb);
 		}
+#else
+        vdpmemcpy(fb+gImage, &map_map[y+r][x], width);
+#endif
 	}
+    VDP_INT_ENABLE;
 }
 
 

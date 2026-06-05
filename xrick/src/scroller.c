@@ -17,7 +17,7 @@
 #include "env.h"
 
 #include "scroller.h"
-
+#include <string.h>
 #include "debug.h"
 #include "draw.h"
 #include "maps.h"
@@ -50,9 +50,15 @@ U16 scroll_up(void)
   }
 
   /* translate map */
-  for (i = MAP_ROW_SCRTOP; i < MAP_ROW_HBBOT; i++)
-    for (j = 0x00; j < 0x20; j++)
+  for (i = MAP_ROW_SCRTOP; i < MAP_ROW_HBBOT; i++) {
+#if 1
+    for (j = 0x00; j < 0x20; j++) {
       map_map[i][j] = map_map[i + 1][j];
+    }
+#else
+      memcpy(map_map[i], map_map[i+1], 32);
+#endif
+  }
 
   /* translate entities */
   for (i = 0; ent_ents[i].n != 0xFF; i++) {
@@ -117,9 +123,15 @@ U16 scroll_down(void)
   }
 
   /* translate map */
-  for (i = MAP_ROW_SCRBOT; i > MAP_ROW_HTTOP; i--)
-    for (j = 0x00; j < 0x20; j++)
+  for (i = MAP_ROW_SCRBOT; i > MAP_ROW_HTTOP; i--) {
+#if 1
+    for (j = 0x00; j < 0x20; j++) {
       map_map[i][j] = map_map[i - 1][j];
+    }
+#else
+      memcpy(map_map[i], map_map[i-1], 32);
+#endif
+  }
 
   /* translate entities */
   for (i = 0; ent_ents[i].n != 0xFF; i++) {

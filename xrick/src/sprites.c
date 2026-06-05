@@ -87,8 +87,12 @@ void sprites_paint(U16 spriteNumber, U16 x, U16 y)
             // in the math below:
             // spriteIdx is the 128 byte object index on the Rick side
             // i is the starting 32 byte sprite tile index on the TI side (multiple of four, see above)
+            // Since sprites are only 21 rows tall, not 32, we can save a few bytes of copy. To make it
+            // simple we only do two memcpys (not four, cause of setup overhead), copying 53 bytes instead 
+            // of 64 for each left and right half
 #ifndef CLASSIC99
-            vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data0, 128);
+            vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data0, 53);
+            vdpmemcpy(gSpritePat+(i*4*8)+64, spriteIdx*128+sprites_data0+64, 53);
 #else
             // Classic99 build doesn't have banks to switch!
             switch(spritePage) {

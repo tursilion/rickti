@@ -174,18 +174,27 @@ drawtb(void)
 
 	if (flipflop & 0x01)
 	{
-        // TODO: these could be hchars...
+#if 0
 		for (i = 0; i < 6; i++)
 			tiles_paintAt(0x40, 104 + i * 8, 16);
 		for (i = 0; i < 6; i++)
 			tiles_paintAt(0x06, 104 + i * 8, 72);
+#else
+        hchar(2, 13, 0x40, 6);
+        hchar(9, 13, 0x06, 6);
+#endif
 	}
 	else
 	{
+#if 0
 		for (i = 0; i < 6; i++)
 			tiles_paintAt(0x05, 104 + i * 8, 16);
 		for (i = 0; i < 6; i++)
 			tiles_paintAt(0x40, 104 + i * 8, 72);
+#else
+        hchar(2, 13, 0x05, 6);
+        hchar(9, 13, 0x40, 6);
+#endif
 	}
 
     VDP_INT_ENABLE;
@@ -205,20 +214,29 @@ drawlr(void)
 
 	if (flipflop & 0x02)
 	{
-        // TODO: these could be vchars
+#if 0
 		for (i = 0; i < 8; i++)
 		{
 			tiles_paintAt(0x04, 96, 16 + i * 8);
 			tiles_paintAt(0x04, 152, 16 + i * 8);
 		}
+#else
+        vchar(2, 12, 4, 8);
+        vchar(2, 19, 4, 8);
+#endif
 	}
 	else
 	{
+#if 0
 		for (i = 0; i < 8; i++)
 		{
 			tiles_paintAt(0x2B, 96, 16 + i * 8);
 			tiles_paintAt(0x2B, 152, 16 + i * 8);
 		}
+#else
+        vchar(2, 12, 0x2b, 8);
+        vchar(2, 19, 0x2b, 8);
+#endif
 	}
 
     VDP_INT_ENABLE;
@@ -255,9 +273,16 @@ drawcenter(void)
 
     VDP_INT_DISABLE;
 
-	for (i = 0; i < 6; i++)
-		for (j = 0; j < 6; j++)
+	for (i = 0; i < 6; i++) {
+#if 0
+		for (j = 0; j < 6; j++) {
 			tiles_paintAt(tn++, 104 + 8 * j, 24 + 8 * i);
+        }
+#else
+        vdpwriteinc(fb_at(104, 24+8*i)+gImage, tn, 6);
+        tn+=6;
+#endif
+    }
 
     VDP_INT_ENABLE;
 }

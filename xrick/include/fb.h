@@ -25,7 +25,7 @@
  * returns the fb pointer at <x>, <y>.
  * <x>, <y> are fb-coordinates.
  */
-#define fb_at(x,y) ((y/8)*32+(x/8))
+#define fb_at(x,y) (((y)/8)*32+((x)/8))
 
 /*
  * clears the frame buffer

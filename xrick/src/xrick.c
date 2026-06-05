@@ -102,6 +102,7 @@ sys_init(int argc, char** argv)
     set_bitmap(VDP_SPR_16x16);
 	VDP_SET_REGISTER(VDP_REG_SDT, 7);	// remap sprite pattern table to not overlap the SIT
     gSpritePat = 0x3800;
+    vdpmemset(gSpritePat, 0, 0x800);    // make sure it's zeroed
     // get a blank screen up by initializing all three char 0 to blank and then writing all zeros to the SIT
     fb_clear();
 
