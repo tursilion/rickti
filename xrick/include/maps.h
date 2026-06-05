@@ -22,7 +22,7 @@
 extern void maps_paint(void);
 extern void maps_paintRect(U16, U16, U16, U16);
 extern void maps_alignRect(U16 *, U16 *, U16 *, U16 *);
-extern U16 maps_clip(U16 *, U16 *, U16 *, U16 *);
+extern U16 maps_clip(U16, U16, U16, U16);
 
 /* map dimensions */
 #define MAPS_WIDTH_PX 0x0100

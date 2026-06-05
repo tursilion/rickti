@@ -1,3 +1,5 @@
+#if 0
+
 /*
  * xrick/src/scr_xrick.c
  *
@@ -42,7 +44,7 @@ extern void draw_titlepage();
  *
  * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT
  */
-U16 screen_xrick(void)
+U16 screen_(void)
 {
 	static U16 seq = 0;
 	static U16 wait = 0;
@@ -96,3 +98,5 @@ U16 screen_xrick(void)
 
 /* eof */
 
+
+#endif

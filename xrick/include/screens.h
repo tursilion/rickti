@@ -38,7 +38,6 @@ extern const U8 screen_gameovertxt[];  /* game over */
 extern const U8 screen_pausedtxt[];  /* paused */
 extern const U8 screen_congrats[];  /* congratulations */
 
-extern U16 screen_xrick(void);  /* splash */
 extern U16 screen_introMain(void);  /* main intro */
 extern U16 screen_introMap(void);  /* map intro */
 extern U16 screen_gameover(void);  /* gameover */

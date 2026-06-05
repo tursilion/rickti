@@ -252,9 +252,7 @@ drawsprite(void)
 {
 	U16 x = 104 + ((spx << 1) & 0x1C);
 	U16 y = 24 + (spy << 1);
-    // make sure slot 0 is free for this only sprite
-    sprite_table[0].y = 0xd1;
-	sprites_paint(spnum, x, y);
+	sprites_paint(spnum, 0, x, y, 1);  // always load the pattern - we can afford the waste here
 }
 
 

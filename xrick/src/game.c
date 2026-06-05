@@ -54,7 +54,6 @@ typedef enum {
 #ifdef ENABLE_DEVTOOLS
   DEVTOOLS,
 #endif
-  XRICK, XRICK_CLR,
   MAIN_INTRO, MAP_INTRO,
   INIT,
   INIT_MAP, INIT_SUBMAP,
@@ -122,7 +121,7 @@ void game_toggleCheat(U16 nbr)
 #ifdef ENABLE_DEVTOOLS
 		game_state != DEVTOOLS &&
 #endif
-		game_state != XRICK && game_state != EXIT)
+		game_state != EXIT)
 	{
 		switch (nbr)
 		{
@@ -173,7 +172,7 @@ game_run(char *path)
 
 	game_period = sysarg_args_period ? sysarg_args_period : GAME_PERIOD;
 	tm = sys_gettime();
-	game_state = XRICK;
+	game_state = MAIN_INTRO;
 
 	/* main loop */
 #ifdef EMSCRIPTEN
@@ -300,36 +299,6 @@ static void game_cycle(void)
 			}
 		break;
 #endif
-
-
-		case XRICK:
-
-			switch(screen_xrick())
-			{
-				case SCREEN_RUNNING:
-					return;
-				case SCREEN_DONE:
-					game_state = XRICK_CLR;
-					return;
-				case SCREEN_EXIT:
-					game_state = EXIT;
-					return;
-			}
-		break;
-
-
-
-		case XRICK_CLR:
-
-			/* this step is required to force a screen update (clear) before changing the palette */
-			fb_initPalette();
-#ifdef ENABLE_DEVTOOLS
-			game_state = DEVTOOLS;
-#else
-			game_state = MAIN_INTRO;
-#endif
-			break;
-
 
 
 		case MAIN_INTRO:
@@ -713,7 +682,7 @@ static void game_cycle(void)
 				case SCREEN_RUNNING:
 					return;
 				case SCREEN_DONE:
-					game_state = XRICK_CLR;
+					game_state = MAIN_INTRO;
 					return;
 				case SCREEN_EXIT:
 					game_state = EXIT;
@@ -781,6 +750,8 @@ init(void)
   ent_ents[1].n = 0x01;
   ent_ents[1].sprite = 0x01;
   ent_ents[1].front = FALSE;
+  ent_ents[1].spriteIndex = 0xff;
+  ent_ents[1].lastSpriteDrawn = 0xff;
   ent_ents[ENT_ENTSNUM].n = 0xFF;
 
   SWITCH_IN_BANK(nOldBank);

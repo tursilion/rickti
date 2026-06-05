@@ -39,116 +39,90 @@ sprite_data_t sprite_table[(ENT_ENTSNUM+1)*4];
 // TODO: need to draw actual sprites... sprites are 32x32 (so four sprites each)
 // There are up to 12 sprites in game (though our hardware supports 8). We'll let
 // the copy function sort that out though.
-void sprites_paint(U16 spriteNumber, U16 x, U16 y)
+// This is only called directly by the preview screen
+void sprites_paint(U16 spriteNumber, U16 spriteIndex, U16 x, U16 y, U16 load_pattern)
 {
     unsigned int nOldBank;
 
-    // we just have to load the four sprites into the sprite table at the first clear spot
+    // we just have to load the four sprites into the sprite table, and maybe also the pattern
+    // (48*4 is only 192 characters, so all psuedo sprites are fine with a dedicated pattern)
     // TODO: need a mapping table for colors
-    // we need to copy in the bitmap properly, we probably need to at this point,
-    // which means we need to assign a psuedo-hardware sprite AND a character pattern.
-    // If we assume entities don't switch around order, we can probably base the pattern
-    // on the sprite table entry (48*4 is only 192 characters)
-    for (unsigned int i=0; i<(ENT_ENTSNUM+1)*4; i+=4) {
-        U8 chr = (U8)(i*4);   // work around compiler bug - if we put this inline with the .ch (note: compiler bug is now fixed)
-                        // there's also a weird inefficiency, it will use @1(r5) for sprite_table[i].x, but recalculates for .ch 
-                        // instead of just doing @2(r5)
-        if (sprite_table[i].y == 0xd1) {
-            sprite_table[i].y = y;
-            sprite_table[i].x = x;
-            sprite_table[i].ch = chr;
-            sprite_table[i].col = COLOR_WHITE;  // TODO: color table
+    U8 chr = (U8)(spriteIndex*4);   // work around compiler bug - if we put this inline with the .ch (note: compiler bug is now fixed)
+                    // there's also a weird inefficiency, it will use @1(r5) for sprite_table[i].x, but recalculates for .ch 
+                    // instead of just doing @2(r5)
+    U8* pSpriteTab = &sprite_table[spriteIndex].y;  // y is first entry in the struct
+        
+    *(pSpriteTab++) = (U8)y;
+    *(pSpriteTab++) = (U8)x;
+    *(pSpriteTab++) = chr;
+    *(pSpriteTab++) = COLOR_WHITE;  // TODO: color table
 
-            sprite_table[i+1].y = y+16;
-            sprite_table[i+1].x = x;
-            sprite_table[i+1].ch = chr+4;
-            sprite_table[i+1].col = COLOR_WHITE;  // TODO: color table
+    *(pSpriteTab++) = (U8)(y+16);
+    *(pSpriteTab++) = (U8)x;
+    *(pSpriteTab++) = chr+4;
+    *(pSpriteTab++) = COLOR_WHITE;  // TODO: color table
 
-            sprite_table[i+2].y = y;
-            sprite_table[i+2].x = x+16;
-            sprite_table[i+2].ch = chr+8;
-            sprite_table[i+2].col = COLOR_WHITE;  // TODO: color table
+    *(pSpriteTab++) = (U8)y;
+    *(pSpriteTab++) = (U8)(x+16);
+    *(pSpriteTab++) = chr+8;
+    *(pSpriteTab++) = COLOR_WHITE;  // TODO: color table
 
-            sprite_table[i+3].y = y+16;
-            sprite_table[i+3].x = x+16;
-            sprite_table[i+3].ch = chr+12;
-            sprite_table[i+3].col = COLOR_WHITE;  // TODO: color table
+    *(pSpriteTab++) = (U8)y+16;
+    *(pSpriteTab++) = (U8)x+16;
+    *(pSpriteTab++) = chr+12;
+    *(pSpriteTab++) = COLOR_WHITE;  // TODO: color table
 
-            VDP_INT_DISABLE;
-            // based on which pattern we need, we need to map and copy from ROM
-            // each table has 48 of those big objects (8x6)
-            nOldBank = nBank;
-            // since calculated, we do the bank here manually. SINCE WE DO NOT
-            // UPDATE nBank YOU CAN NOT BRANCH TO ANY CODE THAT MIGHT BANK SWITCH AGAIN
-            unsigned int spritePage = spriteNumber / 48;
-            unsigned int spriteIdx = spriteNumber % 48;
-            // Note: page index 0x6006 is determined by dat_sprintesTI0.o in the linker file
-            SWITCH_IN_BANK((0x6006 + (spritePage*2)));
-            // in the math below:
-            // spriteIdx is the 128 byte object index on the Rick side
-            // i is the starting 32 byte sprite tile index on the TI side (multiple of four, see above)
-            // Since sprites are only 21 rows tall, not 32, we can save a few bytes of copy. To make it
-            // simple we only do two memcpys (not four, cause of setup overhead), copying 53 bytes instead 
-            // of 64 for each left and right half
+    if (load_pattern) {
+        VDP_INT_DISABLE;
+        // based on which pattern we need, we need to map and copy from ROM
+        // each table has 48 of those big objects (8x6)
+        nOldBank = nBank;
+        // since calculated, we do the bank here manually. SINCE WE DO NOT
+        // UPDATE nBank YOU CAN NOT BRANCH TO ANY CODE THAT MIGHT BANK SWITCH AGAIN
+        unsigned int spritePage = spriteNumber / 48;    // sprite page to read from
+        unsigned int spriteIdx = spriteNumber % 48;     // Index on a page, not to confuse with spriteIndex, which is psuedo hardware
+        // Note: page index 0x6006 is determined by dat_sprintesTI0.o in the linker file
+        SWITCH_IN_BANK((0x6006 + (spritePage*2)));
+        // in the math below:
+        // spriteIdx is the 128 byte object index on the Rick side
+        // i is the starting 32 byte sprite tile index on the TI side (multiple of four, see above)
+        // Since sprites are only 21 rows tall, not 32, we can save a few bytes of copy. To make it
+        // simple we only do two memcpys (not four, cause of setup overhead), copying 53 bytes instead 
+        // of 64 for each left and right half
 #ifndef CLASSIC99
-            vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data0, 53);
-            vdpmemcpy(gSpritePat+(i*4*8)+64, spriteIdx*128+sprites_data0+64, 53);
+        vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data0, 53);
+        vdpmemcpy(gSpritePat+(spriteIndex*4*8)+64, spriteIdx*128+sprites_data0+64, 53);
 #else
-            // Classic99 build doesn't have banks to switch!
-            switch(spritePage) {
-                case 0:
-                    vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data0, 128); break;
-                case 1:
-                    vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data1, 128); break;
-                case 2:
-                    vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data2, 128); break;
-                case 3:
-                    vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data3, 128); break;
-                case 4:
-                    vdpmemcpy(gSpritePat+(i*4*8), spriteIdx*128+sprites_data4, 128); break;
-            }
-#endif
-            // restore the previous page
-            SWITCH_IN_BANK(nOldBank);
-
-            VDP_INT_ENABLE;
-
-            break;
+        // Classic99 build doesn't have banks to switch!
+        switch(spritePage) {
+            case 0:
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data0, 128); break;
+            case 1:
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data1, 128); break;
+            case 2:
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data2, 128); break;
+            case 3:
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data3, 128); break;
+            case 4:
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data4, 128); break;
         }
+#endif
+        // restore the previous page
+        SWITCH_IN_BANK(nOldBank);
+
+        VDP_INT_ENABLE;
     }
 }
 
 void sprites_clear() {
-    // TODO: once we have sprite indexes hard assigned to entities, we don't need to
+    // once we have sprite indexes hard assigned to entities, we don't need to
     // call this function every frame, which is causing flicker
     memset(sprite_table, 0xd1, sizeof(sprite_table));
+    // might as well deassign the entity sprites too
+    for (int i=0; i<ENT_ENTSNUM + 1; ++i) {
+        ent_ents[i].spriteIndex = 0xff;
+    }
 }
-
-// still not doing 'front' management, but we can clip and map adjust
-void sprites_paint2(U16 spriteNumber, U16 x, U16 y) {
-	U16 x_map, y_map;
-	U16 x_fb, y_fb;
-	U16 width, height;
-
-	/* get map/px */
-	x_map = x;
-	y_map = y;
-
-	/* sprite dimension in px */
-	width = 0x20; /* width = 4 tile columns, 8 pixels each */
-	height = 0x15; /* height = 0x15 pixels */
-
-	/* clip */
-	if (maps_clip(&x_map, &y_map, &width, &height))  /* return if not visible */
-		return;
-
-	/* convert to fb/px */
-	x_fb = x_map + MAPS_FB_X + 32;  // fix offset
-	y_fb = y_map - MAPS_FB_Y; // fix offset
-
-    sprites_paint(spriteNumber, x_fb, y_fb);
-}
-
 
 /*
  * sprites_paint2
@@ -158,5 +132,43 @@ void sprites_paint2(U16 spriteNumber, U16 x, U16 y) {
  * <front> when true indicates that the sprite must not be behind anything.
  * complex paint: manages highlight, depth.
  */
+// still not doing 'front' management, but we can clip
+void sprites_paint2(U16 entityNumber) {
+	U16 x_map, y_map;
+	U16 x_fb, y_fb;
+	const U16 width = 0x20, height = 0x15;
+
+	/* get map/px */
+	x_map = ent_ents[entityNumber].x;
+	y_map = ent_ents[entityNumber].y;
+
+	/* clip */
+	if (maps_clip(x_map, y_map, width, height)) {  /* return if not visible */
+        // make sure sprite is offscren
+        if (ent_ents[entityNumber].spriteIndex != 0xff) {
+            sprite_table[ent_ents[entityNumber].spriteIndex].y = 0xd2;  // 0xd2 so it does not get re-assigned to someone else!
+        }
+		return;
+    }
+
+    /* assign a sprite index if necessary */
+    if (ent_ents[entityNumber].spriteIndex == 0xff) {
+        for (unsigned int i=0; i<(ENT_ENTSNUM+1)*4; i+=4) {
+            if (sprite_table[i].y == 0xd1) {
+                ent_ents[entityNumber].spriteIndex = i;
+                break;
+            }
+        }
+    }
+
+	/* convert to fb/px */
+	x_fb = x_map + MAPS_FB_X + 32;  // fix offset
+	y_fb = y_map - MAPS_FB_Y; // fix offset
+
+    sprites_paint(ent_ents[entityNumber].sprite,        // pattern to draw
+                  ent_ents[entityNumber].spriteIndex,   // pseudo sprite index
+                  x_fb, y_fb,                           // location
+                  ent_ents[entityNumber].lastSpriteDrawn != ent_ents[entityNumber].sprite); // whether the pattern needs reloading
+}
 
 /* eof */

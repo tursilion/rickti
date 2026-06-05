@@ -53,6 +53,18 @@ static void ent_addrect(U16, U16, U16, U16);
 static U16 ent_creat1(U16* );
 static U16 ent_creat2(U16* , U16);
 
+// clean up entity type and associated sprite if they have one
+void delete_ent(U16 e) {
+    ent_ents[e].n = 0;
+    if (ent_ents[e].spriteIndex != 0xff) {
+        sprite_table[ent_ents[e].spriteIndex].y = 0xd1;  // 0xd1 as it's now completely free
+        sprite_table[ent_ents[e].spriteIndex+1].y = 0xd1;  // four actual sprites
+        sprite_table[ent_ents[e].spriteIndex+2].y = 0xd1;
+        sprite_table[ent_ents[e].spriteIndex+3].y = 0xd1;
+    }
+    ent_ents[e].spriteIndex = 0xff;
+    ent_ents[e].lastSpriteDrawn = 0xff;
+}
 
 /*
  * Reset entities
@@ -67,9 +79,10 @@ ent_reset(void)
   E_RICK_STRST(E_RICK_STSTOP);
   e_bomb_lethal = FALSE;
 
-  ent_ents[0].n = 0;
-  for (i = 2; ent_ents[i].n != 0xff; i++)
-    ent_ents[i].n = 0;
+  delete_ent(0);
+  for (i = 2; ent_ents[i].n != 0xff; i++) {
+      delete_ent(i);
+  }
 }
 
 
@@ -289,6 +302,8 @@ ent_actvis(U16 frow, U16 lrow)
     ent_ents[e].sprite = (U16)ent_entdata[map_marks_ent[m]].spr;
     ent_ents[e].step_no_i = ent_entdata[map_marks_ent[m]].sni;
     ent_ents[e].trigsnd = (U16)ent_entdata[map_marks_ent[m]].snd;
+    ent_ents[e].spriteIndex = 0xff;
+    ent_ents[e].lastSpriteDrawn = 0xff;
 
     /*
      * FIXME what is this? when all trigger flags are up, then
@@ -343,7 +358,7 @@ void ents_paintAll()
 	U16 i;
 
     /* clear the sprite table */
-    sprites_clear();
+    //sprites_clear();  // TODO: shouldn't need this anymore
 
 	/* foreground loop : draw all entities that are visible */
 	for (i = 0; ent_ents[i].n != 0xff; i++)
@@ -351,8 +366,7 @@ void ents_paintAll()
 		if (ent_ents[i].n && (env_highlight || ent_ents[i].sprite))
 		{
 			/* if entity is active, draw the sprite. */
-			sprites_paint2(ent_ents[i].sprite,
-				ent_ents[i].x, ent_ents[i].y);
+			sprites_paint2(i);
 		}
 	}
 }
@@ -366,8 +380,9 @@ ent_clprev(void)
 {
   U16 i;
 
-  for (i = 0; ent_ents[i].n != 0xff; i++)
+  for (i = 0; ent_ents[i].n != 0xff; i++) {
     ent_ents[i].prev_n = 0;
+  }
 }
 
 /*

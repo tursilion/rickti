@@ -64,7 +64,7 @@ e_bullet_action(UNUSED(U16 e))
 
   if (E_BULLET_ENT.x <= -0x10 || E_BULLET_ENT.x > 0xe8) {
     /* out: deactivate */
-    E_BULLET_ENT.n = 0;
+      delete_ent(E_BULLET_NO);
   }
   else {
     /* update bullet center coordinates */
@@ -73,7 +73,7 @@ e_bullet_action(UNUSED(U16 e))
     if (map_eflg[map_map[e_bullet_yc >> 3][e_bullet_xc >> 3]] &
 	MAP_EFLG_SOLID) {
       /* hit something: deactivate */
-      E_BULLET_ENT.n = 0;
+        delete_ent(E_BULLET_NO);
     }
   }
 }

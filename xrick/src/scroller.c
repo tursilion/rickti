@@ -51,7 +51,7 @@ U16 scroll_up(void)
 
   /* translate map */
   for (i = MAP_ROW_SCRTOP; i < MAP_ROW_HBBOT; i++) {
-#if 1
+#if 0
     for (j = 0x00; j < 0x20; j++) {
       map_map[i][j] = map_map[i + 1][j];
     }
@@ -70,7 +70,7 @@ U16 scroll_up(void)
 	IFDEBUG_SCROLLER(
 	  sys_printf("xrick/scroller: entity %#04X is gone\n", i);
 	  );
-	ent_ents[i].n = 0;
+        delete_ent(i);
       }
     }
   }
@@ -124,7 +124,7 @@ U16 scroll_down(void)
 
   /* translate map */
   for (i = MAP_ROW_SCRBOT; i > MAP_ROW_HTTOP; i--) {
-#if 1
+#if 0
     for (j = 0x00; j < 0x20; j++) {
       map_map[i][j] = map_map[i - 1][j];
     }
@@ -143,7 +143,7 @@ U16 scroll_down(void)
 	IFDEBUG_SCROLLER(
 	  sys_printf("xrick/scroller: entity %#04X is gone\n", i);
 	  );
-	ent_ents[i].n = 0;
+        delete_ent(i);
       }
     }
   }

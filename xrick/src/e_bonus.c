@@ -53,7 +53,7 @@ e_bonus_action(U16 e)
   }
 
   else {
-    ent_ents[e].n = 0;
+      delete_ent(e);
   }
 }
 

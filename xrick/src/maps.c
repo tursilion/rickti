@@ -311,7 +311,7 @@ void maps_paintRect(U16 x, U16 y, U16 width, U16 height)
 	maps_alignRect(&x, &y, &width, &height);
 
 	/* clip */
-	if (maps_clip(&x, &y, &width, &height))  /* return if not visible */
+	if (maps_clip(x, y, width, height))  /* return if not visible */
 		return;
 
 	/* convert to fb/px */
@@ -382,12 +382,13 @@ void maps_alignRect(U16 *x, U16 *y, U16 *width, U16 *height)
  * NOTE: original would actually clip the sprite. We can't "really" do this,
  * but we can allow a partially visible sprite at the bottom or top - but we do
  * NOT adjust the settings as that moves the sprite, doesn't crop it
+ * Since we can't crop anymore, we no longer take pointers for the input parameters
  */
-U16 maps_clip(U16 *x, U16 *y, U16 *width, U16 *height)
+U16 maps_clip(U16 x, U16 y, U16 width, U16 height)
 {
-	if (*x < 0)
+	if (x < 0)
 	{
-		if (*x + *width < 0)
+		if (x + width < 0)
 			return TRUE;
 #ifdef ALLOW_CROPS
 		else
@@ -399,7 +400,7 @@ U16 maps_clip(U16 *x, U16 *y, U16 *width, U16 *height)
     }
 	else
 	{
-		if (*x >= MAPS_WIDTH_PX)
+		if (x >= MAPS_WIDTH_PX)
 			return TRUE;
 #ifdef ALLOW_CROPS
 		else
@@ -410,9 +411,9 @@ U16 maps_clip(U16 *x, U16 *y, U16 *width, U16 *height)
 #endif
     }
 
-	if (*y < MAPS_TOPHEIGHT_PX)
+	if (y < MAPS_TOPHEIGHT_PX)
 	{
-		if ((*y + *height) <= MAPS_TOPHEIGHT_PX)
+		if ((y + height) <= MAPS_TOPHEIGHT_PX)
 			return TRUE;
 #ifdef ALLOW_CROPS
 		else
@@ -424,7 +425,7 @@ U16 maps_clip(U16 *x, U16 *y, U16 *width, U16 *height)
     }
 	else
 	{
-		if (*y >= MAPS_TOPHEIGHT_PX+MAPS_VISHEIGHT_PX)
+		if (y >= MAPS_TOPHEIGHT_PX+MAPS_VISHEIGHT_PX)
 			return TRUE;
 #ifdef ALLOW_CROPS
 		else

@@ -59,7 +59,7 @@ e_box_action(U16 e)
 		 */
 		ent_ents[e].sprite = sp[ent_ents[e].cnt >> 1];
 		if (--ent_ents[e].cnt == 0) {
-			ent_ents[e].n = 0;
+            delete_ent(e);
 			map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
 		}
 	} else {
@@ -75,7 +75,7 @@ e_box_action(U16 e)
 				env_bombs = GAME_BOMBS_INIT;
 			else  /* 0x11 */
 				env_bullets = GAME_BULLETS_INIT;
-			ent_ents[e].n = 0;
+			delete_ent(e);
 			map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
 		}
 		else if (E_RICK_STTST(E_RICK_STSTOP) &&
@@ -85,7 +85,7 @@ e_box_action(U16 e)
 		}
 		else if (E_BULLET_ENT.n && u_fboxtest(e, e_bullet_xc, e_bullet_yc)) {
 			/* bullet: explode (and stop bullet) */
-			E_BULLET_ENT.n = 0;
+            delete_ent(E_BULLET_NO);
 			explode(e);
 		}
 		else if (e_bomb_lethal && e_bomb_hit(e)) {

@@ -29,12 +29,53 @@
 
 void sysvid_update(void *rects) { 
     (void)rects; 
+    static U16 spriteStart = 0;
 #ifdef CLASSIC99
+    // TODO: since there are only 12 entities, try this:
+    // First copy all active sprite first sprites - that's most of the character anyway
+    // These 12 can rotate within themselves for flicker. That way everything gets a representation
+    // Then we can rotate through the rest of the set for whatever hardware sprites are left.
+
     // we don't have a interrupt sprite copy loop anymore, so copy it here
     // Well, the first part of it anyway
+    U16 cntHw = 32;                     // hardware sprite count
+    U8* pSprite = &sprite_table[spriteStart].y;   // psuedo sprite table
+    U16 cntPsuedo = ((ENT_ENTSNUM+1)*4)*4;  // psuedo sprite count
+    U16 loop = 0;
+
     VDP_INT_DISABLE;
-    vdpmemcpy(gSprite,(unsigned char*)&sprite_table[0], 128);
+    VDP_SET_ADDRESS_WRITE(gSprite);
+
+    while ((cntPsuedo > 0) && (cntHw > 0)) {
+        if (*pSprite != 0xd1) {
+            // copy this entry
+            VDPWD(*(pSprite++));
+            VDPWD(*(pSprite++));
+            VDPWD(*(pSprite++));
+            VDPWD(*(pSprite++));
+            --cntHw;
+        } else {
+            pSprite += 4;
+        }
+        --cntPsuedo;
+        // split up the various sprite parts
+        pSprite+=12;
+        if (pSprite >= &sprite_table[(ENT_ENTSNUM+1)*4].y) {
+            // wraparound
+            pSprite -= sizeof(sprite_table);
+            pSprite+=loop;
+            if (!loop) loop = 4;
+        }
+    }
+    if (cntHw) VDPWD(0xd0);
     VDP_INT_ENABLE;
+
+    // We can guarantee that every other sprite is stacked vertically, so
+    // trying different steps to cover the whole table
+    spriteStart += 31;
+    if (spriteStart >= (ENT_ENTSNUM+1)*4) {
+        spriteStart -= 32;
+    }
 #endif
 }    // game_rects - can delete this (except using it in the classic99 version
 void sysvid_shutdown(void) { }  // nothing to really do here

@@ -89,6 +89,8 @@ typedef struct {
   U16 prev_s;     /* new */
   U16 front;      /* new */
   U16 trigsnd;    /* new */
+  U16 spriteIndex;  /* psuedo sprite index assigned (0xff = not assigned) */
+  U16 lastSpriteDrawn; /* sprite number last uploaded to VRAM */
 } ent_t;
 
 typedef struct {
@@ -109,6 +111,7 @@ extern rect_t *ent_rects;
 extern U16 ent_sprseq[ENT_NBR_SPRSEQ];
 extern const mvstep_t ent_mvstep[ENT_NBR_MVSTEP];
 
+extern void delete_ent(U16);
 extern void ent_reset(void);
 extern void ent_actvis(U16, U16);
 extern void ent_draw(void);

@@ -95,7 +95,7 @@ e_bomb_action(UNUSED(U16 e))
 		/*
 		 * end: deactivate
 		 */
-		E_BOMB_ENT.n = 0;
+        delete_ent(E_BOMB_NO);
 		e_bomb_lethal = FALSE;
 	}
 	else if (e_bomb_ticker >= 0x0A)

@@ -112,7 +112,7 @@ e_them_t1_action2(U16 e, U16 type) {
     /* no need to test zero since e_them _t1a/b don't go up */
     /* FIXME what if they got scrolled out ? */
     if (y > 0x140) {
-        ent_ents[e].n = 0;
+        delete_ent(e);
         return;
     }
 
@@ -225,7 +225,7 @@ e_them_t1_action(U16 e, U16 type) {
     if (E_BULLET_ENT.n &&
         u_fboxtest(e, E_BULLET_ENT.x + (e_bullet_offsx < 0 ? 0 : 0x18),
         E_BULLET_ENT.y)) {
-        E_BULLET_ENT.n = 0;
+        delete_ent(E_BULLET_NO);
         e_them_gozombie(e);
         return;
     }
@@ -288,7 +288,7 @@ e_them_z_action(U16 e) {
 
     /* deactivate if out of vertical boundaries */
     if (ent_ents[e].y < 0 || ent_ents[e].y > 0xdc) {
-        ent_ents[e].n = 0;
+        delete_ent(e);
         return;
     }
 
@@ -381,7 +381,7 @@ ymove:
     yd = ent_ents[e].y < E_RICK_ENT.y ? 0x02 : -0x02;
     y = ent_ents[e].y + yd;
     if (y < 0 || y > 0x140) {
-        ent_ents[e].n = 0;
+        delete_ent(e);
         return;
     }
     u_envtest(ent_ents[e].x, y, FALSE, &env0, &env1);
@@ -415,7 +415,7 @@ climbing_not:
             return;
         }
         if (y > 0x140) {  /* deactivate if outside */
-            ent_ents[e].n = 0;
+            delete_ent(e);
             return;
         }
         if (!(env1 & MAP_EFLG_VERT)) {
@@ -523,7 +523,7 @@ e_them_t2_action(U16 e) {
     if (E_BULLET_ENT.n &&
         u_fboxtest(e, E_BULLET_ENT.x + (e_bullet_offsx < 0 ? 00 : 0x18),
         E_BULLET_ENT.y)) {
-        E_BULLET_ENT.n = 0;
+        delete_ent(E_BULLET_NO);
         e_them_gozombie(e);
         return;
     }
@@ -632,12 +632,17 @@ void e_them_t3_action2(U16 e) {
                     ent_ents[e].x = ent_ents[e].xsave;
                     ent_ents[e].y = ent_ents[e].ysave;
                     if (ent_ents[e].y < 0 || ent_ents[e].y > 0x140) {
-                        ent_ents[e].n = 0;
+                        delete_ent(e);
                         return;
+                    } else {
+                        // reset the sprite in case we don't retrigger
+                        U16 n = ent_ents[e].n;
+                        delete_ent(e);
+                        ent_ents[e].n = n;
                     }
                 } else {
                   /* deactivate this entity */
-                    ent_ents[e].n = 0;
+                    delete_ent(e);
                     return;
                 }
             }
@@ -661,7 +666,7 @@ void e_them_t3_action2(U16 e) {
             if (ent_ents[e].flags & ENT_FLG_TRIGBULLET) {  /* reacts to bullets */
           /* wake up if triggered by bullet */
                 if (E_BULLET_ENT.n && u_trigbox(e, e_bullet_xc, e_bullet_yc)) {
-                    E_BULLET_ENT.n = 0;
+                    delete_ent(E_BULLET_NO);
                     goto wakeup;
                 }
             }

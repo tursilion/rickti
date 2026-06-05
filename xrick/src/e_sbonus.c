@@ -43,7 +43,7 @@ e_sbonus_start(U16 e)
 	ent_ents[e].sprite = 0; /* invisible */
 	if (u_trigbox(e, ENT_XRICK.x + 0x0C, ENT_XRICK.y + 0x0A)) {
 		/* rick is within trigger box */
-		ent_ents[e].n = 0;
+        delete_ent(e);
 		e_sbonus_counting = TRUE;  /* 6DD5 */
 		e_sbonus_counter = 0x1e;  /* 6DDB */
 		e_sbonus_bonus = 2000;    /* 291A-291D */
@@ -70,7 +70,7 @@ e_sbonus_stop(U16 e)
 	if (u_trigbox(e, ENT_XRICK.x + 0x0C, ENT_XRICK.y + 0x0A)) {
 		/* rick is within trigger box */
 		e_sbonus_counting = FALSE;  /* stop counting */
-		ent_ents[e].n = 0;  /* deactivate entity */
+        delete_ent(e);
 		addscore(e_sbonus_bonus);  /* add bonus to score */
 #ifdef ENABLE_SOUND
 		syssnd_play(WAV_SBONUS2, 1);
