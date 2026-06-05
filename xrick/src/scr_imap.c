@@ -74,8 +74,8 @@ U16 screen_introMap(void)
 			tiles_setBank(0);
             nOldBank = nBank;
             SWITCH_IN_BANK14;
-			tiles_paintListAt(maps_intros[env_map].title, 8, 0);
-			tiles_paintListAt(maps_intros[env_map].body, 8, 96);
+			tiles_paintListAt(maps_intros[env_map].title, 0, 0);
+			tiles_paintListAt(maps_intros[env_map].body, 0, 96);
             SWITCH_IN_BANK(nOldBank);
 
 			init();

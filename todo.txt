@@ -4,7 +4,7 @@ A lot of the game is working, but a lot of stuff still is not. Was able to play 
 - not all objects drawn
 - intentional flicker not implemented
 - pretty slow (playable but could be better)
-- ?? some puzzles reset when screen scrolls up (the brick platform is the first one - impossible to proceed)
+- some enemies appear stuck inside walls
 
 And stuff I deliberately need to deal with:
 - high score screen is disabled to save memory (less than 100 bytes needed)
@@ -17,3 +17,5 @@ And stretch goals:
 - F18A graphics (this will likely require going to 256k)
     
 The trick is finding compiler bugs when I didn't write the code. Hand optimization to my style may help.
+
+
