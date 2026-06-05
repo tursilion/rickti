@@ -31,8 +31,6 @@
  */
 U16 screen_gameover(void)
 {
-    // TODO: I don't think this works at all
-
 	static U16 seq = 0;
 	static U16 period = 0;
 	static U32 tm = 0;
@@ -55,7 +53,7 @@ U16 screen_gameover(void)
 	case 1:  /* display banner */
 		fb_clear();
 		tm = sys_gettime();
-		tiles_paintListAt((U8*)screen_gameovertxt, 120, 80);
+		tiles_paintListAt((U8*)screen_gameovertxt, 88, 80);
 
 		game_rects = &draw_SCREENRECT;
         sysvid_setGamma(255);

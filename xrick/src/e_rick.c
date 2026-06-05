@@ -64,14 +64,22 @@ static U16 save_x, save_y;
 U16 e_rick_boxtest(U16 e)
 {
 	/*
+    * A standing Rick is only 15x19, crawling is 20x15
+    * The first goolu is 14x19. The brick is 23x15. Mummy is 18x20.
+    * So we can go a lot tighter on these boxes since 'w' is set to 24.
+    * Modern gaming allows some overlap, so we can do that too. We'll go 15 and 15.
+    * Original:
 	 * rick: x+0x05 to x+0x11, y+[0x08 if rick's crawling] to y+0x14
-	 * entity: x to x+w, y to y+h
+	 * entity: x to x+w, y to y+h-1
+    * Now:
+	 * rick: x+0x05 to x+0x0a, y+[0x08 if rick's crawling] to y+0x12
+	 * entity: x to x+w, y+4 to y+h-5
 	 */
 
-	if (E_RICK_ENT.x + 0x11 < ent_ents[e].x ||
+	if (E_RICK_ENT.x + 0xa < ent_ents[e].x ||
 		E_RICK_ENT.x + 0x05 > ent_ents[e].x + ent_ents[e].w ||
-		E_RICK_ENT.y + 0x14 < ent_ents[e].y ||
-		E_RICK_ENT.y + (E_RICK_STTST(E_RICK_STCRAWL) ? 0x08 : 0x00) > ent_ents[e].y + ent_ents[e].h - 1)
+		E_RICK_ENT.y + 0x12 < ent_ents[e].y+4 ||
+		E_RICK_ENT.y + (E_RICK_STTST(E_RICK_STCRAWL) ? 0x08 : 0x00) > ent_ents[e].y + ent_ents[e].h - 5)
 		return FALSE;
 	else
 		return TRUE;
@@ -142,7 +150,7 @@ void
 e_rick_action2(void)
 {
 	U16 env0, env1;
-	U16 x, y;
+	S16 x, y;
 	S32 i;
 
 	E_RICK_STRST(E_RICK_STSTOP|E_RICK_STSHOOT);

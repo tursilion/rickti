@@ -3,8 +3,6 @@ A lot of the game is working, but a lot of stuff still is not. Was able to play 
 - bad sprite flicker
 - not all objects drawn
 - intentional flicker not implemented
-- can't shoot
-- crashes if you go back a room
 - pretty slow (playable but could be better)
 - ?? some puzzles reset when screen scrolls up (the brick platform is the first one - impossible to proceed)
 

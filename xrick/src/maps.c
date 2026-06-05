@@ -373,6 +373,9 @@ void maps_alignRect(U16 *x, U16 *y, U16 *width, U16 *height)
  * clips a rectangle at <x>, <y> of size <width>, <height>.
  * <x>, <y> expressed in map/px.
  * returns TRUE if fully clipped, FALSE if still (at least partly) visible.
+ * NOTE: original would actually clip the sprite. We can't "really" do this,
+ * but we can allow a partially visible sprite at the bottom or top - but we do
+ * NOT adjust the settings as that moves the sprite, doesn't crop it
  */
 U16 maps_clip(U16 *x, U16 *y, U16 *width, U16 *height)
 {
@@ -380,41 +383,49 @@ U16 maps_clip(U16 *x, U16 *y, U16 *width, U16 *height)
 	{
 		if (*x + *width < 0)
 			return TRUE;
+#ifdef ALLOW_CROPS
 		else
 		{
 			*width += *x;
 			*x = 0;
 		}
-	}
+#endif
+    }
 	else
 	{
-		if (*x > MAPS_WIDTH_PX)
+		if (*x >= MAPS_WIDTH_PX)
 			return TRUE;
+#ifdef ALLOW_CROPS
 		else
 		if (*x + *width > MAPS_WIDTH_PX)
 		{
 			*width = MAPS_WIDTH_PX - *x;
 		}
-	}
+#endif
+    }
 
 	if (*y < MAPS_TOPHEIGHT_PX)
 	{
-		if ((*y + *height) < MAPS_TOPHEIGHT_PX)
+		if ((*y + *height) <= MAPS_TOPHEIGHT_PX)
 			return TRUE;
+#ifdef ALLOW_CROPS
 		else
 		{
 			*height += *y - MAPS_TOPHEIGHT_PX;
 			*y = MAPS_TOPHEIGHT_PX;
 		}
-	}
+#endif
+    }
 	else
 	{
 		if (*y >= MAPS_TOPHEIGHT_PX+MAPS_VISHEIGHT_PX)
 			return TRUE;
+#ifdef ALLOW_CROPS
 		else
 		if (*y + *height > MAPS_TOPHEIGHT_PX+MAPS_VISHEIGHT_PX)
 			*height = MAPS_TOPHEIGHT_PX+MAPS_VISHEIGHT_PX - *y;
-	}
+#endif
+    }
 
 	return FALSE;
 }

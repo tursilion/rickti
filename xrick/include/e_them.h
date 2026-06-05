@@ -16,7 +16,7 @@
 
 #include "ricksystem.h"
 
-extern U16 e_them_rndseed;
+extern U32 e_them_rndseed;
 
 extern void e_them_t1a_action(U16);
 extern void e_them_t1b_action(U16);

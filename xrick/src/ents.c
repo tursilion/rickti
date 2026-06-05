@@ -213,17 +213,44 @@ ent_actvis(U16 frow, U16 lrow)
 			if (map_marks_ent[m] >= 0x10) {
 				/* boxes, bonuses and type 3 e_them go to slot 4-8 */
 				/* (c1 set to 0 -> all type 3 e_them are sleeping) */
-				if (!ent_creat1(&e)) continue;
+				if (!ent_creat1(&e)) {
+                    IFDEBUG_SCROLLER(
+	                  sys_printf("xrick/scroller: failed to create entity1 %#04X\n", e);
+	                  );
+                    continue;
+                }
+
+                IFDEBUG_SCROLLER(
+	              sys_printf("xrick/scroller: created entity %#04X creat1\n", e);
+	              );
 			}
 			else {
 				/* type 1 and 2 e_them go to slot 9-c */
 				/* (c1 set to 2) */
-				if (!ent_creat2(&e, m)) continue;
+				if (!ent_creat2(&e, m)) {
+                    IFDEBUG_SCROLLER(
+	                  sys_printf("xrick/scroller: failed to create entity2 %#04X\n", e);
+	                  );
+                    continue;
+                }
+
+                IFDEBUG_SCROLLER(
+	              sys_printf("xrick/scroller: created entity %#04X creat2(e,%d)\n", e, m);
+	              );
 			}
 		}
 		else {
 			/* entities stopping rick (e.g. blocks) go to slot 0 */
-			if (ent_ents[0].n) continue;
+			if (ent_ents[0].n) {
+                IFDEBUG_SCROLLER(
+	              sys_printf("xrick/scroller: brick? already set\n");
+	              );
+                continue;
+            }
+
+            IFDEBUG_SCROLLER(
+	            sys_printf("xrick/scroller: resetting brick\n");
+	            );
 			e = 0;
 			ent_ents[0].c1 = 0;
 		}

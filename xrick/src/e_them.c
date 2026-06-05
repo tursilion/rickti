@@ -31,7 +31,7 @@
 /*
  * public vars
  */
-U16 e_them_rndseed = 0;
+U32 e_them_rndseed = 0;
 
 /*
  * local vars
@@ -335,8 +335,8 @@ e_them_t2_action2(U16 e) {
     static U16 cx;
     static U8* cl = (U8*)&cx;
     static U8* ch = (U8*)&cx + 1;
-    static U16* sl = (U16*)&e_them_rndseed;
-    static U16* sh = (U16*)&e_them_rndseed + 2;
+    static U16* sh = (U16*)&e_them_rndseed;
+    static U16* sl = (U16*)&e_them_rndseed + 2;
 
     /*sys_printf("e_them_t2 ------------------------------\n");*/
 
@@ -537,7 +537,7 @@ e_them_t2_action(U16 e) {
     /* rick stops them */
     if (E_RICK_STTST(E_RICK_STSTOP) &&
         u_fboxtest(e, e_rick_stop_x, e_rick_stop_y))
-        ent_ents[e].latency = 0x14;
+        ent_ents[e].latency = 40;   // mb: was 0x14
 }
 
 void fetch_mvstep(int step, mvstep_t *pmv) {
@@ -604,7 +604,7 @@ void e_them_t3_action2(U16 e) {
                     y += ent_ents[e].y;
                     */
                     y = ent_ents[e].y + tmp_mvstep.dy;
-                    if (y > 0 && y < 0xdc) {
+                    if (y > 0 && y < 0xf1) {    // was 0xdc
                         ent_ents[e].y = y;
                         return;
                     }
@@ -668,8 +668,11 @@ void e_them_t3_action2(U16 e) {
 
             if (ent_ents[e].flags & ENT_FLG_TRIGBOMB) {  /* reacts to bombs */
           /* wake up if triggered by bomb */
-                if (e_bomb_lethal && u_trigbox(e, e_bomb_xc, e_bomb_yc))
-                    goto wakeup;
+                if (e_bomb_lethal) {
+                    if (u_trigbox(e, e_bomb_xc, e_bomb_yc)) {
+                        goto wakeup;
+                    }
+                }
             }
 
             /* not triggered: keep waiting */
