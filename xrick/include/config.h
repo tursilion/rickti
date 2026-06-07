@@ -43,6 +43,7 @@
 #undef ENABLE_FOCUS
 
 /* development tools */
+// Can never happen in this codebase, even if enabled, so we might as well delete it
 #undef ENABLE_DEVTOOLS
 #define DEBUG /* see include/debug.h */
 

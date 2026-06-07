@@ -40,8 +40,13 @@ U16 e_sbonus_bonus = 0;
 void
 e_sbonus_start(U16 e)
 {
+    // make sure the sprite cache is cleared as well - we delete for real below if needed
+    U16 n = ent_ents[e].n;
+    delete_ent(e);
+    ent_ents[e].n = n;
 	ent_ents[e].sprite = 0; /* invisible */
-	if (u_trigbox(e, ENT_XRICK.x + 0x0C, ENT_XRICK.y + 0x0A)) {
+
+    if (u_trigbox(e, ENT_XRICK.x + 0x0C, ENT_XRICK.y + 0x0A)) {
 		/* rick is within trigger box */
         delete_ent(e);
 		e_sbonus_counting = TRUE;  /* 6DD5 */
@@ -62,6 +67,10 @@ e_sbonus_start(U16 e)
 void
 e_sbonus_stop(U16 e)
 {
+    // make sure the sprite cache is cleared as well - we delete for real below if needed
+    U16 n = ent_ents[e].n;
+    delete_ent(e);
+    ent_ents[e].n = n;
 	ent_ents[e].sprite = 0; /* invisible */
 
 	if (!e_sbonus_counting)

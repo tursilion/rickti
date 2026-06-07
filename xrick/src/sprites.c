@@ -148,7 +148,11 @@ void sprites_paint2(U16 entityNumber) {
 	if (maps_clip(x_map, y_map, width, height)) {  /* return if not visible */
         // make sure sprite is offscren
         if (ent_ents[entityNumber].spriteIndex != 0xff) {
+            // clip all four sprites
             sprite_table[ent_ents[entityNumber].spriteIndex].y = 0xd2;  // 0xd2 so it does not get re-assigned to someone else!
+            sprite_table[ent_ents[entityNumber].spriteIndex+1].y = 0xd2;
+            sprite_table[ent_ents[entityNumber].spriteIndex+2].y = 0xd2;
+            sprite_table[ent_ents[entityNumber].spriteIndex+3].y = 0xd2;
         }
 		return;
     }

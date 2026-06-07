@@ -574,6 +574,12 @@ void e_them_t3_action2(U16 e) {
         if (i == 0xff)
             i = ent_sprseq[ent_ents[e].sprbase];
         ent_ents[e].sprite = i;
+        if (ent_ents[e].sprite == 0) {
+            // we need to clear the sprite cache
+            U16 n = ent_ents[e].n;
+            delete_ent(e);
+            ent_ents[e].n = n;
+        }
 
         if (ent_ents[e].sproffs != 0) {  /* awake */
 

@@ -65,21 +65,23 @@ inlp
     jmp endin       * end of inner loop
 
 nodraw
-    inct r4         * skip sprite
-    inct r4         * 4 bytes
+    ai r4,16        * skip sprite and next 3
+    jmp endin2      * jmp is faster than a second ai
 
 endin
     ai r4,12        * skip next three sprites
+
+endin2
     c r4,r5
     jl nowrt
     ai r4,-192       * roll back in table
 nowrt
 
-    dec r7          * count down loop
+    dec r7          * count down inner loop
     jne inlp        * not done
 
 outcnt
-    inc r6          * kind of has to count this way
+    inc r6          * count up outer loop - kind of has to count this way
     ci r6,4         * done?
     jne outlp
 

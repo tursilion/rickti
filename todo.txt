@@ -1,8 +1,5 @@
 A lot of the game is working, but a lot of stuff still is not. Was able to play through a lot of egypt.
 
-- bad sprite flicker
-- not all objects drawn
-- intentional flicker not implemented
 - pretty slow (playable but could be better)
 - some enemies appear stuck inside walls
 - also check TODOs
@@ -19,9 +16,3 @@ And stretch goals:
     
 The trick is finding compiler bugs when I didn't write the code. Hand optimization to my style may help.
 
-
-
-ent_ents[i].sprite, ent_ents[i].x, ent_ents[i].y
-
-spriteIndex (0xff = unset)
-lastSpriteDrawn (0xff = unset, but no need to check)
