@@ -29,55 +29,66 @@
 
 void sysvid_update(void *rects) { 
     (void)rects; 
-    static U16 spriteStart = 0;
 #ifdef CLASSIC99
-    // TODO: since there are only 12 entities, try this:
+    // we don't have a interrupt sprite copy loop in Classic99, so copy it here
+    // Well, the first part of it anyway
+
     // First copy all active sprite first sprites - that's most of the character anyway
     // These 12 can rotate within themselves for flicker. That way everything gets a representation
     // Then we can rotate through the rest of the set for whatever hardware sprites are left.
 
-    // we don't have a interrupt sprite copy loop anymore, so copy it here
-    // Well, the first part of it anyway
-    U16 cntHw = 32;                     // hardware sprite count
-    U8* pSprite = &sprite_table[spriteStart].y;   // psuedo sprite table
-    U16 cntPsuedo = ((ENT_ENTSNUM+1)*4)*4;  // psuedo sprite count
-    U16 loop = 0;
+    static U16 firstSprite = 0;         // this will step through the 12 objects to select the first sprite to draw
+                                        // we count by SPRITE, and each object is 4 sprites. Each object represent
+                                        // 2 sprites across, so we have to count by 2*4 to make four sprites across.
+    U16 cntHw = 32;                     // hardware sprites left
+    U8* pSprite;                        // starting point to read sprite data
+                                        // Note: this is U8, so reads BYTES. Each entity is 4 sprites
+                                        // times 4 bytes - 16 bytes.
 
     VDP_INT_DISABLE;
+
+    // first count the first sprite of each object - these ALWAYS fit in the hardware sprite count
+    // then for as long as we have left, proceed with the next three
     VDP_SET_ADDRESS_WRITE(gSprite);
 
-    while ((cntPsuedo > 0) && (cntHw > 0)) {
-        if (*pSprite != 0xd1) {
-            // copy this entry
-            VDPWD(*(pSprite++));
-            VDPWD(*(pSprite++));
-            VDPWD(*(pSprite++));
-            VDPWD(*(pSprite++));
-            --cntHw;
-        } else {
-            pSprite += 4;
-        }
-        --cntPsuedo;
-        // split up the various sprite parts
-        pSprite+=12;
-        if (pSprite >= &sprite_table[(ENT_ENTSNUM+1)*4].y) {
-            // wraparound
-            pSprite -= sizeof(sprite_table);
-            pSprite+=loop;
-            if (!loop) loop = 4;
+    for (int j=0; ((j<4)&&(cntHw > 0)); ++j) {
+        pSprite = &sprite_table[j+firstSprite].y;
+        for (int i=0; i<ENT_ENTSNUM; ++i) {
+            if (*pSprite < 0xc0) {
+                // visible on screen, even a little
+                VDPWD(*(pSprite++));
+                VDPWD(*(pSprite++));
+                VDPWD(*(pSprite++));
+                VDPWD(*(pSprite++));
+                --cntHw;
+                if (cntHw == 0) {
+                    break;
+                }
+            } else {
+                pSprite += 4;
+            }
+            // skip the next three
+            pSprite += 12;
+            // sprite_table is in sprite_data_t's, and sprite is in U8s
+            if (pSprite >= &sprite_table[ENT_ENTSNUM*4].y) {
+                pSprite -= ENT_ENTSNUM*4*4;
+            }
         }
     }
-    if (cntHw) VDPWD(0xd0);
+
+    // all done, end the table and rotate the sprite start point
+    VDPWD(0xd0);    // in fairness, this might write to 0x1B80, but if that's an issue then we'll worry about it
+
+    firstSprite += 8;
+    if (firstSprite >= ENT_ENTSNUM*4) {
+        firstSprite -= ENT_ENTSNUM*4;
+    }
+
     VDP_INT_ENABLE;
 
-    // We can guarantee that every other sprite is stacked vertically, so
-    // trying different steps to cover the whole table
-    spriteStart += 31;
-    if (spriteStart >= (ENT_ENTSNUM+1)*4) {
-        spriteStart -= 32;
-    }
 #endif
-}    // game_rects - can delete this (except using it in the classic99 version
+}
+
 void sysvid_shutdown(void) { }  // nothing to really do here
 
 // game often uses 0 and 255 to turn screen on and off, so we could implement that!

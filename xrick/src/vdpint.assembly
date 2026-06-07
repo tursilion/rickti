@@ -8,6 +8,11 @@
  ref vdpmemcpy
  
 ****************
+*some memory for the sprite rotation
+
+* assumes this is loaded into RAM!
+firsts data 0
+
 * VDP interrupt handler - user link
 sys_vdpint:
     *limi 0              * not needed - the console interrupt disables it
@@ -24,20 +29,75 @@ sys_vdpint:
     inc @vdpCountH
 sk1
 
+* see sysvid.c for the C version of this
+    mov @gSprite,r0  * set vdp address
+    ori r0,>4000
+    swpb r0
+    movb r0,@>8c02  * VDPWA
+    swpb r0
+    movb r0,@>8c02
+
+    li r3,32        * hw sprites left
+    li r5,sprite_table  * calculate end of sprite table
+    ai r5,192           * 12*4*4 (ENT_ENTSNUM is 12, 4 sprites per ENT, 4 bytes per sprite)
+    li r9,>8c00     * VDPWD
+
+    clr r6          * outer loop j
+outlp
+    li r4,sprite_table
+    mov @firsts,r8
+    a r6,r8         * first sprite index
+    sla r8,2        * first byte index
+    a r8,r4         * first sprite address
+
+    li r7,12        * inner loop i - 12 objects
+inlp
+    clr r8
+    movb *r4,r8
+    ci r8,>c000
+    jhe nodraw      * offscreen
+    movb *r4+,*r9   * VDPWD
+    movb *r4+,*r9   * VDPWD
+    movb *r4+,*r9   * VDPWD
+    movb *r4+,*r9   * VDPWD
+    dec r3          * count down hardware sprites
+    jeq sprdon      * no sprites left
+    jmp endin       * end of inner loop
+
+nodraw
+    inct r4         * skip sprite
+    inct r4         * 4 bytes
+
+endin
+    ai r4,12        * skip next three sprites
+    c r4,r5
+    jl nowrt
+    ai r4,-192       * roll back in table
+nowrt
+
+    dec r7          * count down loop
+    jne inlp        * not done
+
+outcnt
+    inc r6          * kind of has to count this way
+    ci r6,4         * done?
+    jne outlp
+
+sprdon
+    li r0,>d000     * end of sprite table flag (might overrun to 1B80)
+    movb r0,*r9     * VDPWD
+
+    mov @firsts,r0  * update first sprite
+    ai r0,8
+    ci r0,48        * total sprites in table - ENT_ENTSNUM*4
+    jl nowrap
+    ai r0,-48       * wrap
+nowrap
+    mov r0,@firsts
+
 *#ifdef ENABLE_SOUND
 *    // TODO: update sound engine (guess a push and a call will work, might not even need the push)
 *#endif
-
-*    // Since sprites are handled in a mirror table, we can just
-*    // force any other VDP access to disable interrupts. Most of it should
-*    // be for setups anyway. Then we can safely copy and rotate the sprite
-*    // table here. If we track how many sprites are active, we can even
-*    // deal with the 12 large sprites (48) instead of the hardware limit of 8 (32)
-*    // TOOD: not rotating yet
-    li r3,>80
-    li r2,sprite_table
-    mov @gSprite,r1
-    bl @vdpmemcpy
 
 *    // restore the GPLWS, turn ints back on, and return
     lwpi >83E0

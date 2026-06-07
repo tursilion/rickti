@@ -34,6 +34,8 @@
  */
 
 // there are four hardware sprites for every entity (ENTSNUM is 12, so this totals 52. Four bytes each makes 208)
+// TODO: why is it +1?
+// CAREFUL here - this *4 represents four sprites per entity, a sprite is 4 bytes (sprite_data_t)
 sprite_data_t sprite_table[(ENT_ENTSNUM+1)*4];
 
 // TODO: need to draw actual sprites... sprites are 32x32 (so four sprites each)

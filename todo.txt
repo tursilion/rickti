@@ -20,3 +20,8 @@ And stretch goals:
 The trick is finding compiler bugs when I didn't write the code. Hand optimization to my style may help.
 
 
+
+ent_ents[i].sprite, ent_ents[i].x, ent_ents[i].y
+
+spriteIndex (0xff = unset)
+lastSpriteDrawn (0xff = unset, but no need to check)
