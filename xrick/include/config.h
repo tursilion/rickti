@@ -24,9 +24,6 @@
 #define ENABLE_LOG
 #else
     #undef ENABLE_LOG
-    #ifdef EMSCRIPTEN
-        #undef ENABLE_LOG
-    #endif
 #endif
 
 /* joystick support */
@@ -38,23 +35,8 @@
 /* cheats support */
 #define ENABLE_CHEATS
 
-/* auto-defocus support */
-/* does seem to cause all sorts of problems on BeOS, Windows... */
-#undef ENABLE_FOCUS
-
-/* development tools */
-// Can never happen in this codebase, even if enabled, so we might as well delete it
-#undef ENABLE_DEVTOOLS
+/* debug support (only supported in Classic99 build */
 #define DEBUG /* see include/debug.h */
-
-/* zlib */
-#define NOZLIB
-#ifndef NOZLIB
-#define WITH_ZLIB
-#endif
-
-/* files */
-#undef USE_DATA_FILES
 
 /* bank switching */
 // bank switching - nOldBank is used to let a function restore the original bank

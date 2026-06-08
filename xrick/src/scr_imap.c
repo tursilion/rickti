@@ -20,7 +20,6 @@
 #include "sounds.h"
 
 #include "game.h"
-#include "rects.h"
 #include "draw.h"
 #include "control.h"
 #include "maps.h"
@@ -42,8 +41,6 @@ static U16 spx, spdx;         /* sprite x position and delta */
 static U16 spy, spdy;         /* sprite y position and delta */
 static U16 spbase, spoffs;    /* base, offset for sprite numbers table */
 static U16 seq = 0;            /* anim sequence */
-
-static rect_t anim_rect = { 120, 16, 64, 64, NULL }; /* anim rectangle */
 
 /*
  * prototypes
@@ -69,7 +66,7 @@ U16 screen_introMap(void)
 	{
 		case 0: /* initialize */
 			fb_clear();
-			sysvid_setGamma(0);
+			sysvid_setGamma(GAMMA_OFF);
 
 			tiles_setBank(0);
             nOldBank = nBank;
@@ -86,21 +83,14 @@ U16 screen_introMap(void)
 			drawsprite();
 			control_last = 0;
 
-			//game_rects = &draw_SCREENRECT;
-
 #ifdef ENABLE_SOUND
             nOldBank = nBank;
             SWITCH_IN_BANK12;
 			sounds_setMusic(map_maps[env_map].tune, 1);
             SWITCH_IN_BANK(nOldBank);
 #endif
-
-			seq = 1;
-			break;
-
-		case 1: /* fade-in */
-			if (fb_fadeIn())
-				seq = 10;
+            sysvid_setGamma(GAMMA_ON);
+			seq = 10;
 			break;
 
 		case 10:  /* top and bottom borders */
@@ -111,7 +101,6 @@ U16 screen_introMap(void)
 			else
 			{
 				drawtb();
-				game_rects = &anim_rect;
 				seq = 12;
 			}
 			break;
@@ -120,27 +109,21 @@ U16 screen_introMap(void)
 			anim();
 			drawcenter();
 			drawsprite();
-			game_rects = &anim_rect;
 			seq = 13;
 			break;
 
 		case 13:  /* all borders */
 			drawtb();
 			drawlr();
-			game_rects = &anim_rect;
 			seq = 10;
 			break;
 
 		case 20:  /* wait for key release */
-			if (!(control_status & CONTROL_FIRE))
-				seq = 21;
-			else
-				sys_sleep(50);
-			break;
-
-		case 21:
-			if (fb_fadeOut())
+			if (!(control_status & CONTROL_FIRE)) {
 				seq = 30;
+            } else {
+				sys_sleep(50);
+            }
 			break;
 	}
 
@@ -150,7 +133,7 @@ U16 screen_introMap(void)
 	if (seq == 30)
 	{
 		fb_clear();
-		sysvid_setGamma(255);
+		sysvid_setGamma(GAMMA_ON);
 		seq = 0;
 		return SCREEN_DONE;
 	}

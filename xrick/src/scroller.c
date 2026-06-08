@@ -25,8 +25,6 @@
 
 static U16 period;
 
-// TODO: Looks like sprites are 8 pixels too low when scrolling, also we get some garbled sprites
-
 /*
  * Scroll up
  *
@@ -94,8 +92,6 @@ U16 scroll_up(void)
     ents_paintAll();
     env_paintGame();
   }
-
-  game_rects = &draw_SCREENRECT;
 
   return SCROLL_RUNNING;
 }
@@ -167,8 +163,6 @@ U16 scroll_down(void)
     ents_paintAll();
     env_paintGame();
   }
-
-  game_rects = &draw_SCREENRECT;
 
   return SCROLL_RUNNING;
 }

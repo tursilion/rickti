@@ -43,8 +43,6 @@ extern U16 env_submap;
 extern U16 env_changeSubmap; /* change submap request (TRUE, FALSE) */
 
 extern void env_paintGame(void);
-extern void env_paintXtra(void);
-extern void env_clearGame(void);
 
 #endif
 

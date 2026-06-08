@@ -78,7 +78,6 @@ U16 screen_getname(void) {
         memset(&name[i], '@', 10);
 
         x = y = p = 0;
-        game_rects = &draw_SCREENRECT;
         seq = 1;
     }
 
@@ -98,7 +97,7 @@ U16 screen_getname(void) {
             tiles_paintListAt((U8*)"Y@Z@.@@@\074\373\374\375\376", TOPLEFT_X, TOPLEFT_Y + 64);
             name_draw();
             pointer_show(TRUE);
-            sysvid_setGamma(255);
+            sysvid_setGamma(GAMMA_ON);
             seq = 2;
             break;
 
@@ -227,10 +226,7 @@ U16 screen_getname(void) {
 static void
 pointer_show(U16 show) {
     VDP_INT_DISABLE;
-
-    tiles_paintAt(show == TRUE ? TILE_POINTER : '@',
-        TOPLEFT_X + x * 8 * 2, TOPLEFT_Y + y * 8 * 2 + 8);
-
+    vdpchar(gImage + fb_at(TOPLEFT_X + x * 8 * 2, TOPLEFT_Y + y * 8 * 2 + 8), show == TRUE ? TILE_POINTER : '@');
     VDP_INT_ENABLE;
 }
 
@@ -277,7 +273,7 @@ name_draw(void) {
     if (p > 0) vdpmemcpy(fb_at(NAMEPOS_X, NAMEPOS_Y) + gImage, name, p);
     if (p < 10) vdpmemset(fb_at(NAMEPOS_X + p, NAMEPOS_Y) + gImage, TILE_CURSOR, 10 - p);
     vdpmemset(fb_at(NAMEPOS_X, NAMEPOS_Y + 8) + gImage, '@', 10);
-    tiles_paintAt(TILE_POINTER, NAMEPOS_X + 8 * (p < 9 ? p : 9), NAMEPOS_Y + 8);
+    vdpchar(gImage + fb_at(NAMEPOS_X + 8 * (p < 9 ? p : 9), NAMEPOS_Y + 8), TILE_POINTER);
 #endif
 
     VDP_INT_ENABLE;

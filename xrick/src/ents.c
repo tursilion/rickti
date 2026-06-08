@@ -29,7 +29,6 @@
 #include "e_bonus.h"
 #include "e_box.h"
 #include "e_sbonus.h"
-#include "rects.h"
 #include "maps.h"
 #include "draw.h"
 #include "tiles.h"
@@ -43,8 +42,6 @@
  * global vars
  */
 ent_t ent_ents[ENT_ENTSNUM + 1];
-rect_t* ent_rects = NULL;
-
 
 /*
  * prototypes
@@ -326,9 +323,6 @@ ent_actvis(U16 frow, U16 lrow) {
         ent_ents[e].offsy = 0;
         ent_ents[e].ylow = 0;
 
-        // TODO: can remove all references to .front
-        ent_ents[e].front = FALSE;
-
         // to make sure the correct sprite is loaded, if it's a type three then
         // just run the cycle for it once.
         if (ent_ents[e].n >= 0x18) {
@@ -354,9 +348,6 @@ void ents_clearAll() {
 // Don't use the rect system, it's not compiled in.
 void ents_paintAll() {
     U16 i;
-
-    /* clear the sprite table */
-    //sprites_clear();  // TODO: shouldn't need this anymore
 
     /* foreground loop : draw all entities that are visible */
     for (i = 0; ent_ents[i].n != 0xff; i++)

@@ -15,7 +15,6 @@
 #define _DRAW_H
 
 #include "ricksystem.h"
-#include "rects.h"
 
 /* map coordinates of the screen */
 #define DRAW_XYMAP_SCRLEFT (-0x0020)
@@ -29,12 +28,6 @@
 #define MAPS_FBY (0x0040)
 /* y-position of the top of the hidden botton of the map, expressed in FIXME */
 #define MAPS_FBB (0x0100)
-
-/* */
-extern rect_t draw_STATUSRECT;
-
-/* */
-extern rect_t draw_SCREENRECT;
 
 #endif /* _DRAW_H */
 

@@ -26,8 +26,6 @@ U16 syskbd_down = 'X';
 U16 syskbd_left = 'S';
 U16 syskbd_right = 'D';
 U16 syskbd_pause = 'P';
-U16 syskbd_end = '.';
-U16 syskbd_xtra = ',';
 U16 syskbd_fire = ' ';
 
 /* eof */

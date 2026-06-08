@@ -30,34 +30,20 @@
 #include "e_sbonus.h"
 #include "e_them.h"
 #include "screens.h"
-#include "rects.h"
 #include "scroller.h"
 #include "control.h"
-#include "data.h"
 #include "fb.h"
 #include "tiles.h"
 #include "draw.h"
-
-#ifdef EMSCRIPTEN
-#include "emscripten.h"
-#endif
-
-#ifdef ENABLE_DEVTOOLS
-#include "devtools.h"
-#endif
-
 
 /*
  * local typedefs
  */
 typedef enum {
-#ifdef ENABLE_DEVTOOLS
-  DEVTOOLS,
-#endif
   MAIN_INTRO, MAP_INTRO,
   INIT,
   INIT_MAP, INIT_SUBMAP,
-  FADEIN__CTRL_ACTION, FADEOUT__MAP_INTRO, FADEOUT__GAMEOVER,
+  FADEOUT__GAMEOVER,
   PAUSE_PRESSED1, PAUSE_PRESSED1B, PAUSED, PAUSE_PRESSED2,
   CTRL_ACTION, CTRL_PAUSE, CTRL_RICK, PAINT, CTRL_SCROLL,
   NEXT_SUBMAP, NEXT_MAP,
@@ -71,7 +57,6 @@ typedef enum {
  */
 U16 game_period = 0;
 U16 game_waitevt = FALSE;
-rect_t *game_rects = NULL;
 
 U16 game_dir = 0;
 
@@ -101,8 +86,6 @@ static U32 tm, tmx;
 static void game_cycle(void);
 static void init(void);
 static void restart(void);
-static void loadData(void);
-static void freeData(void);
 static void game_paintEntities();
 static void game_save(void);
 
@@ -118,9 +101,6 @@ void game_toggleCheat(U16 nbr)
 #ifdef ENABLE_CHEATS
 	if (game_state != MAIN_INTRO && game_state != MAP_INTRO &&
 		game_state != GAMEOVER && game_state != GETNAME &&
-#ifdef ENABLE_DEVTOOLS
-		game_state != DEVTOOLS &&
-#endif
 		game_state != EXIT)
 	{
 		switch (nbr)
@@ -140,12 +120,7 @@ void game_toggleCheat(U16 nbr)
 				env_highlight = ~env_highlight;
 			break;
 		}
-
-		env_paintXtra(); /* fixme -- shouldn't this be done elswhere? */
-
-		/* FIXME this should probably only raise a flag ... */
-		/* plus we only need to update INFORECT not the whole screen */
-		sysvid_update(&draw_SCREENRECT);
+		sysvid_update();
 	}
 #endif
 }
@@ -165,47 +140,22 @@ game_run(char *path)
 {
     (void)path;
 
-#ifdef USE_DATA_FILES
-    data_setpath(path);
-#endif
-	loadData(); /* load cached data */
-
 	game_period = sysarg_args_period ? sysarg_args_period : GAME_PERIOD;
 	tm = sys_gettime();
 	game_state = MAIN_INTRO;
 
 	/* main loop */
-#ifdef EMSCRIPTEN
-	// callback, fps, simulate_infinite_loop
-	//
-	// "If called on the main browser thread, setting 0 or a negative value as the fps will
-	// use the browser’s requestAnimationFrame mechanism to call the main loop function."
-	// "This is HIGHLY recommended if you are doing rendering, as the browser’s
-	// requestAnimationFrame will make sure you render at a proper smooth rate that lines
-	// up properly with the browser and monitor."
-	//
-	// if fps == -1 then it uses the browser requestAnimatedFrame() period - what if I want
-	// to be slower? is it better to pass a fps here, or to just do nothing (NOT wait!) in
-	// game_loop?
-	// 
-	int fps = (24 * GAME_PERIOD) / game_period;
-	emscripten_set_main_loop(game_loop, fps, 1);
-#else
-	while (game_state != EXIT)
+    while (game_state != EXIT)
 	{
 		game_loop();
 	}
-#endif
 
 	game_exit();
 }
 
 static void game_exit(void)
 {
-	freeData(); /* free cached data */
-#ifdef USE_DATA_FILES
-	data_closepath();
-#endif
+    // TODO: put the F18A reset here
 }
 
 static void game_loop(void)
@@ -213,23 +163,10 @@ static void game_loop(void)
 	/* timer */
     if ((game_state != SCROLL_DOWN) && (game_state != SCROLL_UP)) {
         // this if doesn't help right now - scrolling is too slow, but it'll do
-#ifdef EMSCRIPTEN
-	    // nothing - emscripten should invoke the loop every game_period
-	    // and we should not sys_sleep in emscripten apps
-	    // (see game_run above)
-#else
 	    // sys_gettime() and sys_sleep() use milliseconds
 	    tmx = tm; tm = sys_gettime(); tmx = tm - tmx;
 	    if (tmx < game_period) sys_sleep(game_period - (tmx&0xffff));
-#endif
     }
-
-	/* video */
-	/*DEBUG*//*game_rects=&draw_SCREENRECT;*//*DEBUG*/
-	// FIXME:??
-	//sysvid_update(fb_updatedRects);
-	sysvid_update(game_rects);
-	draw_STATUSRECT.next = NULL;  /* FIXME freerects should handle this */
 
 	/* sound: nothing to do here, everything is managed via callbacks */
 
@@ -247,15 +184,6 @@ static void game_loop(void)
 	 * - updates fb_updatedRects
 	 */
 	game_cycle();
-
-#ifdef EMSCRIPTEN
-	if (game_state == EXIT)
-	{
-		game_exit();
-		sys_shutdown();
-		emscripten_cancel_main_loop();
-	}
-#endif
 }
 
 
@@ -265,8 +193,6 @@ static void game_loop(void)
  * game_cycle
  *
  * This function loops forever: use 'return' when a frame is ready.
- * When returning, game_rects must contain every parts of the buffer
- * that have been modified.
  */
 static void game_cycle(void)
 {
@@ -281,25 +207,6 @@ static void game_cycle(void)
 		//}
 
 		switch (game_state) {
-
-
-
-#ifdef ENABLE_DEVTOOLS
-		case DEVTOOLS:
-
-			switch (devtools_run()) {
-			case SCREEN_RUNNING:
-				return;
-			case SCREEN_DONE:
-				game_state = INIT_GAME;
-				break;
-			case SCREEN_EXIT:
-				game_state = EXIT;
-				return;
-			}
-		break;
-#endif
-
 
 		case MAIN_INTRO:
 
@@ -371,23 +278,10 @@ static void game_cycle(void)
 				maps_paint();                     /* draw the map onto the buffer */
 				//ents_paintAll();
 				env_paintGame();              /* draw the status bar onto the buffer */
-				env_paintXtra();                   /* draw the info bar onto the buffer */
-				game_rects = &draw_SCREENRECT;  /* request full buffer refresh */
-				game_state = FADEIN__CTRL_ACTION;
+                sysvid_setGamma(GAMMA_ON);
+                game_state = CTRL_ACTION;
 			}
 			break;
-
-
-
-		case FADEIN__CTRL_ACTION:
-
-			if (fb_fadeIn())
-			{
-				game_state = CTRL_ACTION;
-			}
-			return;
-
-
 
 		case PAUSE_PRESSED1:
 
@@ -582,20 +476,9 @@ static void game_cycle(void)
 			    map_frow = (U16)map_maps[env_map].row;
 			    env_submap = map_maps[env_map].submap;
             SWITCH_IN_BANK(nOldBank);
-
-			game_state = FADEOUT__MAP_INTRO;
+            sysvid_setGamma(GAMMA_OFF);
+			game_state = MAP_INTRO;
 			break;
-
-
-
-		case FADEOUT__MAP_INTRO:
-
-			if (fb_fadeOut())
-			{
-				game_state = MAP_INTRO;
-			}
-			return;
-
 
 
 		case INIT_SUBMAP:
@@ -607,8 +490,6 @@ static void game_cycle(void)
 			maps_paint();                     /* draw the map onto the buffer */
 			ents_paintAll();
 			env_paintGame();              /* draw the status bar onto the buffer */
-			env_paintXtra();
-			game_rects = &draw_SCREENRECT;  /* request full screen refresh */
 			game_state = CTRL_ACTION;
 			return;
 
@@ -652,8 +533,8 @@ static void game_cycle(void)
 
 		case FADEOUT__GAMEOVER:
 
-			if (fb_fadeOut())
-				game_state = GAMEOVER;
+            sysvid_setGamma(GAMMA_OFF);
+        	game_state = GAMEOVER;
 			return;
 
 
@@ -740,7 +621,6 @@ init(void)
 	    map_connect[i].dir != RIGHT))
       i++;
     map_frow = map_connect[i].rowin - 0x10; // WHY 0x10??
-    ent_ents[1].y = 0x10 << 3; // FIXME? (TODO: doesn't this just get replaced below?)
   }
 
   ent_ents[1].x = map_maps[env_map].x;
@@ -749,7 +629,6 @@ init(void)
   ent_ents[1].h = 0x15;
   ent_ents[1].n = 0x01;
   ent_ents[1].sprite = 0x01;
-  ent_ents[1].front = FALSE;
   ent_ents[1].spriteIndex = 0xff;
   ent_ents[1].lastSpriteDrawn = 0xff;
   ent_ents[ENT_ENTSNUM].n = 0xFF;
@@ -768,16 +647,8 @@ init(void)
  */
 static void game_paintEntities()
 {
-	static rect_t *r;
-
-	env_clearGame();  /* clear the status bar */
 	ents_paintAll();  /* draw all entities onto the buffer */
 	env_paintGame();  /* draw the status bar onto the buffer*/
-
-	/* fixme: rectangle management!!*/
-	// should just do: fb_touchRect(env_GameRect)
-	r = &draw_STATUSRECT; r->next = ent_rects;  /* refresh status bar too */
-	game_rects = r;   /* take care to cleanup draw_STATUSRECT->next later! */
 }
 
 
@@ -804,8 +675,7 @@ static void restart(void)
 	game_save();
 	ent_clprev();
 	maps_paint();
-	env_paintGame(); // and Xtra???
-	game_rects = &draw_SCREENRECT; //fb_touchFb();
+	env_paintGame();
 }
 
 
@@ -821,35 +691,5 @@ static void game_save(void)
   e_rick_save();
   save_map_row = map_frow;
 }
-
-
-
-/*
- * loadData
- *
- * loads data into cache.
- */
-static void loadData()
-{
-#ifdef ENABLE_SOUND
-	sounds_load();
-#endif
-}
-
-
-
-/*
- * freeData
- *
- * free cached data
- */
-static void freeData()
-{
-#ifdef ENABLE_SOUND
-	sounds_free();
-#endif
-}
-
-
 
 /* eof */

@@ -27,8 +27,7 @@
 #include "sprites.h"
 #endif
 
-void sysvid_update(void *rects) { 
-    (void)rects; 
+void sysvid_update() { 
 #ifdef CLASSIC99
     // we don't have a interrupt sprite copy loop in Classic99, so copy it here
     // Well, the first part of it anyway
@@ -89,10 +88,7 @@ void sysvid_update(void *rects) {
 #endif
 }
 
-void sysvid_shutdown(void) { }  // nothing to really do here
-
-// game often uses 0 and 255 to turn screen on and off, so we could implement that!
-// all non zero is treated as visible
+// 0 is off, anything else is on
 void sysvid_setGamma(U16 g) {
     VDP_INT_DISABLE;
 
@@ -105,6 +101,14 @@ void sysvid_setGamma(U16 g) {
     VDP_SET_REGISTER(1, VDP_REG1_KSCAN_MIRROR);
 
     VDP_INT_ENABLE;
+}
+
+// copy to the three tables of the bitmap screen
+// TODO: if not F18A
+void bitmapcharcopy(U16 adr, const U8* buf, U16 size) {
+    vdpmemcpy(adr, buf, size);
+    vdpmemcpy(adr+0x800, buf, size);
+    vdpmemcpy(adr+0x1000, buf, size);
 }
 
 

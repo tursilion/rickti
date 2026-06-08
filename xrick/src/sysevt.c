@@ -30,12 +30,8 @@
 #include "control.h"
 #include "draw.h"
 
-#define SYSJOY_RANGE 3280
-
 #define SETBIT(x,b) x |= (b)
 #define CLRBIT(x,b) x &= ~(b)
-
-
 
 /*
  * Scan inputs, return non-zero if any were detected

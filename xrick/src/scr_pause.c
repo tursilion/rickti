@@ -47,7 +47,6 @@ screen_pause(U16 pause)
 		ents_paintAll();
 		env_paintGame();
 	}
-	game_rects = &draw_SCREENRECT;
 }
 
 

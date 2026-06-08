@@ -27,9 +27,6 @@ typedef struct {
   const U8* pixels;
 } img_t;
 
-/* the splash image */
-extern img_t *IMG_SPLASH;
-
 /*
  * paints image <img> onto the frame buffer.
  * the image must have the appropriate size.

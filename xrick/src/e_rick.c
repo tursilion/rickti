@@ -109,7 +109,6 @@ e_rick_gozombie(void)
 	offsy = -0x0400;
 	offsx = (E_RICK_ENT.x > 0x80 ? -3 : +3);
 	ylow = 0;
-	E_RICK_ENT.front = TRUE;
 }
 
 
@@ -559,7 +558,6 @@ void e_rick_restore(void)
 {
 	E_RICK_ENT.x = save_x;
 	E_RICK_ENT.y = save_y;
-	E_RICK_ENT.front = FALSE;
 	if (save_crawl)
 		E_RICK_STSET(E_RICK_STCRAWL);
 	else

@@ -329,14 +329,7 @@ void maps_paintRect(U16 x, U16 y, U16 width, U16 height)
 	for (r = 0; r < height; r++) /* for each tile row */
 	{
 		fb = fb_at(x_fb, 8 + y_fb + r * 8); /* FIXME +8? */
-#if 0
-		for (c = 0; c < width; c++) /* for each tile column */
-		{
-			fb = tiles_paint(map_map[y + r][x + c], fb);
-		}
-#else
         vdpmemcpy(fb+gImage, &map_map[y+r][x], width);
-#endif
 	}
     VDP_INT_ENABLE;
 }

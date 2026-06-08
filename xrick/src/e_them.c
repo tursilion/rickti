@@ -71,7 +71,6 @@ void
 e_them_gozombie(U16 e) {
 #define offsx c1
     ent_ents[e].n = 0x47;  /* zombie entity */
-    ent_ents[e].front = TRUE;
     ent_ents[e].offsy = -0x0400;
 #ifdef ENABLE_SOUND
     syssnd_play(WAV_DIE, 1);

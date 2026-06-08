@@ -55,8 +55,7 @@ U16 screen_gameover(void)
 		tm = sys_gettime();
 		tiles_paintListAt((U8*)screen_gameovertxt, 88, 80);
 
-		game_rects = &draw_SCREENRECT;
-        sysvid_setGamma(255);
+        sysvid_setGamma(GAMMA_ON);
 		seq = 2;
 		break;
 

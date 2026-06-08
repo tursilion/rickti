@@ -14,27 +14,14 @@
 #ifndef _SYSVID_H
 #define _SYSVID_H
 
-#include "rects.h"
 #include "img.h"
+// was originally 255 in original game (to allow fade in from 0-255)
+#define GAMMA_ON 1
+#define GAMMA_OFF 0
 
-#define SYSVID_ZOOM 2
-#define SYSVID_WIDTH 320
-#define SYSVID_HEIGHT 200
-
-extern void sysvid_init(U16 width, U16 height);
-extern void sysvid_shutdown(void);
-extern void sysvid_update(rect_t*);
-extern void sysvid_zoom(S16);
-extern void sysvid_toggleFullscreen(void);
-extern void sysvid_setDisplayPalette(void);
-//extern void sysvid_setPalette(img_color_t*, U16);
-extern void sysvid_setPaletteFromImg(img_t* img);
-extern void sysvid_setPaletteFromRGB(U8* r, U8* g, U8* b, U16 n);
-
-extern U8* sysvid_fb;  /* frame buffer */
+extern void sysvid_update(void);
 extern void sysvid_setGamma(U16 g);
-//extern U16 sysvid_fadeIn(void);
-//extern U16 sysvid_fadeOut(void);
+extern void bitmapcharcopy(U16 adr, U8* buf, U16 size);
 
 #endif /* _SYSVID_H */
 

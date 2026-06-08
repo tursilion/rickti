@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="E Includes">
-      <UniqueIdentifier>{d02032db-4a6b-4f06-8283-517ee6f4566e}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\config.h">
@@ -24,13 +21,7 @@
     <ClInclude Include="include\control.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\data.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\debug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\devtools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\draw.h">
@@ -78,9 +69,6 @@
     <ClInclude Include="include\pics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\rects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\screens.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -102,19 +90,10 @@
     <ClInclude Include="include\tiles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\unzip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\sysarg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\sysevt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\sysjoy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\syskbd.h">
@@ -124,6 +103,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sysarg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -138,18 +120,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\dat_snd.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dat_spritesST.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dat_tilesST.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\data.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\devtools.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\draw.c">
@@ -194,9 +164,6 @@
     <ClCompile Include="src\maps.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rects.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\scr_gameover.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -212,22 +179,13 @@
     <ClCompile Include="src\scr_pause.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scr_xrick.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\scroller.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\sprites.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\sysarg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\sysevt.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sysjoy.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\syskbd.c">
@@ -243,9 +201,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\tiles.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\unzip.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\util.c">
@@ -299,6 +254,9 @@
     <ClCompile Include="src\dat_ents2.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\sysarg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xrick.rc">
@@ -317,48 +275,6 @@
     <None Include="src\linker.ld" />
     <None Include="src\Makefile" />
     <None Include="src\crt0_bankcart.assembly" />
-    <None Include="src\img_icon.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\img_splash.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\sdlcodes.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_bomb.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_bombshht.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_bonus.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_box.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_bullet.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_ddding.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_ding.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_jump.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_shht.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_waa.e">
-      <Filter>E Includes</Filter>
-    </None>
-    <None Include="src\wav_walk.e">
-      <Filter>E Includes</Filter>
-    </None>
     <None Include="src\vdpint.assembly" />
   </ItemGroup>
 </Project>

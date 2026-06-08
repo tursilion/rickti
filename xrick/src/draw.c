@@ -127,12 +127,5 @@ But not much of that really applies to the TI port ;)
 #define DRAW_STATUS_LIVES_X 0xF0
 #define DRAW_STATUS_Y 0
 
-rect_t draw_STATUSRECT = {
-  DRAW_STATUS_SCORE_X, DRAW_STATUS_Y,
-  DRAW_STATUS_LIVES_X + 6 * 8 - DRAW_STATUS_SCORE_X, 8,
-  NULL
-};
-rect_t draw_SCREENRECT = { 0, 0, FB_WIDTH, FB_HEIGHT, NULL };
-
 
 /* eof */

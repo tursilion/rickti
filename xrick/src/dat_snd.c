@@ -15,6 +15,8 @@
 
 #ifdef ENABLE_SOUND
 
+// TODO: these used to live in the .e files, not going to use them this way
+// Hopefully the names line up with the wav files I have..
 sound_t *WAV_WAA;
 sound_t *WAV_BOMB;
 sound_t *WAV_BULLET;

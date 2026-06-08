@@ -42,7 +42,6 @@ e_bonus_action(U16 e)
       map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
       ent_ents[e].seq = 1;
       ent_ents[e].sprite = 0xad;
-      ent_ents[e].front = TRUE;
       ent_ents[e].y -= 0x08;
     }
   }

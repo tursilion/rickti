@@ -17,15 +17,8 @@
 
 #ifdef ENABLE_SOUND
 
-#include "sysarg.h"
 #include "game.h"
 #include "debug.h"
-#include "data.h"
-
-#ifdef EMSCRIPTEN
-#define SDL_mutexP(m)
-#define SDL_mutexV(m)
-#endif
 
 #define ADJVOL(S) (((S)*sndVol)/SDL_MIX_MAXVOLUME)
 
@@ -154,15 +147,6 @@ syssnd_init(void)
       );
     return;
   }
-
-#ifndef EMSCRIPTEN
-  sndlock = SDL_CreateMutex();
-  if (sndlock == NULL) {
-    IFDEBUG_AUDIO(sys_printf("xrick/audio: can not create lock\n"););
-    SDL_CloseAudio();
-    return;
-  }
-#endif
 
   if (sysarg_args_vol != 0) {
     sndUVol = sysarg_args_vol;

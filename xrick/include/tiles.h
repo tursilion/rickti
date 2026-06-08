@@ -21,8 +21,6 @@
  */
 void tiles_setBank(U16);
 void tiles_setFilter(U16);
-int tiles_paint(U16, int);
-void tiles_paintAt(U16, U16, U16);
 int tiles_paintList(U8* , int);
 void tiles_paintListAt(U8* , U16, U16);
 
@@ -32,7 +30,7 @@ void tiles_paintListAt(U8* , U16, U16);
  * a tile is 8x8 pixels.
  * PC: CGA encoding = 2 bits per pixel, one U16 per line.
  * ST: encoding = 4 bits per pixel, one U32 per line.
- * TI: bitmap encoding, 8 bytes pattern then 8 bytes color - TODO but might not use this...
+ * TI: bitmap encoding, 8 bytes pattern then 8 bytes color in two separate tables, tile_t here is one byte, not a full tile
  */
 typedef U8 tile_t;
 

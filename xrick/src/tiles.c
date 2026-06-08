@@ -15,6 +15,7 @@
 #include "config.h"
 #include "tiles.h"
 #include "fb.h"
+#include "sysvid.h"
 
 #include <vdp.h>
 
@@ -47,15 +48,11 @@ void tiles_setBank(U16 bank)
     
     // first patterns
     SWITCH_IN_BANK8;
-    vdpmemcpy(gPattern, tiles_banks_pat+off, 0x800);
-    vdpmemcpy(gPattern+0x800, tiles_banks_pat+off, 0x800);
-    vdpmemcpy(gPattern+0x1000, tiles_banks_pat+off, 0x800);
+    bitmapcharcopy(gPattern, tiles_banks_pat+off, 0x800);
 
     // then color
     SWITCH_IN_BANK9;
-    vdpmemcpy(gColor, tiles_banks_col+off, 0x800);
-    vdpmemcpy(gColor+0x800, tiles_banks_col+off, 0x800);
-    vdpmemcpy(gColor+0x1000, tiles_banks_col+off, 0x800);
+    bitmapcharcopy(gColor, tiles_banks_col+off, 0x800);
 
     // restore bank
     SWITCH_IN_BANK(nOldBank);
@@ -72,45 +69,6 @@ void tiles_setFilter(U16 filter)
     (void)filter;
 }
 
-
-
-/*
- * tiles_paint
- *
- * paints ONE tile <tileNumber> at the position indicated by <fb>.
- * returns next <fb> value.
- */
-// TODO: it's likely everything that calls this can be replaced with a vdpmemcpy or hchar or vchar
-// CALL WITH INTS DISABLED
-// TODO: JUST INLINE THIS
-int tiles_paint(U16 tileNumber, int fb)
-{
-    // TODO: could optimize by not converting to/from pointer
-    U16 f = fb&0x3fff;     // I know this looks wrong, but fb is a VDP address, not a CPU one
-
-    // TODO: We don't want to "paint tiles", we use the loaded tle and just place it
-    vdpchar(gImage+f, tileNumber&0xff);
-
-	return fb + 1;
-}
-
-
-
-/*
- * tiles_paintAt
- *
- * paints tile <tileNumber> at the position indicated by <x>, <y>.
- * <x>, <y> are fb-coordinates.
- */
-// CALL WITH INTS DISABLED
-// TODO: JUST INLINE THIS
-void tiles_paintAt(U16 tileNumber, U16 x, U16 y)
-{
-	tiles_paint(tileNumber, fb_at(x, y));
-}
-
-
-
 /*
  * tiles_paintList
  *
@@ -124,9 +82,11 @@ int tiles_paintList(U8* tilesList, int fb)
 {
 	int f;
 
-	f = fb;
+	f = fb&0x3fff;
 
     VDP_INT_DISABLE;
+
+    VDP_SET_ADDRESS_WRITE(f+gImage);
 
 	while (1)
 	{
@@ -138,17 +98,17 @@ int tiles_paintList(U8* tilesList, int fb)
 		if (*tilesList == TILES_CRLF) /* crlf */
 		{
 			fb += 32;
-			f = fb;
+			f = fb&0x3fff;
+            VDP_SET_ADDRESS_WRITE(f+gImage);
 			tilesList++;
 			continue;
 		}
 
 		/* else paint */
-		f = tiles_paint(*(tilesList++), f);
+        VDPWD(*(tilesList++));
+        ++f;
 	}
 }
-
-
 
 /*
  * tiles_paintListAt

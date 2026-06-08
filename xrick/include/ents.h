@@ -16,8 +16,6 @@
 
 #include "ricksystem.h"
 
-#include "rects.h"
-
 extern void ents_paintAll();
 
 // this is only used in e_sbonus.c. Everywhere else uses ent_ents[1] literally
@@ -27,9 +25,7 @@ extern void ents_paintAll();
 #define ENT_NBR_SPRSEQ 0x88
 #define ENT_NBR_MVSTEP 0x310
 
-// TODO: TI issue - we can only support 8 sprites since each needs 4 hardware sprites
-// Force flicker or what? Guess we'll see. Maybe we should have done it the spectrum way
-// and drawn, but whatever...
+// Note: TI only has 32 sprites, and 4 per line, but each ent is 2x2 sprites
 #define ENT_ENTSNUM 0x0c
 
 /*
@@ -87,7 +83,6 @@ typedef struct {
   U16 prev_x;    /* new */
   U16 prev_y;    /* new */
   U16 prev_s;     /* new */
-  U16 front;      /* new */
   U16 trigsnd;    /* new */
   U16 spriteIndex;  /* psuedo sprite index assigned (0xff = not assigned) */
   U16 lastSpriteDrawn; /* sprite number last uploaded to VRAM */
@@ -107,14 +102,12 @@ typedef struct {
 
 extern ent_t ent_ents[ENT_ENTSNUM + 1];
 extern const entdata_t ent_entdata[ENT_NBR_ENTDATA];
-extern rect_t *ent_rects;
 extern U16 ent_sprseq[ENT_NBR_SPRSEQ];
 extern const mvstep_t ent_mvstep[ENT_NBR_MVSTEP];
 
 extern void delete_ent(U16);
 extern void ent_reset(void);
 extern void ent_actvis(U16, U16);
-extern void ent_draw(void);
 extern void ent_clprev(void);
 extern void ent_action(void);
 

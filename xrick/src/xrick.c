@@ -13,9 +13,7 @@
 
 #include "config.h"
 #include "ricksystem.h"
-#include "sysarg.h"
 #include "sysvid.h"
-#include "sysjoy.h"
 #include "game.h"
 #include "fb.h"
 #include "sprites.h"
@@ -158,12 +156,6 @@ sys_init(int argc, char** argv)
 #endif                            
     VDP_CLEAR_VBLANK;             
                                   
-    sysarg_init(0, 0); 
-                       
-#ifdef ENABLE_JOYSTICK
-	sysjoy_init();
-#endif
-
 #ifdef ENABLE_SOUND
 	if (sysarg_args_nosound == 0)
 		syssnd_init();
@@ -184,13 +176,6 @@ sys_shutdown(void)
 #ifdef ENABLE_SOUND
 	syssnd_shutdown();
 #endif
-
-#ifdef ENABLE_JOYSTICK
-	sysjoy_shutdown();
-#endif
-
-	sysvid_shutdown();
-
 }
 
 
