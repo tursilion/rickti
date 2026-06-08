@@ -8,11 +8,13 @@ And stuff I deliberately need to deal with:
 - high score screen is disabled to save memory (less than 100 bytes needed)
 - top line status still has no solution
 - need to implement sound (that will require a lot more than 100 bytes, but there is bank memory free)
+- color sprites?
 
 And stretch goals:
 - fix those odd pixels on the title page
-- make climbable tiles more visible in sets 1 and 3 (ok in egypt)
+- make climbable tiles more visible in set 1 (ok in egypt, and I don't think the other two levels have any)
 - F18A graphics (this will likely require going to 256k)
+- gram save for ubergrom support (for high scores)
     
 The trick is finding compiler bugs when I didn't write the code. Hand optimization to my style may help.
 
