@@ -21,7 +21,7 @@
 
 extern void sysvid_update(void);
 extern void sysvid_setGamma(U16 g);
-extern void bitmapcharcopy(U16 adr, U8* buf, U16 size);
+extern void bitmapcharcopy(U16 adr, const U8* buf, U16 size);
 
 #endif /* _SYSVID_H */
 
