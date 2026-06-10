@@ -23,7 +23,7 @@
 #endif
 
 int sysarg_args_period = 0;
-int sysarg_args_map = 3;
+int sysarg_args_map = 0;
 int sysarg_args_submap = 0;
 
 

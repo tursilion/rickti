@@ -629,11 +629,14 @@ void e_them_t3_action2(U16 e) {
             i = ent_sprseq[ent_ents[e].sprbase];
         }
         ent_ents[e].sprite = i;
-        if (ent_ents[e].sprite == 0) {
+        // 0xff is meant to be 'repeat' but seems the last screen
+        // can land there, which is screwing up my cache logic
+        if ((ent_ents[e].sprite == 0) || (ent_ents[e].sprite == 0xff)) {
             // we need to clear the sprite cache
             U16 n = ent_ents[e].n;
             delete_ent(e);
             ent_ents[e].n = n;
+            ent_ents[e].sprite = 0;
         }
 
         if (ent_ents[e].sproffs != 0) {  /* awake */

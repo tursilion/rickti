@@ -23,6 +23,7 @@
 #include "fb.h"
 #include "sysvid.h"
 #include <vdp.h>
+#include <string.h>
 
 /*
  * local vars

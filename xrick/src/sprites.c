@@ -139,6 +139,13 @@ void sprites_paint2(U16 entityNumber) {
 	U16 x_fb, y_fb;
 	const U16 width = 0x20, height = 0x15;
 
+    if (env_highlight) {
+        if (ent_ents[entityNumber].sprite == 0) {
+            // for highlight, just load one of the explosion sprites
+            ent_ents[entityNumber].sprite = 36;
+        }
+    }
+
 	/* get map/px */
 	x_map = ent_ents[entityNumber].x;
 	y_map = ent_ents[entityNumber].y;
