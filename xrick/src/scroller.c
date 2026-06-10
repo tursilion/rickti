@@ -23,7 +23,20 @@
 #include "maps.h"
 #include "ents.h"
 
-static U16 period;
+static U16 period = 0;
+static void (*myasmscrup)(void*,void*,void*) = NULL;
+static void (*myasmscrdn)(void*,void*,void*) = NULL;
+
+/* load the asm to scratchpad */
+void scroll_init(void)
+{
+#ifndef CLASSIC99
+    void *pDest = (void*)0x8340;
+    memcpy(pDest, asmscrup, (U8*)&asmscrend-(U8*)&asmscrup);
+    myasmscrup = (void(*)(void*,void*,void*))0x8340;
+    myasmscrdn = (void(*)(void*,void*,void*))0x834A;
+#endif
+}
 
 /*
  * Scroll up
@@ -31,7 +44,7 @@ static U16 period;
  */
 U16 scroll_up(void)
 {
-  U16 i, j;
+  U16 i;
   static U16 n = 0;
 
   /* last call: restore */
@@ -48,15 +61,16 @@ U16 scroll_up(void)
   }
 
   /* translate map */
+#ifdef CLASSIC99
   for (i = MAP_ROW_SCRTOP; i < MAP_ROW_HBBOT; i++) {
-#if 0
-    for (j = 0x00; j < 0x20; j++) {
-      map_map[i][j] = map_map[i + 1][j];
-    }
-#else
       memcpy(map_map[i], map_map[i+1], 32);
-#endif
   }
+#else
+  void *dest = &map_map[MAP_ROW_SCRTOP];
+  void *src = &map_map[MAP_ROW_SCRTOP+1];
+  void *end = &map_map[MAP_ROW_HBBOT];
+  myasmscrup(dest, src, end);
+#endif
 
   /* translate entities */
   for (i = 0; ent_ents[i].n != 0xFF; i++) {
@@ -102,7 +116,7 @@ U16 scroll_up(void)
  */
 U16 scroll_down(void)
 {
-  U16 i, j;
+  U16 i;
   static U16 n = 0;
 
   /* last call: restore */
@@ -119,15 +133,16 @@ U16 scroll_down(void)
   }
 
   /* translate map */
+#ifdef CLASSIC99
   for (i = MAP_ROW_SCRBOT; i > MAP_ROW_HTTOP; i--) {
-#if 0
-    for (j = 0x00; j < 0x20; j++) {
-      map_map[i][j] = map_map[i - 1][j];
-    }
-#else
       memcpy(map_map[i], map_map[i-1], 32);
-#endif
   }
+#else
+  void *src = &map_map[MAP_ROW_SCRBOT-1];
+  void *dest = &map_map[MAP_ROW_SCRBOT];
+  void *end = &map_map[MAP_ROW_HTTOP];
+  myasmscrdn(dest, src, end);
+#endif
 
   /* translate entities */
   for (i = 0; ent_ents[i].n != 0xFF; i++) {

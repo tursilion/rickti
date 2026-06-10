@@ -25,6 +25,17 @@
 #include "fb.h"
 
 /*
+ * gameover
+ * (from ds + 0x8810 + 0x2864)
+ *
+ * \376=0xfe \377=0xff
+ */
+static const U8 screen_gameovertxt[] = "\
+@@@@@@@@@@@\377\
+@GAME@OVER@\377\
+@@@@@@@@@@@\376";
+
+/*
  * Display the game over screen
  *
  * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT

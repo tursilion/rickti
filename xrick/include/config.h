@@ -43,7 +43,9 @@
 // our fixed bank is copied out of banks 0-1-2 into 32k memory expansion
 extern unsigned int nBank;
 #ifndef CLASSIC99
-#define SWITCH_IN_BANK(nOldBank) nBank=nOldBank; (*(volatile unsigned int*)nOldBank)=nBank; 
+
+// WARNING: don't pass nBank to this, the compiler will not do the right thing! And you probably didn't mean it anyway!
+#define SWITCH_IN_BANK(nOldBank) nBank = (nOldBank); (*(volatile unsigned int*)(nOldBank)) = nBank;
 #define SWITCH_IN_BANK0    nBank=(unsigned int)0x6000; (*(volatile unsigned int*)0x6000)=nBank;  
 #define SWITCH_IN_BANK1    nBank=(unsigned int)0x6002; (*(volatile unsigned int*)0x6002)=nBank;  
 #define SWITCH_IN_BANK2    nBank=(unsigned int)0x6004; (*(volatile unsigned int*)0x6004)=nBank; 
@@ -61,7 +63,14 @@ extern unsigned int nBank;
 #define SWITCH_IN_BANK14   nBank=(unsigned int)0x601c; (*(volatile unsigned int*)0x601c)=nBank; 
 #define SWITCH_IN_BANK15   nBank=(unsigned int)0x601e; (*(volatile unsigned int*)0x601e)=nBank; 
 #else
-#define SWITCH_IN_BANK(nOldBank) nBank=nOldBank;
+
+// in Classic99 we can check if you accidentally passed in nBank
+// I could check address, that was a good idea, but in one place I pass a calculated number,
+// so that doesn't HAVE an address. And defines don't let you test by name.
+static void SWITCH_IN_BANK(unsigned int nOldBank) {
+    nBank = (nOldBank);
+}
+
 #define SWITCH_IN_BANK0    nBank=(unsigned int)0x6000;  
 #define SWITCH_IN_BANK1    nBank=(unsigned int)0x6002;  
 #define SWITCH_IN_BANK2    nBank=(unsigned int)0x6004; 

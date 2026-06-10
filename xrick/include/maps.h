@@ -71,8 +71,6 @@ typedef struct {
   char *tune;	/* map tune */
 } map_t;
 
-extern const map_t map_maps[MAP_NBR_MAPS];
-
 /*
  * sub maps
  */
@@ -168,18 +166,6 @@ extern void map_expand(void);
 extern void map_init(void);
 extern U16 map_chain(void);
 extern void map_resetMarks(void);
-
-
-/*
- * intros
- */
-typedef struct
-{
-	U8* title;
-	U8* body;
-} maps_intros_t;
-
-extern const maps_intros_t maps_intros[];
 
 
 #endif

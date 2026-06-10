@@ -87,7 +87,7 @@ map_expand(void)
   for (i = 0; i < 0x0b; i++) {  /* 0x0b rows of blocks */
     for (j = 0; j < 0x08; j++) {  /* 0x08 blocks per row */
       for (k = 0, l = 0; k < 0x04; k++) {  /* expand one block */
-	    map_map[row][col++] = map_blocks[tmpbnum][l++];    // map_map is local, ram, map_maps is banked ROM
+	    map_map[row][col++] = map_blocks[tmpbnum][l++];    // map_map is local, ram, map_maps is too
 	    map_map[row][col++] = map_blocks[tmpbnum][l++];
 	    map_map[row][col++] = map_blocks[tmpbnum][l++];
 	    map_map[row][col]   = map_blocks[tmpbnum][l++];
@@ -305,7 +305,7 @@ void maps_paintRect(U16 x, U16 y, U16 width, U16 height)
 {
 	U16 x_fb, y_fb;
 	int fb;
-	U16 r, c;
+	U16 r;
 
 	/* align to tiles */
 	maps_alignRect(&x, &y, &width, &height);

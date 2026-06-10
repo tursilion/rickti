@@ -1,0 +1,53 @@
+* This code lives in scratchpad at 0x8340
+* must be relocatable code
+* must end before 0x8370
+* Its used by the scroller to accelerate the screen scroll
+*
+* The linkage for this is a bit of a pain. We want to assemble
+* for SCRATCH, store in FLASH and be associated with BANKx
+* I dont think we can easily do that, so for now note that it
+* will be assembled with the addresses in RAM/ROM, but we need
+* to manually change that to the scratchpad addresses we copied to.
+*
+* The correct fix is probably to recognize SCRATCH in the ELF tools
+* and the crt0 loader. But thats a lot of extra code for less than
+* 48 bytes, so for now Ill keep it manual.
+
+    def asmscrup
+    def asmscrdn
+    def asmscrend
+
+* helper for scroll_up
+* r1 - destination address (start at top)
+* r2 - source adddress
+* r3 - destination end address (end at bottom)
+* THIS IS THE FIRST ADDRESS LOADED - manually assumed to be 0x8340
+asmscrup
+    mov *r2+,*r1+   * counting by 4 bytes is safe, total count is multiples of 32
+    mov *r2+,*r1+
+    c r1,r3
+    jl asmscrup
+    b *r11
+    
+* helper for scroll_down
+* r1 - destination address (start at bottom)
+* r2 - source adddress
+* r3 - destination end address (end at top)
+* BEWARE OF CHANGE ABOVE. CODE MANUALLY ASSUMES THIS IS AT 0x834A
+asmscrdn
+    li r4,32/4      * bytes to copy / 4 bytes per loop
+
+lp1
+    mov *r2+,*r1+   * counting by 4 bytes is safe, total count is multiples of 32
+    mov *r2+,*r1+
+    dec r4          * one row
+    jne lp1
+
+    ai r2,-64       * back to start of current line, then back one more line
+    ai r1,-64
+    c r1,r3         * complete copy
+    jhe asmscrdn
+    b *r11
+
+* end marker used by copy
+asmscrend

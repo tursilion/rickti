@@ -15,7 +15,7 @@
  * NOTES
  *
  * This is the only file which accesses the video. Anything calling d_*
- * function should be video-independant.
+ * function should be video-independant. (This is not true anymore).
  *
  * draw.c draws into a 320x200 or 0x0140x0xc8 8-bits depth frame buffer,
  * using the CGA 2 bits color codes. It is up to the video to figure out
@@ -120,12 +120,5 @@ But not much of that really applies to the TI port ;)
 #include "config.h"
 #include "draw.h"
 #include "fb.h"
-
-#define DRAW_STATUS_BULLETS_X 0x68
-#define DRAW_STATUS_BOMBS_X 0xA8
-#define DRAW_STATUS_SCORE_X 0x20
-#define DRAW_STATUS_LIVES_X 0xF0
-#define DRAW_STATUS_Y 0
-
 
 /* eof */

@@ -19,8 +19,14 @@
 
 #define SCROLL_PERIOD 24
 
+void scroll_init(void);
 extern U16 scroll_up(void);
 extern U16 scroll_down(void);
+
+// asm
+extern void asmscrup(void* dest, void* src, void* end);
+extern void asmscrdn(void* dest, void* src, void* end);
+extern void* asmscrend;
 
 #endif
 

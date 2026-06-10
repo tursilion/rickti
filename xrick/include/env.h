@@ -42,6 +42,9 @@ extern U16 env_map;
 extern U16 env_submap;
 extern U16 env_changeSubmap; /* change submap request (TRUE, FALSE) */
 
+/* offset of digits for status line */
+extern U8 env_digits;
+
 extern void env_paintGame(void);
 
 #endif

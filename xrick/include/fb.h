@@ -32,16 +32,6 @@
  */
 extern void fb_clear();
 
-/*
- * initializes the video layer with the game palette
- */
-void fb_initPalette();
-
-/*
- * sets the palette from the image
- */
-void fb_setPaletteFromImg(img_t* img);
-
 #endif
 
 /* eof */

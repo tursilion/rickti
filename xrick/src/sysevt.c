@@ -94,8 +94,7 @@ static int processEvent()
 /*
  * Process events, if any, then return
  */
-void
-sysevt_poll(void)
+void sysevt_poll(void)
 {
     processEvent();
 }
@@ -103,8 +102,7 @@ sysevt_poll(void)
 /*
  * Wait for an event, then process it and return
  */
-void
-sysevt_wait(void)
+void sysevt_wait(void)
 {
     while (processEvent() == 0) { }
 }

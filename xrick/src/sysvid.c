@@ -105,7 +105,15 @@ void sysvid_setGamma(U16 g) {
 
 // copy to the three tables of the bitmap screen
 // TODO: if not F18A
+// NOTE: very likely a different bank is mapped in!!
+// VDP INTS MUST BE DISABLED
 void bitmapcharcopy(U16 adr, const U8* buf, U16 size) {
+#ifdef CLASSIC99
+    if (classic99InterruptState) {
+        sys_printf("WARNING: bitmapcharcopy with interrupts enabled\n");
+    }
+#endif
+
     vdpmemcpy(adr, buf, size);
     vdpmemcpy(adr+0x800, buf, size);
     vdpmemcpy(adr+0x1000, buf, size);

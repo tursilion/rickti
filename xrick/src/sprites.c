@@ -174,6 +174,8 @@ void sprites_paint2(U16 entityNumber) {
                   ent_ents[entityNumber].spriteIndex,   // pseudo sprite index
                   x_fb, y_fb,                           // location
                   ent_ents[entityNumber].lastSpriteDrawn != ent_ents[entityNumber].sprite); // whether the pattern needs reloading
+    
+    ent_ents[entityNumber].lastSpriteDrawn = ent_ents[entityNumber].sprite;
 }
 
 /* eof */

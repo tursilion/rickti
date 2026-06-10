@@ -26,6 +26,7 @@
  * position <x>,<y> (fb/px). NOTE: 8 pixel character bounardies!
  * if either pic or col is 0, don't copy that part (we still rewrite the SIT, but that's okay)
  * If it is too slow, we can rewrite the SIT only for the pattern part
+ * NOTE: various banks are probably mapped in for this
  */
 void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8* pic, const U8* col, U16 chroff)
 {

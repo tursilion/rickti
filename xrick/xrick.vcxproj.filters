@@ -276,5 +276,6 @@
     <None Include="src\Makefile" />
     <None Include="src\crt0_bankcart.assembly" />
     <None Include="src\vdpint.assembly" />
+    <None Include="src\scratchpad.assembly" />
   </ItemGroup>
 </Project>

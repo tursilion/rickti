@@ -17,6 +17,7 @@
 #include "game.h"
 #include "fb.h"
 #include "sprites.h"
+#include "scroller.h"
 
 #include <vdp.h>
 
@@ -104,6 +105,12 @@ sys_init(int argc, char** argv)
     // get a blank screen up by initializing all three char 0 to blank and then writing all zeros to the SIT
     fb_clear();
 
+    // load scroll assembly to scratchpad
+    SWITCH_IN_BANK3;
+    scroll_init();
+    SWITCH_IN_BANK0;
+
+    // reset timing and interrupt system
     sys_resettime();
 #ifndef CLASSIC99
     VDP_INT_CTRL = VDP_INT_CTRL_DISABLE_ALL;

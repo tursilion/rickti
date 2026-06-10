@@ -19,7 +19,7 @@ sys_vdpint:
 
 * use a dedicated workspace, but use the main stack pointer
     lwpi >8320
-    mov @>8314,R10      * get the real stack pointer
+*   mov @>8314,R10      * get the real stack pointer (don't need this if we don't call C code)
 
     mov @vdpCountL,r1
     li r2,0x10a           * ms*10 at 60fps - 16.666666 roughly (0x10.A)

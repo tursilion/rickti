@@ -187,9 +187,14 @@ void u_envtest(U16 x, U16 y, U16 crawl, U16* rc0, U16* rc1)
 U16 u_trigbox(U16 e, U16 x, U16 y)
 {
   U16 xmax, ymax;
+  U16 nOldBank = nBank;
+
+  SWITCH_IN_BANK14;
 
   xmax = ent_ents[e].trig_x + (ent_entdata[ent_ents[e].n & 0x7F].trig_w << 3);
   ymax = ent_ents[e].trig_y + (ent_entdata[ent_ents[e].n & 0x7F].trig_h << 3);
+
+  SWITCH_IN_BANK(nOldBank);
 
   if (xmax > 0xFF) xmax = 0xFF;
 

@@ -30,30 +30,11 @@ void fb_clear()
     // good place to wipe sprite table too
     VDP_INT_DISABLE;
     // Tile 0 should already be cleared in all tilesets
-//    vdpmemset(gPattern, 0, 8);
-//    vdpmemset(gPattern+0x800, 0, 8);
-//    vdpmemset(gPattern+0x1000, 0, 8);
     vdpmemset(gImage, 0, 768);
     VDP_INT_ENABLE;
     // this is the CPU buffer, so it's safe without VDP
     sprites_clear();
 }
 
-/*
- * initializes the video layer with the game palette
- */
-void fb_initPalette()
-{
-}
-
-
-
-/*
- * sets the palette from the image
- */
-void fb_setPaletteFromImg(img_t* img)
-{
-    (void)img;
-}
 
 /* eof */

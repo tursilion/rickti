@@ -14,14 +14,6 @@
 #include "maps.h"
 #include "tiles.h"
 
-const map_t map_maps[MAP_NBR_MAPS] = {
-  {0x0008, 0x008b, 0x0008, 000000, "sounds/tune0.wav"},
-  {0x0008, 0x008b, 0x0068, 0x0009, "sounds/tune1.wav"},
-  {0x0010, 0x008b, 0x0010, 0x0014, "sounds/tune2.wav"},
-  {0x0010, 0x008b, 0x0010, 0x0026, "sounds/tune3.wav"},
-  {0x0074, 0x00c8, 0x0008, 0x0026, "sounds/tune4.wav"},
-};
-
 const submap_t map_submaps[MAP_NBR_SUBMAPS] = {
   {000000, 000000, 000000, 000000},
   {000000, 0x0078, 0x0003, 0x0005},

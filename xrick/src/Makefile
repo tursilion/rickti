@@ -31,7 +31,7 @@ INCPATH=-I/mnt/d/work/libti99ALL -I/mnt/d/work/ti/vgmcomp2/Players/libtivgm2 -I.
 LIBPATH=-L/mnt/d/work/libti99ALL/buildti -L/mnt/d/work/ti/vgmcomp2/Players/libtivgm2
 LIBS=-lti99 -ltivgm2
 
-# Note: no-function-cse prevents gcc from preferring registers for bl calls, -minline_rtl for rtl in asm, -fdump-rtl-expand for expand
+# Note: no-function-cse prevents gcc from preferring registers for bl calls, "-minline_rtl -fdump-rtl-expand" for rtl in asm and expand
 CFLAGS=-Os -std=c99 -c -s --save-temp -DTI99 -fno-builtin -fno-function-cse
 #-minline_rtl
 
@@ -43,7 +43,7 @@ OBJECT_LIST = crt0.o vdpint.o control.o dat_ents.o dat_ents2.o dat_maps1.o dat_m
     draw.o e_bomb.o e_bonus.o e_box.o e_bullet.o e_rick.o e_sbonus.o e_them.o ents.o env.o fb.o \
     game.o img.o maps.o scr_gameover.o scr_getname.o scr_imain.o scr_imap.o scr_pause.o \
     scroller.o sounds.o sprites.o sysarg.o sysevt.o syskbd.o syssnd.o system.o sysvid.o tiles.o \
-    util.o xrick.o
+    util.o xrick.o scratchpad.o
 
 # List of all files needed in executable
 PREREQUISITES=$(OBJECT_LIST)

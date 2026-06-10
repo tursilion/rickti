@@ -53,6 +53,93 @@ static void nextstep(void);
 static void anim(void);
 static void init(void);
 
+typedef struct
+{
+	U8* title;
+	U8* body;
+} maps_intros_t;
+
+const maps_intros_t maps_intros[] =
+{
+	{	/* south america */
+
+		"@@@@@@SOUTH@AMERICA@1945@@@@@@" TILES_NULLCHAR,
+
+		"RICK@DANGEROUS@CRASH@LANDS@HIS" TILES_CRLFCHAR
+		"@PLANE@OVER@THE@AMAZON@WHILE@@" TILES_CRLFCHAR
+		"@SEARCHING@FOR@THE@LOST@GOOLU@" TILES_CRLFCHAR
+		"@@@@@@@@@@@@TRIBE.@@@@@@@@@@@@" TILES_CRLFCHAR TILES_CRLFCHAR
+		"@BUT,@BY@A@TERRIBLE@TWIST@OF@@" TILES_CRLFCHAR
+		"FATE@HE@LANDS@IN@THE@MIDDLE@OF" TILES_CRLFCHAR
+		"@@@A@BUNCH@OF@WILD@GOOLUS.@@@@" TILES_CRLFCHAR TILES_CRLFCHAR
+		"@CAN@RICK@ESCAPE@THESE@ANGRY@@" TILES_CRLFCHAR
+		"@@@AMAZONIAN@ANTAGONISTS@?@@@@" TILES_NULLCHAR
+	},
+
+	{	/* egypt */
+
+		"@@@@EGYPT,@SOMETIMES@LATER@@@@" TILES_NULLCHAR,
+
+		"RICK@HEADS@FOR@THE@PYRAMIDS@AT" TILES_CRLFCHAR
+		"@@@@THE@REQUEST@OF@LONDON.@@@@" TILES_CRLFCHAR TILES_CRLFCHAR
+		"HE@IS@TO@RECOVER@THE@JEWEL@OF@" TILES_CRLFCHAR
+		"ANKHEL@THAT@HAS@BEEN@STOLEN@BY" TILES_CRLFCHAR
+		"FANATICS@WHO@THREATEN@TO@SMASH" TILES_CRLFCHAR
+		"@IT,@IF@A@RANSOM@IS@NOT@PAID.@" TILES_CRLFCHAR TILES_CRLFCHAR
+		"CAN@RICK@SAVE@THE@GEM,@OR@WILL" TILES_CRLFCHAR
+		"HE@JUST@GET@A@BROKEN@ANKHEL@?@" TILES_NULLCHAR
+	},
+
+	{	/* europe: castle */
+
+		"@@@@EUROPE,@LATER@THAT@WEEK@@@" TILES_NULLCHAR,
+
+		"@@RICK@RECEIVES@A@COMMUNIQUE@@" TILES_CRLFCHAR
+		"@@FROM@BRITISH@INTELLIGENCE@@@" TILES_CRLFCHAR
+		"@@ASKING@HIM@TO@RESCUE@ALLIED@" TILES_CRLFCHAR
+		"@PRISONERS@FROM@THE@NOTORIOUS@" TILES_CRLFCHAR
+		"@@@@SCHWARZENDUMPF@CASTLE.@@@@" TILES_CRLFCHAR TILES_CRLFCHAR
+		"@@RICK@ACCEPTS@THE@MISSION.@@@" TILES_CRLFCHAR TILES_CRLFCHAR
+		"@@@BUT@CAN@HE@LIBERATE@THE@@@@" TILES_CRLFCHAR
+		"@CRUELLY@CAPTURED@COMMANDOS@?@" TILES_NULLCHAR
+	},
+
+	{	/* europe: missile base */
+
+		"@@@@@@EUROPE,@EVEN@LATER@@@@@@" TILES_NULLCHAR,
+
+		"RICK@LEARNS@FROM@THE@PRISONERS" TILES_CRLFCHAR
+		"@THAT@THE@ENEMY@ARE@TO@LAUNCH@" TILES_CRLFCHAR
+		"AN@ATTACK@ON@LONDON@FROM@THEIR" TILES_CRLFCHAR
+		"@@@@@SECRET@MISSILE@BASE.@@@@@" TILES_CRLFCHAR TILES_CRLFCHAR
+		"WITHOUT@HESITATION,@HE@DECIDES" TILES_CRLFCHAR
+		"@@@TO@INFILTRATE@THE@BASE.@@@@" TILES_CRLFCHAR TILES_CRLFCHAR
+		"CAN@RICK@SAVE@LONDON@IN@TIME@?" TILES_NULLCHAR
+	},
+
+	{	/* much much later */
+
+		"@@@LONDON,@MUCH,@MUCH@LATER@@@" TILES_NULLCHAR,
+
+		"@RICK@RETURNS@TO@A@TRIUMPHANT@" TILES_CRLFCHAR
+		"@@WELCOME@HOME@HAVING@HELPED@@" TILES_CRLFCHAR
+		"@@@@SECURE@ALLIED@VICTORY.@@@@" TILES_CRLFCHAR TILES_CRLFCHAR
+		"BUT,@MEANWHILE,@IN@SPACE,@THE@" TILES_CRLFCHAR
+		"@@@MASSED@STARSHIPS@OF@THE@@@@" TILES_CRLFCHAR
+		"@@@BARFIAN@EMPIRE@ARE@POISED@@" TILES_CRLFCHAR
+		"@@@@@TO@INVADE@THE@EARTH.@@@@@" TILES_CRLFCHAR TILES_CRLFCHAR
+		"@WHAT@WILL@RICK@DO@NEXT@...@?@" TILES_NULLCHAR
+	}
+};
+
+/*
+ * map intro, step offset per map
+ */
+const U8 screen_imapsofs[] = {
+  0x00, 0x03, 0x07, 0x0a, 0x0f
+};
+
+
 /*
  * Map introduction
  *
@@ -60,8 +147,6 @@ static void init(void);
  */
 U16 screen_introMap(void)
 {
-    unsigned int nOldBank = 0;
-
 	switch (seq)
 	{
 		case 0: /* initialize */
@@ -69,11 +154,8 @@ U16 screen_introMap(void)
 			sysvid_setGamma(GAMMA_OFF);
 
 			tiles_setBank(0);
-            nOldBank = nBank;
-            SWITCH_IN_BANK14;
 			tiles_paintListAt(maps_intros[env_map].title, 0, 0);
 			tiles_paintListAt(maps_intros[env_map].body, 0, 96);
-            SWITCH_IN_BANK(nOldBank);
 
 			init();
 			nextstep();
@@ -85,9 +167,7 @@ U16 screen_introMap(void)
 
 #ifdef ENABLE_SOUND
             nOldBank = nBank;
-            SWITCH_IN_BANK12;
 			sounds_setMusic(map_maps[env_map].tune, 1);
-            SWITCH_IN_BANK(nOldBank);
 #endif
             sysvid_setGamma(GAMMA_ON);
 			seq = 10;
@@ -146,38 +226,21 @@ U16 screen_introMap(void)
  * Display top and bottom borders (0x1B1F)
  *
  */
-static void
-drawtb(void)
+static void drawtb(void)
 {
-	U16 i;
-
 	flipflop++;
     
     VDP_INT_DISABLE;
 
 	if (flipflop & 0x01)
 	{
-#if 0
-		for (i = 0; i < 6; i++)
-			tiles_paintAt(0x40, 104 + i * 8, 16);
-		for (i = 0; i < 6; i++)
-			tiles_paintAt(0x06, 104 + i * 8, 72);
-#else
         hchar(2, 13, 0x40, 6);
         hchar(9, 13, 0x06, 6);
-#endif
 	}
 	else
 	{
-#if 0
-		for (i = 0; i < 6; i++)
-			tiles_paintAt(0x05, 104 + i * 8, 16);
-		for (i = 0; i < 6; i++)
-			tiles_paintAt(0x40, 104 + i * 8, 72);
-#else
         hchar(2, 13, 0x05, 6);
         hchar(9, 13, 0x40, 6);
-#endif
 	}
 
     VDP_INT_ENABLE;
@@ -188,38 +251,19 @@ drawtb(void)
  * Display left and right borders (0x1B7C)
  *
  */
-static void
-drawlr(void)
+static void drawlr(void)
 {
-	U16 i;
-
     VDP_INT_DISABLE;
 
 	if (flipflop & 0x02)
 	{
-#if 0
-		for (i = 0; i < 8; i++)
-		{
-			tiles_paintAt(0x04, 96, 16 + i * 8);
-			tiles_paintAt(0x04, 152, 16 + i * 8);
-		}
-#else
         vchar(2, 12, 4, 8);
         vchar(2, 19, 4, 8);
-#endif
 	}
 	else
 	{
-#if 0
-		for (i = 0; i < 8; i++)
-		{
-			tiles_paintAt(0x2B, 96, 16 + i * 8);
-			tiles_paintAt(0x2B, 152, 16 + i * 8);
-		}
-#else
         vchar(2, 12, 0x2b, 8);
         vchar(2, 19, 0x2b, 8);
-#endif
 	}
 
     VDP_INT_ENABLE;
@@ -230,8 +274,7 @@ drawlr(void)
  * Draw the sprite (0x19C6)
  *
  */
-static void
-drawsprite(void)
+static void drawsprite(void)
 {
 	U16 x = 104 + ((spx << 1) & 0x1C);
 	U16 y = 24 + (spy << 1);
@@ -243,11 +286,10 @@ drawsprite(void)
  * Draw the background (0x1AF1)
  *
  */
-static void
-drawcenter(void)
+static void drawcenter(void)
 {
 	static U16 tn0[] = { 0x07, 0x5B, 0x7F, 0xA3, 0xC7 };
-	U16 i, j;
+	U16 i;
     U16 tn;
 
 	tn = tn0[env_map];
@@ -255,14 +297,8 @@ drawcenter(void)
     VDP_INT_DISABLE;
 
 	for (i = 0; i < 6; i++) {
-#if 0
-		for (j = 0; j < 6; j++) {
-			tiles_paintAt(tn++, 104 + 8 * j, 24 + 8 * i);
-        }
-#else
         vdpwriteinc(fb_at(104, 24+8*i)+gImage, tn, 6);
         tn+=6;
-#endif
     }
 
     VDP_INT_ENABLE;
@@ -273,8 +309,7 @@ drawcenter(void)
  * Next Step (0x1A74)
  *
  */
-static void
-nextstep(void)
+static void nextstep(void)
 {
 	if (screen_imapsteps[step].count)
 	{
@@ -296,8 +331,7 @@ nextstep(void)
  * Anim (0x1AA8)
  *
  */
-static void
-anim(void)
+static void anim(void)
 {
 	U16 i;
 
@@ -324,8 +358,7 @@ anim(void)
  * Initialize (0x1A43)
  *
  */
-static void
-init(void)
+static void init(void)
 {
 	run = 0; run--;
 	step = screen_imapsofs[env_map];
@@ -336,6 +369,3 @@ init(void)
 }
 
 /* eof */
-
-
-

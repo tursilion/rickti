@@ -16,6 +16,7 @@
 #include "tiles.h"
 #include "fb.h"
 #include "sysvid.h"
+#include "env.h"
 
 #include <vdp.h>
 
@@ -38,8 +39,9 @@ void tiles_setBank(U16 bank)
         return;
     }
 
-	if (bank >= TILES_BANKS_COUNT)
+    if (bank >= TILES_BANKS_COUNT) {
 		sys_panic("xrick/tiles: invalid bank number %d\n", bank);
+    }
 
     U16 off = bank*0x800;
     nOldBank = nBank;
@@ -50,13 +52,48 @@ void tiles_setBank(U16 bank)
     SWITCH_IN_BANK8;
     bitmapcharcopy(gPattern, tiles_banks_pat+off, 0x800);
 
+    VDP_INT_POLL;
+
     // then color
     SWITCH_IN_BANK9;
     bitmapcharcopy(gColor, tiles_banks_col+off, 0x800);
 
+    // okay, screw it. Just find 13 characters we can overwrite, something we KNOW
+    // is only for a different map.
+    if (bank != 0) {
+        switch (env_map) {
+            case 0: // cavern
+                env_digits = 8;
+                break;
+
+            case 1: // egypt
+                env_digits = 60;
+                break;
+
+            case 2: // castle
+                env_digits = 160;
+                break;
+
+            case 3: // missile
+                env_digits = 26;
+                break;
+        }
+
+        // overwrite the sarcaphogus characters with digits from bank 0
+        // chars 8-20. Don't use bitmapcharcopy, only want the first page
+        // assumes gPattern is 0!
+        SWITCH_IN_BANK8;
+        vdpmemcpy(env_digits*8, tiles_banks_pat+48*8, 10*8); // digits
+        vdpmemcpy((env_digits+10)*8, tiles_banks_pat+1*8, 3*8);  // icons
+        SWITCH_IN_BANK9;
+        vdpmemcpy(gColor+env_digits*8, tiles_banks_col+48*8, 10*8); // digits
+        vdpmemcpy(gColor+(env_digits+10)*8, tiles_banks_col+1*8, 3*8);  // icons
+    }
+
+    VDP_INT_ENABLE;
+
     // restore bank
     SWITCH_IN_BANK(nOldBank);
-    VDP_INT_ENABLE;
 }
 
 /*

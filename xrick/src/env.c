@@ -37,16 +37,13 @@ U16 env_map = 0;
 U16 env_submap = 0;
 U16 env_changeSubmap = FALSE;
 
+// not that we'll ever be able to use proper ASCII, but hey...
+U8 env_digits = 48;
+
 
 /*
  * FIXME counters positions in fp/px
  */
-#define DRAW_STATUS_SCORE_X 24
-#define DRAW_STATUS_BULLETS_X 80
-#define DRAW_STATUS_BOMBS_X 136
-#define DRAW_STATUS_LIVES_X 192
-#define DRAW_STATUS_Y 0
-
 // break up the 32 bit score into two 16s
 void addscore(U16 val) {
     env_score_lo += val;
@@ -64,14 +61,47 @@ void addscore(U16 val) {
 void env_paintGame(void)
 {
     VDP_INT_DISABLE;
-    // TODO: conio might be too slow here?
-    // TODO: we don't have text or the correct characters in the game tileset - how do we get text?
-    // bank 0 has font and cutscenes, but 2 and 3 have level graphics.
-    gotoxy(DRAW_STATUS_SCORE_X/8, DRAW_STATUS_Y/8);
-    cprintf("%02d%04d", env_score_hi, env_score_lo);
-    hchar(DRAW_STATUS_Y/8, DRAW_STATUS_BULLETS_X/8, TILES_BULLET, env_bullets);
-    hchar(DRAW_STATUS_Y/8, DRAW_STATUS_BOMBS_X/8, TILES_BOMB, env_bombs);
-    hchar(DRAW_STATUS_Y/8, DRAW_STATUS_LIVES_X/8, TILES_RICK, env_lives);
+
+    VDP_SET_ADDRESS_WRITE(gImage);
+
+    // cheats
+    VDPWD(env_trainer?env_digits+1:0);
+    VDPWD(env_invicible?env_digits+1:0);
+    VDPWD(env_highlight?env_digits+1:0);
+
+    // score
+    VDPWD(env_digits+(env_score_hi/10));
+    VDPWD(env_digits+(env_score_hi%10));
+    U16 x = env_score_lo;
+    VDPWD(env_digits+(x/1000));
+    x %= 1000;
+    VDPWD(env_digits+(x/100));
+    x %= 100;
+    VDPWD(env_digits+(x/10));
+    VDPWD(env_digits+(x%10));
+
+    VDPWD(0);
+
+    // bullets
+    for (U16 i=0; i<6; ++i) {
+        // +9 because the defines are 1 based
+        VDPWD(env_bullets>i ? TILES_BULLET+env_digits+9 : 0);
+    }
+
+    VDPWD(0);
+
+    // bombs
+    for (U16 i=0; i<6; ++i) {
+        VDPWD(env_bombs>i ? TILES_BOMB+env_digits+9 : 0);
+    }
+
+    VDPWD(0);
+
+    // ricks
+    for (U16 i=0; i<6; ++i) {
+        VDPWD(env_lives>i ? TILES_RICK+env_digits+9 : 0);
+    }
+
     VDP_INT_ENABLE;
 }
 

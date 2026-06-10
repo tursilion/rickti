@@ -29,31 +29,26 @@
  * ASM 242C
  */
 void
-e_bonus_action(U16 e)
-{
+e_bonus_action(U16 e) {
 #define seq c1
 
-  if (ent_ents[e].seq == 0) {
-    if (e_rick_boxtest(e)) {
-      addscore(500);
+    if (ent_ents[e].seq == 0) {
+        if (e_rick_boxtest(e)) {
+            addscore(500);
 #ifdef ENABLE_SOUND
-      syssnd_play(WAV_BONUS, 1);
+            syssnd_play(WAV_BONUS, 1);
 #endif
-      map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
-      ent_ents[e].seq = 1;
-      ent_ents[e].sprite = 0xad;
-      ent_ents[e].y -= 0x08;
+            map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
+            ent_ents[e].seq = 1;
+            ent_ents[e].sprite = 0xad;
+            ent_ents[e].y -= 0x08;
+        }
+    } else if (ent_ents[e].seq > 0 && ent_ents[e].seq < 10) {
+        ent_ents[e].seq++;
+        ent_ents[e].y -= 2;
+    } else {
+        delete_ent(e);
     }
-  }
-
-  else if (ent_ents[e].seq > 0 && ent_ents[e].seq < 10) {
-    ent_ents[e].seq++;
-    ent_ents[e].y -= 2;
-  }
-
-  else {
-      delete_ent(e);
-  }
 }
 
 

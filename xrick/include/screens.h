@@ -29,12 +29,7 @@ typedef struct {
 
 extern const U8 screen_imapsl[];  /* sprite lists */
 extern const screen_imapsteps_t screen_imapsteps[];  /* map intro steps */
-extern const U8 screen_imapsofs[];  /* first step for each map */
 extern U8* screen_imaptext[];  /* map intro texts */
-extern const U8 screen_imainhoft[];  /* hall of fame title */
-extern const U8 screen_imainrdt[];  /* rick dangerous title */
-extern const U8 screen_imaincdc[];  /* core design copyright text */
-extern const U8 screen_gameovertxt[];  /* game over */
 extern const U8 screen_pausedtxt[];  /* paused */
 extern const U8 screen_congrats[];  /* congratulations */
 

@@ -127,7 +127,7 @@ sys_sleep(U16 s)
     U16 x;
     do {
         x = getVdpCount();
-    } while ((x < target) && (x > now));
+    } while ((x < target) && (x >= now));
 #endif
 
 }

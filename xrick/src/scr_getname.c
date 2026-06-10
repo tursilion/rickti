@@ -33,11 +33,11 @@ static U8 name[10];
 
 #define TILE_POINTER '\072'
 #define TILE_CURSOR '\073'
-#define TOPLEFT_X 116
-#define TOPLEFT_Y 64
-#define NAMEPOS_X 120
-#define NAMEPOS_Y 160
-#define AUTOREPEAT_TMOUT 100
+#define TOPLEFT_X 84
+#define TOPLEFT_Y 56
+#define NAMEPOS_X 88
+#define NAMEPOS_Y 152
+#define AUTOREPEAT_TMOUT 500
 
 
 /*
@@ -47,14 +47,13 @@ static void pointer_show(U16);
 static void name_update(void);
 static void name_draw(void);
 
-
 /*
  * Get name
  *
  * return: 0 while running, 1 when finished.
  */
 U16 screen_getname(void) {
-#if 1
+#if 0
     // TODO: temporarily removed to save code space
     return SCREEN_DONE;
 #else
@@ -75,7 +74,7 @@ U16 screen_getname(void) {
 
         //for (i = 0; i < 10; i++)
         //  name[i] = '@';
-        memset(&name[i], '@', 10);
+        memset(name, '@', 10);
 
         x = y = p = 0;
         seq = 1;
@@ -84,13 +83,16 @@ U16 screen_getname(void) {
     switch (seq) {
         case 1:  /* prepare screen */
             fb_clear();
-            tiles_paintListAt((U8*)"PLEASE@ENTER@YOUR@NAME\376", 76, 40);
+            tiles_paintListAt((U8*)"PLEASE@ENTER@YOUR@NAME\376", 44, 32);
 
             VDP_INT_DISABLE;
 
-            for (i = 0; i < 6; i++)
-                for (j = 0; j < 4; j++)
-                    tiles_paintAt('A' + i + j * 6, TOPLEFT_X + i * 8 * 2, TOPLEFT_Y + j * 8 * 2);
+            for (i = 0; i < 6; i++) {
+                for (j = 0; j < 4; j++) {
+                    VDP_SET_ADDRESS_WRITE(gImage + fb_at(TOPLEFT_X + i * 8 * 2, TOPLEFT_Y + j * 8 * 2));
+                    VDPWD('A' + i + j * 6);
+                }
+            }
 
             VDP_INT_ENABLE;
 
@@ -102,8 +104,6 @@ U16 screen_getname(void) {
             break;
 
             // TODO: check autorepeat delay or better, kill autorepeat
-            // TODO: when name is full, jump automatically to END (should be done - test)
-            // TODO: if you fill the name AAAAAAAAAA then backspace and type a shorter name, the "A"s are still there (should be done - test)
         case 2:  /* wait for key pressed */
             if (control_status & CONTROL_FIRE)
                 seq = 3;
@@ -223,15 +223,13 @@ U16 screen_getname(void) {
 }
 
 
-static void
-pointer_show(U16 show) {
+static void pointer_show(U16 show) {
     VDP_INT_DISABLE;
     vdpchar(gImage + fb_at(TOPLEFT_X + x * 8 * 2, TOPLEFT_Y + y * 8 * 2 + 8), show == TRUE ? TILE_POINTER : '@');
     VDP_INT_ENABLE;
 }
 
-static void
-name_update(void) {
+static void name_update(void) {
     U16 i;
 
     i = x + y * 6;
@@ -247,33 +245,44 @@ name_update(void) {
     }
     if (p == 10) {
         // jump to end
+        pointer_show(FALSE);
         x = 5;
         y = 4;
+        pointer_show(TRUE);
     }
 }
 
-/* FIXME WHAT IS P??? */
-
-static void
-name_draw(void) {
-    U16 i;
-
+/* P is how many letters we have so far */
+static void name_draw(void) {
     VDP_INT_DISABLE;
 
 #if 0
+    // draw name letters
     for (i = 0; i < p; i++)
-        tiles_paintAt(name[i], NAMEPOS_X + i * 8, NAMEPOS_Y);
+        tiles_paintAt(name[i],     NAMEPOS_X + i * 8, NAMEPOS_Y);
+
+    // fill in the rest with the tile mark
     for (i = p; i < 10; i++)
         tiles_paintAt(TILE_CURSOR, NAMEPOS_X + i * 8, NAMEPOS_Y);
 
+    // draw blanks underneath (to erase the marker)
     for (i = 0; i < 10; i++)
         tiles_paintAt('@', NAMEPOS_X + i * 8, NAMEPOS_Y + 8);
+
+    // draw the marker
     tiles_paintAt(TILE_POINTER, NAMEPOS_X + 8 * (p < 9 ? p : 9), NAMEPOS_Y + 8);
 #else
+    // draw name letters
     if (p > 0) vdpmemcpy(fb_at(NAMEPOS_X, NAMEPOS_Y) + gImage, name, p);
-    if (p < 10) vdpmemset(fb_at(NAMEPOS_X + p, NAMEPOS_Y) + gImage, TILE_CURSOR, 10 - p);
+
+    // fill in the rest with the tile mark
+    if (p < 10) vdpmemset(fb_at(NAMEPOS_X, NAMEPOS_Y) + gImage + p, TILE_CURSOR, 10 - p);
+
+    // draw blanks underneath (to erase the marker)
     vdpmemset(fb_at(NAMEPOS_X, NAMEPOS_Y + 8) + gImage, '@', 10);
-    vdpchar(gImage + fb_at(NAMEPOS_X + 8 * (p < 9 ? p : 9), NAMEPOS_Y + 8), TILE_POINTER);
+
+    // draw the marker
+    vdpchar(gImage + fb_at(NAMEPOS_X, NAMEPOS_Y + 8) + (p < 9 ? p : 9), TILE_POINTER);
 #endif
 
     VDP_INT_ENABLE;

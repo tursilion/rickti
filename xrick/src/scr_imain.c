@@ -31,23 +31,6 @@
 
 #define IMAIN_PERIOD 50;
 
-void draw_titlepage()
-{
-    unsigned int nOldBank = 0;
-
-    nOldBank = nBank;
-    // pattern
-    SWITCH_IN_BANK10;
-	img_paintPic(0, 0, 256, 192, (U8*)pic_splash_pat, 0, 0);
-    // color
-    SWITCH_IN_BANK11;
-	img_paintPic(0, 0, 256, 192, 0, (U8*)pic_splash_col, 0);
-    // restore
-    SWITCH_IN_BANK(nOldBank);
-    // tell the tile banking page to reload on next request
-    tiles_setBank(0xff);
-}
-
 /*
  * Main introduction
  *
@@ -56,29 +39,38 @@ void draw_titlepage()
 U16 screen_introMain(void)
 {
 	static U16 seq = 0;
+#ifdef DEBUG
+    static U16 lastseq = 0;
+#endif
 	static U16 seen = 0;
 	static U16 first = TRUE;
 	static U16 period = 0;
 	static U32 tm = 0;
     static U8 workbuf[8];   // accelerate the VDP fat font code
     static U8 workbuf2[8];  // accelerate the VDP fat font code
-    unsigned int nOldBank = 0;
-	U16 i;
+    U16 i;
     //U16 s[32];
 
 	if (seq == 0)
 	{
-		tiles_setBank(0);
-		if (first == TRUE)
+		if (first == TRUE) {
 			seq = 1;
-		else
+        } else {
 			seq = 10;
+        }
 		period = game_period;
 		game_period = IMAIN_PERIOD;
 #ifdef ENABLE_SOUND
 		sounds_setMusic("sounds/tune5.wav", -1);
 #endif
 	}
+
+#ifdef DEBUG
+    if (seq != lastseq) {
+        sys_printf("xrick/imain: sequence %d\n", seq);
+        lastseq = seq;
+    }
+#endif
 
 	switch (seq)
 	{
@@ -128,21 +120,7 @@ U16 screen_introMain(void)
 			fb_clear();
 			tm = sys_gettime();
             
-            // we need the main tiles loaded to see text!
-            tiles_setBank(0);
-
-			/* hall of fame title */
-            nOldBank = nBank;
-            // pattern
-            SWITCH_IN_BANK10;
-			img_paintPic(0, 0, 256, 24, (U8*)pic_haf_pat, 0, 128);
-            // color
-            SWITCH_IN_BANK11;
-			img_paintPic(0, 0, 256, 24, 0, (U8*)pic_haf_col, 128);
-            // restore
-            SWITCH_IN_BANK(nOldBank);
-            // tell the bank engine it needs to reload on next request
-            tiles_setBank(0xff);
+            draw_hof_title();
 
 			/* hall of fame content */
             VDP_INT_DISABLE;
@@ -152,6 +130,8 @@ U16 screen_introMain(void)
                 gotoxy(4, 5+i*2);
                 cprintf("%02d%04d@@@....@@@%s",
 					game_hscores[i].score_hi, game_hscores[i].score_lo, game_hscores[i].name);
+
+                VDP_INT_POLL;
 			}
             VDP_INT_ENABLE;
 
@@ -229,9 +209,10 @@ U16 screen_introMain(void)
                 workbuf[1]=0;
                 bitmapcharcopy(gPattern+out*8, workbuf, 8);
                 ++out;
+                VDP_INT_POLL;
             }
             vdpmemset(gColor, 0xe0, 0x1800);
-
+            VDP_INT_POLL;
 
 			/* credit content */
             // conio is slow, but this will work
@@ -240,9 +221,11 @@ U16 screen_introMain(void)
             cprintf("This-is-a-port-of-xrick-by-Tursi");
             cprintf("/Atari-ST-version/\n\n");
             cprintf("github.com/tursilion/rickti\n\n");
+            VDP_INT_POLL;
             cprintf("Original-creator-Simon-Phipps\n\n");
             cprintf("xrick-by-BigOrno,-and-I-started\n");
             cprintf("with-the-port-by-Stephan-Gay\n\n");
+            VDP_INT_POLL;
             cprintf("Written-with-gcc,-convert9918\n");
             cprintf("vgmcomp2,-libTI99ALL-and\n");
             cprintf("Classic99\n\n");
@@ -255,8 +238,9 @@ U16 screen_introMain(void)
 			break;
 
 		case 22:  /* wait for key pressed or timeout hof */
-			if (control_status & CONTROL_FIRE)
+			if (control_status & CONTROL_FIRE) {
 				seq = 23;
+            }
 			else if (sys_gettime() - tm > SCREEN_TIMEOUT)
 			{
 				seen++;
@@ -280,8 +264,9 @@ U16 screen_introMain(void)
 
 	}
 
-	if (control_status & CONTROL_EXIT)  /* check for exit request */
+	if (control_status & CONTROL_EXIT) { /* check for exit request */
 		return SCREEN_EXIT;
+    }
 
 	if (seq == 30) /* we're done */
 	{
@@ -292,9 +277,9 @@ U16 screen_introMain(void)
 		game_period = period;
 		sysvid_setGamma(GAMMA_ON);
 		return SCREEN_DONE;
-	}
-	else
+	} else {
 		return SCREEN_RUNNING;
+    }
 }
 
 /* eof */

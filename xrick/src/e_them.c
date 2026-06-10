@@ -47,16 +47,18 @@ static U16 e_them_rndnbr = 0;
  * e: entity slot number.
  * ret: TRUE/boxtests, FALSE/not
  */
-U8
-u_themtest(U16 e) {
+U8 u_themtest(U16 e) {
     U16 i;
 
-    if ((ent_ents[0].n & ENT_LETHAL) && u_boxtest(e, 0))
+    if ((ent_ents[0].n & ENT_LETHAL) && u_boxtest(e, 0)) {
         return TRUE;
+    }
 
-    for (i = 4; i < 9; i++)
-        if ((ent_ents[i].n & ENT_LETHAL) && u_boxtest(e, i))
+    for (i = 4; i < 9; i++) {
+        if ((ent_ents[i].n & ENT_LETHAL) && u_boxtest(e, i)) {
             return TRUE;
+        }
+    }
 
     return FALSE;
 }
@@ -67,8 +69,7 @@ u_themtest(U16 e) {
  *
  * ASM 237B
  */
-void
-e_them_gozombie(U16 e) {
+void e_them_gozombie(U16 e) {
 #define offsx c1
     ent_ents[e].n = 0x47;  /* zombie entity */
     ent_ents[e].offsy = -0x0400;
@@ -95,13 +96,15 @@ e_them_gozombie(U16 e) {
  *
  * ASM 2242
  */
-void
-e_them_t1_action2(U16 e, U16 type) {
+void e_them_t1_action2(U16 e, U16 type) {
 #define offsx c1
 #define step_count c2
     S32 i;
     U16 x, y;
     U16 env0, env1;
+    U16 nOldBank = nBank;
+
+    SWITCH_IN_BANK14;
 
     /* by default, try vertical move. calculate new y */
     i = ((S32)ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
@@ -112,6 +115,7 @@ e_them_t1_action2(U16 e, U16 type) {
     /* FIXME what if they got scrolled out ? */
     if (y > 0x140) {
         delete_ent(e);
+        SWITCH_IN_BANK(nOldBank);
         return;
     }
 
@@ -123,14 +127,17 @@ e_them_t1_action2(U16 e, U16 type) {
         if (env1 & MAP_EFLG_LETHAL) {
           /* lethal entities kill e_them */
             e_them_gozombie(e);
+            SWITCH_IN_BANK(nOldBank);
             return;
         }
         /* save, cleanup and return */
         ent_ents[e].y = y;
         ent_ents[e].ylow = (U8)i;
         ent_ents[e].offsy += 0x0080;
-        if (ent_ents[e].offsy > 0x0800)
+        if (ent_ents[e].offsy > 0x0800) {
             ent_ents[e].offsy = 0x0800;
+        }
+        SWITCH_IN_BANK(nOldBank);
         return;
     }
 
@@ -149,18 +156,22 @@ e_them_t1_action2(U16 e, U16 type) {
     /* latency: if not zero then decrease and return */
     if (ent_ents[e].latency > 0) {
         ent_ents[e].latency--;
+        SWITCH_IN_BANK(nOldBank);
         return;
     }
 
     /* horizontal move. calculate new x */
-    if (ent_ents[e].offsx == 0)  /* not supposed to move -> don't */
+    if (ent_ents[e].offsx == 0) { /* not supposed to move -> don't */
+        SWITCH_IN_BANK(nOldBank);
         return;
+    }
 
     x = ent_ents[e].x + ent_ents[e].offsx;
     if (ent_ents[e].x < 0 || ent_ents[e].x > 0xe8) {
       /*  U-turn and return if reaching horizontal boundaries */
         ent_ents[e].step_count = 0;
         ent_ents[e].offsx = -ent_ents[e].offsx;
+        SWITCH_IN_BANK(nOldBank);
         return;
     }
 
@@ -171,6 +182,7 @@ e_them_t1_action2(U16 e, U16 type) {
       /* horizontal move not possible: u-turn and return */
         ent_ents[e].step_count = 0;
         ent_ents[e].offsx = -ent_ents[e].offsx;
+        SWITCH_IN_BANK(nOldBank);
         return;
     }
 
@@ -178,6 +190,7 @@ e_them_t1_action2(U16 e, U16 type) {
     if (env1 & MAP_EFLG_LETHAL) {
       /* lethal entities kill e_them */
         e_them_gozombie(e);
+        SWITCH_IN_BANK(nOldBank);
         return;
     }
 
@@ -187,16 +200,21 @@ e_them_t1_action2(U16 e, U16 type) {
     /* depending on type, */
     if (type == TYPE_1B) {
       /* set direction to move horizontally towards rick */
-        if ((ent_ents[e].x & 0x1e) != 0x10)  /* prevents too frequent u-turns */
+        if ((ent_ents[e].x & 0x1e) != 0x10) {  /* prevents too frequent u-turns */
+            SWITCH_IN_BANK(nOldBank);
             return;
+        }
         ent_ents[e].offsx = (ent_ents[e].x < E_RICK_ENT.x) ? 0x02 : -0x02;
+        SWITCH_IN_BANK(nOldBank);
         return;
     } else {
       /* set direction according to step counter */
         ent_ents[e].step_count++;
         /* FIXME why trig_x (b16) ?? */
-        if ((ent_ents[e].trig_x >> 1) > ent_ents[e].step_count)
+        if ((ent_ents[e].trig_x >> 1) > ent_ents[e].step_count) {
+            SWITCH_IN_BANK(nOldBank);
             return;
+        }
     }
 
     /* type is 1A and step counter reached its limit: u-turn */
@@ -204,14 +222,15 @@ e_them_t1_action2(U16 e, U16 type) {
     ent_ents[e].offsx = -ent_ents[e].offsx;
 #undef offsx
 #undef step_count
+
+    SWITCH_IN_BANK(nOldBank);
 }
 
 
 /*
  * ASM 21CF
  */
-void
-e_them_t1_action(U16 e, U16 type) {
+void e_them_t1_action(U16 e, U16 type) {
     e_them_t1_action2(e, type);
 
     /* lethal entities kill them */
@@ -236,13 +255,14 @@ e_them_t1_action(U16 e, U16 type) {
     }
 
     /* rick stops them */
-    if (E_RICK_STTST(E_RICK_STSTOP) &&
-        u_fboxtest(e, e_rick_stop_x, e_rick_stop_y))
+    if (E_RICK_STTST(E_RICK_STSTOP) && u_fboxtest(e, e_rick_stop_x, e_rick_stop_y)) {
         ent_ents[e].latency = 0x14;
+    }
 
-      /* they kill rick */
-    if (e_rick_boxtest(e))
+    /* they kill rick */
+    if (e_rick_boxtest(e)) {
         e_rick_gozombie();
+    }
 }
 
 
@@ -251,8 +271,7 @@ e_them_t1_action(U16 e, U16 type) {
  *
  * ASM 2452
  */
-void
-e_them_t1a_action(U16 e) {
+void e_them_t1a_action(U16 e) {
     e_them_t1_action(e, TYPE_1A);
 }
 
@@ -262,8 +281,7 @@ e_them_t1a_action(U16 e) {
  *
  * ASM 21CA
  */
-void
-e_them_t1b_action(U16 e) {
+void e_them_t1b_action(U16 e) {
     e_them_t1_action(e, TYPE_1B);
 }
 
@@ -273,14 +291,12 @@ e_them_t1b_action(U16 e) {
  *
  * ASM 23B8
  */
-void
-e_them_z_action(U16 e) {
+void e_them_z_action(U16 e) {
 #define offsx c1
     S32 i;
 
     /* calc new sprite */
-    ent_ents[e].sprite = ent_ents[e].sprbase
-        + ((ent_ents[e].x & 0x04) ? 0x07 : 0x06);
+    ent_ents[e].sprite = ent_ents[e].sprbase + ((ent_ents[e].x & 0x04) ? 0x07 : 0x06);
 
       /* calc new y */
     i = ((S32)ent_ents[e].y << 8) + ent_ents[e].offsy + ent_ents[e].ylow;
@@ -300,10 +316,12 @@ e_them_z_action(U16 e) {
     ent_ents[e].x += ent_ents[e].offsx;
 
     /* must stay within horizontal boundaries */
-    if (ent_ents[e].x < 0)
+    if (ent_ents[e].x < 0) {
         ent_ents[e].x = 0;
-    if (ent_ents[e].x > 0xe8)
+    }
+    if (ent_ents[e].x > 0xe8) {
         ent_ents[e].x = 0xe8;
+    }
 #undef offsx
 }
 
@@ -315,14 +333,16 @@ e_them_z_action(U16 e) {
  *
  * ASM 2792
  */
-void
-e_them_t2_action2(U16 e) {
+void e_them_t2_action2(U16 e) {
 #define flgclmb c1
 #define offsx c2
     S32 i;
     U16 x, y;
     S16 yd;
     U16 env0, env1;
+    U16 nOldBank = nBank;
+
+    SWITCH_IN_BANK14;
 
     /*
      * vars required by the Black Magic (tm) performance at the
@@ -334,45 +354,59 @@ e_them_t2_action2(U16 e) {
     static U16 cx;
     static U8* cl = (U8*)&cx;
     static U8* ch = (U8*)&cx + 1;
-    static U16* sh = (U16*)&e_them_rndseed;
-    static U16* sl = (U16*)&e_them_rndseed + 2;
+    static U16* sh = (U16*)&e_them_rndseed;             // MSW of rndseed
+    static U16* sl = (U16*)((U8*)&e_them_rndseed + 2);  // LSW of rndseed
 
     /*sys_printf("e_them_t2 ------------------------------\n");*/
 
     /* latency: if not zero then decrease */
-    if (ent_ents[e].latency > 0) ent_ents[e].latency--;
+    if (ent_ents[e].latency > 0) {
+        ent_ents[e].latency--;
+    }
 
     /* climbing? */
-    if (ent_ents[e].flgclmb != TRUE) goto climbing_not;
+    if (ent_ents[e].flgclmb != TRUE) {
+        goto climbing_not;
+    }
 
     /* CLIMBING */
 
     /*sys_printf("e_them_t2 climbing\n");*/
 
     /* latency: if not zero then return */
-    if (ent_ents[e].latency > 0) return;
+    if (ent_ents[e].latency > 0) {
+        SWITCH_IN_BANK(nOldBank);
+        return;
+    }
 
     /* calc new sprite */
     ent_ents[e].sprite = ent_ents[e].sprbase + 0x08 +
         (((ent_ents[e].x ^ ent_ents[e].y) & 0x04) ? 1 : 0);
 
       /* reached rick's level? */
-    if ((ent_ents[e].y & 0xfe) != (E_RICK_ENT.y & 0xfe)) goto ymove;
+    if ((ent_ents[e].y & 0xfe) != (E_RICK_ENT.y & 0xfe)) {
+        goto ymove;
+    }
 
 xmove:
   /* calc new x and test environment */
     ent_ents[e].offsx = (ent_ents[e].x < E_RICK_ENT.x) ? 0x02 : -0x02;
     x = ent_ents[e].x + ent_ents[e].offsx;
     u_envtest(x, ent_ents[e].y, FALSE, &env0, &env1);
-    if (env1 & (MAP_EFLG_SOLID | MAP_EFLG_SPAD | MAP_EFLG_WAYUP))
+    if (env1 & (MAP_EFLG_SOLID | MAP_EFLG_SPAD | MAP_EFLG_WAYUP)) {
+        SWITCH_IN_BANK(nOldBank);
         return;
+    }
     if (env1 & MAP_EFLG_LETHAL) {
         e_them_gozombie(e);
+        SWITCH_IN_BANK(nOldBank);
         return;
     }
     ent_ents[e].x = x;
-    if (env1 & (MAP_EFLG_VERT | MAP_EFLG_CLIMB))  /* still climbing */
+    if (env1 & (MAP_EFLG_VERT | MAP_EFLG_CLIMB)) { /* still climbing */
+        SWITCH_IN_BANK(nOldBank);
         return;
+    }
     goto climbing_not;  /* not climbing anymore */
 
 ymove:
@@ -381,24 +415,28 @@ ymove:
     y = ent_ents[e].y + yd;
     if (y < 0 || y > 0x140) {
         delete_ent(e);
+        SWITCH_IN_BANK(nOldBank);
         return;
     }
     u_envtest(ent_ents[e].x, y, FALSE, &env0, &env1);
     if (env1 & (MAP_EFLG_SOLID | MAP_EFLG_SPAD | MAP_EFLG_WAYUP)) {
-        if (yd < 0)
+        if (yd < 0) {
             goto xmove;  /* can't go up */
-        else
+        } else {
             goto climbing_not;  /* can't go down */
+        }
     }
     /* can move */
     ent_ents[e].y = y;
-    if (env1 & (MAP_EFLG_VERT | MAP_EFLG_CLIMB))  /* still climbing */
+    if (env1 & (MAP_EFLG_VERT | MAP_EFLG_CLIMB)) {  /* still climbing */
+        SWITCH_IN_BANK(nOldBank);
         return;
+    }
 
-      /* NOT CLIMBING */
+    /* NOT CLIMBING */
 
 climbing_not:
-   /*sys_printf("e_them_t2 climbing NOT\n");*/
+     /*sys_printf("e_them_t2 climbing NOT\n");*/
 
     ent_ents[e].flgclmb = FALSE;  /* not climbing */
 
@@ -411,10 +449,12 @@ climbing_not:
       /* can go there */
         if (env1 & MAP_EFLG_LETHAL) {
             e_them_gozombie(e);
+            SWITCH_IN_BANK(nOldBank);
             return;
         }
         if (y > 0x140) {  /* deactivate if outside */
             delete_ent(e);
+            SWITCH_IN_BANK(nOldBank);
             return;
         }
         if (!(env1 & MAP_EFLG_VERT)) {
@@ -422,13 +462,16 @@ climbing_not:
             ent_ents[e].y = y;
             ent_ents[e].ylow = (U8)i;
             ent_ents[e].offsy += 0x0080;
-            if (ent_ents[e].offsy > 0x0800)
+            if (ent_ents[e].offsy > 0x0800) {
                 ent_ents[e].offsy = 0x0800;
+            }
+            SWITCH_IN_BANK(nOldBank);
             return;
         }
         if (((ent_ents[e].x & 0x07) == 0x04) && (y < E_RICK_ENT.y)) {
-      /*sys_printf("e_them_t2 climbing00\n");*/
+            /*sys_printf("e_them_t2 climbing00\n");*/
             ent_ents[e].flgclmb = TRUE;  /* climbing */
+            SWITCH_IN_BANK(nOldBank);
             return;
         }
     }
@@ -437,14 +480,17 @@ climbing_not:
     /* can't go there, or ... */
     ent_ents[e].y = (ent_ents[e].y & 0xf8) | 0x03;  /* align to ground */
     ent_ents[e].offsy = 0x0100;
-    if (ent_ents[e].latency != 00)
+    if (ent_ents[e].latency != 00) {
+        SWITCH_IN_BANK(nOldBank);
         return;
+    }
 
     if ((env1 & MAP_EFLG_CLIMB) &&
     ((ent_ents[e].x & 0x0e) == 0x04) &&
     (ent_ents[e].y > E_RICK_ENT.y)) {
-      /*sys_printf("e_them_t2 climbing01\n");*/
+        /*sys_printf("e_them_t2 climbing01\n");*/
         ent_ents[e].flgclmb = TRUE;  /* climbing */
+        SWITCH_IN_BANK(nOldBank);
         return;
     }
 
@@ -456,24 +502,27 @@ climbing_not:
 
 
     /* */
-    if (ent_ents[e].offsx == 0)
+    if (ent_ents[e].offsx == 0) {
         ent_ents[e].offsx = 2;
+    }
     x = ent_ents[e].x + ent_ents[e].offsx;
     /*sys_printf("e_them_t2 xmove x=%02x\n", x);*/
     if (x < 0xe8) {
         u_envtest(x, ent_ents[e].y, FALSE, &env0, &env1);
         if (!(env1 & (MAP_EFLG_VERT | MAP_EFLG_SOLID | MAP_EFLG_SPAD | MAP_EFLG_WAYUP))) {
             ent_ents[e].x = x;
-            if ((x & 0x1e) != 0x08)
+            if ((x & 0x1e) != 0x08) {
+                SWITCH_IN_BANK(nOldBank);
                 return;
+            }
 
-              /*
-               * Black Magic (tm)
-               *
-               * this is obviously some sort of randomizer to define a direction
-               * for the entity. it is an exact copy of what the assembler code
-               * does but I can't explain.
-               */
+            /*
+            * Black Magic (tm)
+            *
+            * this is obviously some sort of randomizer to define a direction
+            * for the entity. it is an exact copy of what the assembler code
+            * does but I can't explain.
+            */
             bx = e_them_rndnbr + *sh + *sl + 0x0d;
             cx = *sh;
             *bl ^= *ch;
@@ -485,6 +534,7 @@ climbing_not:
 
             /* back to normal */
 
+            SWITCH_IN_BANK(nOldBank);
             return;
 
         }
@@ -492,11 +542,14 @@ climbing_not:
 
     /* U-turn */
     /*sys_printf("e_them_t2 u-turn\n");*/
-    if (ent_ents[e].offsx == 0)
+    if (ent_ents[e].offsx == 0) {
         ent_ents[e].offsx = 2;
-    else
+    } else {
         ent_ents[e].offsx = -ent_ents[e].offsx;
+    }
 #undef offsx
+
+    SWITCH_IN_BANK(nOldBank);
 }
 
 /*
@@ -509,8 +562,9 @@ e_them_t2_action(U16 e) {
     e_them_t2_action2(e);
 
     /* they kill rick */
-    if (e_rick_boxtest(e))
+    if (e_rick_boxtest(e)) {
         e_rick_gozombie();
+    }
 
       /* lethal entities kill them */
     if (u_themtest(e)) {
@@ -519,9 +573,7 @@ e_them_t2_action(U16 e) {
     }
 
     /* bullet kills them */
-    if (E_BULLET_ENT.n &&
-        u_fboxtest(e, E_BULLET_ENT.x + (e_bullet_offsx < 0 ? 00 : 0x18),
-        E_BULLET_ENT.y)) {
+    if (E_BULLET_ENT.n && u_fboxtest(e, E_BULLET_ENT.x + (e_bullet_offsx < 0 ? 00 : 0x18), E_BULLET_ENT.y)) {
         delete_ent(E_BULLET_NO);
         e_them_gozombie(e);
         return;
@@ -533,13 +585,13 @@ e_them_t2_action(U16 e) {
         return;
     }
 
-    /* rick stops them */
-    if (E_RICK_STTST(E_RICK_STSTOP) &&
-        u_fboxtest(e, e_rick_stop_x, e_rick_stop_y))
+    /* rick stops them with stick */
+    if (E_RICK_STTST(E_RICK_STSTOP) && u_fboxtest(e, e_rick_stop_x, e_rick_stop_y)) {
         ent_ents[e].latency = 40;   // mb: was 0x14
+    }
 }
 
-void fetch_mvstep(int step, mvstep_t *pmv) {
+void fetch_mvstep(int step, mvstep_t* pmv) {
     unsigned int nOldBank = nBank;
     SWITCH_IN_BANK7;
     *pmv = ent_mvstep[step];
@@ -565,13 +617,17 @@ void e_them_t3_action2(U16 e) {
     U16 i;
     U16 x, y;
     mvstep_t tmp_mvstep;
+    U16 nOldBank = nBank;
+
+    SWITCH_IN_BANK14;
 
     while (1) {
 
       /* calc new sprite */
         i = ent_sprseq[ent_ents[e].sprbase + ent_ents[e].sproffs];
-        if (i == 0xff)
+        if (i == 0xff) {
             i = ent_sprseq[ent_ents[e].sprbase];
+        }
         ent_ents[e].sprite = i;
         if (ent_ents[e].sprite == 0) {
             // we need to clear the sprite cache
@@ -583,18 +639,20 @@ void e_them_t3_action2(U16 e) {
         if (ent_ents[e].sproffs != 0) {  /* awake */
 
           /* rotate sprseq */
-            if (ent_sprseq[ent_ents[e].sprbase + ent_ents[e].sproffs] != 0xff)
+            if (ent_sprseq[ent_ents[e].sprbase + ent_ents[e].sproffs] != 0xff) {
                 ent_ents[e].sproffs++;
-            if (ent_sprseq[ent_ents[e].sprbase + ent_ents[e].sproffs] == 0xff)
+            }
+            if (ent_sprseq[ent_ents[e].sprbase + ent_ents[e].sproffs] == 0xff) {
                 ent_ents[e].sproffs = 1;
+            }
 
             fetch_mvstep(ent_ents[e].step_no, &tmp_mvstep);
             if (ent_ents[e].step_count < tmp_mvstep.count) {
-          /*
-           * still running this step: try to increment x and y while
-           * checking that they remain within boudaries. if so, return.
-           * else switch to next step.
-           */
+                /*
+                * still running this step: try to increment x and y while
+                * checking that they remain within boudaries. if so, return.
+                * else switch to next step.
+                */
                 ent_ents[e].step_count++;
                 x = ent_ents[e].x + tmp_mvstep.dx;
 
@@ -611,6 +669,7 @@ void e_them_t3_action2(U16 e) {
                     y = ent_ents[e].y + tmp_mvstep.dy;
                     if (y > 0 && y < 0xf1) {    // was 0xdc
                         ent_ents[e].y = y;
+                        SWITCH_IN_BANK(nOldBank);
                         return;
                     }
                 }
@@ -623,21 +682,22 @@ void e_them_t3_action2(U16 e) {
             ent_ents[e].step_no++;
             fetch_mvstep(ent_ents[e].step_no, &tmp_mvstep);
             if (tmp_mvstep.count != 0xff) {
-          /* there is a next step: init and loop */
+                /* there is a next step: init and loop */
                 ent_ents[e].step_count = 0;
             } else {
-          /* there is no next step: restart or deactivate */
-                if (!E_RICK_STTST(E_RICK_STZOMBIE) &&
-                    !(ent_ents[e].flags & ENT_FLG_ONCE)) {
-                  /* loop this entity */
+                /* there is no next step: restart or deactivate */
+                if (!E_RICK_STTST(E_RICK_STZOMBIE) && !(ent_ents[e].flags & ENT_FLG_ONCE)) {
+                    /* loop this entity */
                     ent_ents[e].sproffs = 0;
                     ent_ents[e].n &= ~ENT_LETHAL;
-                    if (ent_ents[e].flags & ENT_FLG_LETHALR)
+                    if (ent_ents[e].flags & ENT_FLG_LETHALR) {
                         ent_ents[e].n |= ENT_LETHAL;
+                    }
                     ent_ents[e].x = ent_ents[e].xsave;
                     ent_ents[e].y = ent_ents[e].ysave;
                     if (ent_ents[e].y < 0 || ent_ents[e].y > 0x140) {
                         delete_ent(e);
+                        SWITCH_IN_BANK(nOldBank);
                         return;
                     } else {
                         // reset the sprite in case we don't retrigger
@@ -646,30 +706,33 @@ void e_them_t3_action2(U16 e) {
                         ent_ents[e].n = n;
                     }
                 } else {
-                  /* deactivate this entity */
+                    /* deactivate this entity */
                     delete_ent(e);
+                    SWITCH_IN_BANK(nOldBank);
                     return;
                 }
             }
-        } else {  /* ent_ents[e].sprseq1 == 0 -- waiting */
+        } else {  
+            /* ent_ents[e].sprseq1 == 0 -- waiting */
 
-          /* ugly GOTOs */
+            /* ugly GOTOs */
 
             if (ent_ents[e].flags & ENT_FLG_TRIGRICK) {  /* reacts to rick */
-          /* wake up if triggered by rick */
-                if (u_trigbox(e, E_RICK_ENT.x + 0x0C, E_RICK_ENT.y + 0x0A))
+                /* wake up if triggered by rick */
+                if (u_trigbox(e, E_RICK_ENT.x + 0x0C, E_RICK_ENT.y + 0x0A)) {
                     goto wakeup;
+                }
             }
 
             if (ent_ents[e].flags & ENT_FLG_TRIGSTOP) {  /* reacts to rick "stop" */
-          /* wake up if triggered by rick "stop" */
-                if (E_RICK_STTST(E_RICK_STSTOP) &&
-                    u_trigbox(e, e_rick_stop_x, e_rick_stop_y))
+                /* wake up if triggered by rick "stop" */
+                if (E_RICK_STTST(E_RICK_STSTOP) && u_trigbox(e, e_rick_stop_x, e_rick_stop_y)) {
                     goto wakeup;
+                }
             }
 
             if (ent_ents[e].flags & ENT_FLG_TRIGBULLET) {  /* reacts to bullets */
-          /* wake up if triggered by bullet */
+                /* wake up if triggered by bullet */
                 if (E_BULLET_ENT.n && u_trigbox(e, e_bullet_xc, e_bullet_yc)) {
                     delete_ent(E_BULLET_NO);
                     goto wakeup;
@@ -677,7 +740,7 @@ void e_them_t3_action2(U16 e) {
             }
 
             if (ent_ents[e].flags & ENT_FLG_TRIGBOMB) {  /* reacts to bombs */
-          /* wake up if triggered by bomb */
+                /* wake up if triggered by bomb */
                 if (e_bomb_lethal) {
                     if (u_trigbox(e, e_bomb_xc, e_bomb_yc)) {
                         goto wakeup;
@@ -686,52 +749,54 @@ void e_them_t3_action2(U16 e) {
             }
 
             /* not triggered: keep waiting */
+            SWITCH_IN_BANK(nOldBank);
             return;
 
             /* something triggered the entity: wake up */
             /* initialize step counter */
 wakeup:
-            if E_RICK_STTST(E_RICK_STZOMBIE)
+            if E_RICK_STTST(E_RICK_STZOMBIE) {
+                SWITCH_IN_BANK(nOldBank);
                 return;
+            }
 #ifdef ENABLE_SOUND
-        /*
-        * FIXME the sound should come from a table, there are 10 of them
-        * but I dont have the table yet. must rip the data off the game...
-        * FIXME is it 8 of them, not 10?
-        * FIXME testing below...
-        */
+            /*
+            * FIXME the sound should come from a table, there are 10 of them
+            * but I dont have the table yet. must rip the data off the game...
+            * FIXME is it 8 of them, not 10?
+            * FIXME testing below...
+            */
             syssnd_play(WAV_ENTITY[(ent_ents[e].trigsnd & 0x1F) - 0x14], 1);
             /*syssnd_play(WAV_ENTITY[0], 1);*/
 #endif
             ent_ents[e].n &= ~ENT_LETHAL;
-            if (ent_ents[e].flags & ENT_FLG_LETHALI)
+            if (ent_ents[e].flags & ENT_FLG_LETHALI) {
                 ent_ents[e].n |= ENT_LETHAL;
+            }
             ent_ents[e].sproffs = 1;
             ent_ents[e].step_count = 0;
             ent_ents[e].step_no = ent_ents[e].step_no_i;
+            SWITCH_IN_BANK(nOldBank);
             return;
         }
     }
 #undef step_count
-}
 
+    SWITCH_IN_BANK(nOldBank);
+}
 
 /*
  * Action function for e_them _t3 type
  *
  * ASM 2546
  */
-void
-e_them_t3_action(U16 e) {
+void e_them_t3_action(U16 e) {
     e_them_t3_action2(e);
 
     /* if lethal, can kill rick */
-    if ((ent_ents[e].n & ENT_LETHAL) &&
-        !E_RICK_STTST(E_RICK_STZOMBIE) && e_rick_boxtest(e)) {  /* CALL 1130 */
+    if ((ent_ents[e].n & ENT_LETHAL) && !E_RICK_STTST(E_RICK_STZOMBIE) && e_rick_boxtest(e)) {  /* CALL 1130 */
         e_rick_gozombie();
     }
 }
 
 /* eof */
-
-
