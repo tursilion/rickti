@@ -277,6 +277,9 @@ U16 screen_introMain(void)
 
 	if (seq == 30) /* we're done */
 	{
+#ifdef SOUND_ENABLE
+        sounds_stop();
+#endif
 		fb_clear();
 		seq = 0;
 		seen = 0;

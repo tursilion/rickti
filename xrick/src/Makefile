@@ -53,7 +53,7 @@ all: $(PREREQUISITES)
 	$(ELF2CART) $(NAME).ea5.elf $(NAME)8.bin
 
 clean:
-	-rm *.o *.map *.lst *.sym *.ihx *.rom *.i *.s
+	-rm *.o *.map *.lst *.sym *.ihx *.rom *.i *.s *.elf rick8.bin 
 
 # libti99 crt0 copied into folder
 crt0.o: crt0_bankcart.assembly

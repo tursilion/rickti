@@ -30,7 +30,7 @@
 #define ENABLE_JOYSTICK
 
 /* sound support TODO */
-#undef ENABLE_SOUND
+#define ENABLE_SOUND
 
 /* cheats support */
 #define ENABLE_CHEATS
@@ -44,24 +44,31 @@
 extern unsigned int nBank;
 #ifndef CLASSIC99
 
+// In this application, we leave interrupts enabled. It is crucial that the bank switch code
+// happens in this order. If the hardware changes before nBank, an interrupt between the two
+// steps could change back to the old bank before we set nBank (I observed the compiler doing
+// this.) The '__asm__ __volatile__("":::"memory");' introduces a compiler memory barrier
+// to prevent it from re-ordering the instruction without always making nBank volatile
+// (although in fairness, it seems to generate the same code).
+
 // WARNING: don't pass nBank to this, the compiler will not do the right thing! And you probably didn't mean it anyway!
-#define SWITCH_IN_BANK(nOldBank) nBank = (nOldBank); (*(volatile unsigned int*)(nOldBank)) = nBank;
-#define SWITCH_IN_BANK0    nBank=(unsigned int)0x6000; (*(volatile unsigned int*)0x6000)=nBank;  
-#define SWITCH_IN_BANK1    nBank=(unsigned int)0x6002; (*(volatile unsigned int*)0x6002)=nBank;  
-#define SWITCH_IN_BANK2    nBank=(unsigned int)0x6004; (*(volatile unsigned int*)0x6004)=nBank; 
-#define SWITCH_IN_BANK3    nBank=(unsigned int)0x6006; (*(volatile unsigned int*)0x6006)=nBank; 
-#define SWITCH_IN_BANK4    nBank=(unsigned int)0x6008; (*(volatile unsigned int*)0x6008)=nBank; 	
-#define SWITCH_IN_BANK5    nBank=(unsigned int)0x600a; (*(volatile unsigned int*)0x600a)=nBank; 
-#define SWITCH_IN_BANK6    nBank=(unsigned int)0x600c; (*(volatile unsigned int*)0x600c)=nBank; 
-#define SWITCH_IN_BANK7    nBank=(unsigned int)0x600e; (*(volatile unsigned int*)0x600e)=nBank; 
-#define SWITCH_IN_BANK8    nBank=(unsigned int)0x6010; (*(volatile unsigned int*)0x6010)=nBank; 
-#define SWITCH_IN_BANK9    nBank=(unsigned int)0x6012; (*(volatile unsigned int*)0x6012)=nBank; 
-#define SWITCH_IN_BANK10   nBank=(unsigned int)0x6014; (*(volatile unsigned int*)0x6014)=nBank; 
-#define SWITCH_IN_BANK11   nBank=(unsigned int)0x6016; (*(volatile unsigned int*)0x6016)=nBank; 
-#define SWITCH_IN_BANK12   nBank=(unsigned int)0x6018; (*(volatile unsigned int*)0x6018)=nBank; 
-#define SWITCH_IN_BANK13   nBank=(unsigned int)0x601a; (*(volatile unsigned int*)0x601a)=nBank; 
-#define SWITCH_IN_BANK14   nBank=(unsigned int)0x601c; (*(volatile unsigned int*)0x601c)=nBank; 
-#define SWITCH_IN_BANK15   nBank=(unsigned int)0x601e; (*(volatile unsigned int*)0x601e)=nBank; 
+#define SWITCH_IN_BANK(nOldBank) nBank = (nOldBank); __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)(nOldBank)) = 0;
+#define SWITCH_IN_BANK0    nBank=(unsigned int)0x6000; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6000)=0;  
+#define SWITCH_IN_BANK1    nBank=(unsigned int)0x6002; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6002)=0;  
+#define SWITCH_IN_BANK2    nBank=(unsigned int)0x6004; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6004)=0; 
+#define SWITCH_IN_BANK3    nBank=(unsigned int)0x6006; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6006)=0; 
+#define SWITCH_IN_BANK4    nBank=(unsigned int)0x6008; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6008)=0; 	
+#define SWITCH_IN_BANK5    nBank=(unsigned int)0x600a; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x600a)=0; 
+#define SWITCH_IN_BANK6    nBank=(unsigned int)0x600c; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x600c)=0; 
+#define SWITCH_IN_BANK7    nBank=(unsigned int)0x600e; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x600e)=0; 
+#define SWITCH_IN_BANK8    nBank=(unsigned int)0x6010; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6010)=0; 
+#define SWITCH_IN_BANK9    nBank=(unsigned int)0x6012; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6012)=0; 
+#define SWITCH_IN_BANK10   nBank=(unsigned int)0x6014; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6014)=0; 
+#define SWITCH_IN_BANK11   nBank=(unsigned int)0x6016; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6016)=0; 
+#define SWITCH_IN_BANK12   nBank=(unsigned int)0x6018; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6018)=0; 
+#define SWITCH_IN_BANK13   nBank=(unsigned int)0x601a; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x601a)=0; 
+#define SWITCH_IN_BANK14   nBank=(unsigned int)0x601c; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x601c)=0; 
+#define SWITCH_IN_BANK15   nBank=(unsigned int)0x601e; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x601e)=0; 
 #else
 
 // in Classic99 we can check if you accidentally passed in nBank

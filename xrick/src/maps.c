@@ -115,9 +115,9 @@ map_expand(void)
 void
 map_init(void)
 {
-  unsigned int nOldBank = nBank;
+    unsigned int nOldBank = nBank;
 
-  SWITCH_IN_BANK12;
+    SWITCH_IN_BANK12;
 
 	/*sys_printf("xrick/map_init: map=%#04x submap=%#04x\n", g_map, env_submap);*/
 	map_tilesBank = map_submaps[env_submap].page == 1 ? 2 : 1;
