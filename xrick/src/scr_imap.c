@@ -166,8 +166,7 @@ U16 screen_introMap(void)
 			control_last = 0;
 
 #ifdef ENABLE_SOUND
-            nOldBank = nBank;
-			sounds_setMusic(map_maps[env_map].tune, 1);
+			sounds_play(map_maps[env_map].tune);
 #endif
             sysvid_setGamma(GAMMA_ON);
 			seq = 10;

@@ -74,6 +74,12 @@ void sprites_paint(U16 spriteNumber, U16 spriteIndex, U16 x, U16 y, U16 load_pat
     *(pSpriteTab++) = COLOR_WHITE;  // TODO: color table
 
     if (load_pattern) {
+#ifdef CLASSIC99
+        // to figure out how many entities we actually need (I got 10)
+        static int largestIndex = 0;
+        if (spriteIndex > largestIndex) largestIndex = spriteIndex;
+#endif
+
         VDP_INT_DISABLE;
         // based on which pattern we need, we need to map and copy from ROM
         // each table has 48 of those big objects (8x6)

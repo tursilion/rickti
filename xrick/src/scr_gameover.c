@@ -45,10 +45,6 @@ U16 screen_gameover(void)
 	static U16 seq = 0;
 	static U16 period = 0;
 	static U32 tm = 0;
-#ifdef ENABLE_SOUND
-	static sound_t *snd;
-	static U16 chan;
-#endif
 
 	if (seq == 0) {
 		tiles_setBank(0);
@@ -56,7 +52,7 @@ U16 screen_gameover(void)
 		period = game_period; /* save period, */
 		game_period = 50;     /* and use our own */
 #ifdef ENABLE_SOUND
-		sounds_setMusic("sounds/gameover.wav", 1);
+		sounds_play(GAMEOVER_SND);
 #endif
 	}
 

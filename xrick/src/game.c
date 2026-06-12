@@ -53,11 +53,11 @@ typedef enum {
 } game_state_t;
 
 const map_t map_maps[MAP_NBR_MAPS] = {
-  {0x0008, 0x008b, 0x0008, 000000, "sounds/tune0.wav"},
-  {0x0008, 0x008b, 0x0068, 0x0009, "sounds/tune1.wav"},
-  {0x0010, 0x008b, 0x0010, 0x0014, "sounds/tune2.wav"},
-  {0x0010, 0x008b, 0x0010, 0x0026, "sounds/tune3.wav"},
-  {0x0074, 0x00c8, 0x0008, 0x0026, "sounds/tune4.wav"},
+  {0x0008, 0x008b, 0x0008, 000000, SAMERICA_SND},
+  {0x0008, 0x008b, 0x0068, 0x0009, EGYPT_SND},
+  {0x0010, 0x008b, 0x0010, 0x0014, SCHWARZ_SND},
+  {0x0010, 0x008b, 0x0010, 0x0026, MBASE_SND},
+  {0x0074, 0x00c8, 0x0008, 0x0026, RICK1VICTORY_SND},
 };
 
 /*
@@ -211,7 +211,6 @@ void game_run(char* path) {
 }
 
 static void game_exit(void) {
-    // TODO: put the F18A reset here
 }
 
 static void game_loop(void) {
@@ -361,7 +360,8 @@ static void game_cycle(void) {
                     game_waitevt = FALSE;
                     screen_pause(FALSE);
 #ifdef ENABLE_SOUND
-                    syssnd_pause(FALSE, FALSE);
+                    // nothing - we'll let the last sound play out
+                    //syssnd_pause(FALSE, FALSE);
 #endif
                     game_state = CTRL_RICK;
                 }
@@ -389,7 +389,8 @@ static void game_cycle(void) {
                 if (control_status & CONTROL_PAUSE)
                 {
 #ifdef ENABLE_SOUND
-                    syssnd_pause(TRUE, FALSE);
+                    // let it play out
+                    //syssnd_pause(TRUE, FALSE);
 #endif
                     game_waitevt = TRUE;
                     game_state = PAUSE_PRESSED1;
@@ -397,7 +398,8 @@ static void game_cycle(void) {
                     if (control_active == FALSE)
                     {
 #ifdef ENABLE_SOUND
-                        syssnd_pause(TRUE, FALSE);
+                        // let it play out
+                        //syssnd_pause(TRUE, FALSE);
 #endif
                         game_waitevt = TRUE;
                         screen_pause(TRUE);

@@ -36,7 +36,7 @@ e_bonus_action(U16 e) {
         if (e_rick_boxtest(e)) {
             addscore(500);
 #ifdef ENABLE_SOUND
-            syssnd_play(WAV_BONUS, 1);
+            sounds_play(BONUS_SND);
 #endif
             map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;
             ent_ents[e].seq = 1;

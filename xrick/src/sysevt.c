@@ -50,6 +50,8 @@ static int processEvent()
 
     // check important keys - only setting control_last for exit, ignoring keybd_end and xtra
     if (key != 0xff) {
+        U16 waitRelease = 0;
+
         if (key == syskbd_up) SETBIT(control_status, CONTROL_UP);
 		else if (key == syskbd_down) SETBIT(control_status, CONTROL_DOWN);
 		else if (key == syskbd_left) SETBIT(control_status, CONTROL_LEFT);
@@ -57,11 +59,18 @@ static int processEvent()
 		else if (key == syskbd_pause) SETBIT(control_status, CONTROL_PAUSE);
 		else if (key == syskbd_fire) SETBIT(control_status, CONTROL_FIRE);
 #ifdef ENABLE_SOUND
-        else if (key == '4') { syssnd_toggleMute(); ret = 1; }
+        else if (key == '4') { sounds_toggleMute(); ret = 1; }
 #endif
 		else if (key == '7') { game_toggleCheat(1); ret = 1; }
 		else if (key == '8') { game_toggleCheat(2); ret = 1; }
 		else if (key == '9') { game_toggleCheat(3); ret = 1; }
+
+        // nothing else has set ret yet, so use it here for key release
+        if (ret) {
+            do {
+                kscanfast(0);
+            } while (KSCAN_KEY == key);
+        }
     }
 
     if (check_reset()) {

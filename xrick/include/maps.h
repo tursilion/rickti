@@ -68,7 +68,7 @@ typedef struct {
   U16 x, y;		/* initial position for rick */
   U16 row;		/* initial map_map top row within the submap */
   U16 submap;	/* initial submap */
-  char *tune;	/* map tune */
+  U16 tune;	    /* map tune */
 } map_t;
 
 /*

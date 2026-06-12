@@ -101,7 +101,7 @@ void e_bomb_action(UNUSED(U16 e)) {
          */
 #ifdef ENABLE_SOUND
         if ((e_bomb_ticker & 0x03) == 0x02)
-            syssnd_play(WAV_BOMBSHHT, 1);
+            sounds_play(BOMBSHHT_SND);
 #endif
         /* ST/TI bomb sprites sequence is longer */
         if (e_bomb_ticker < 40) {
@@ -114,7 +114,7 @@ void e_bomb_action(UNUSED(U16 e)) {
          * explode
          */
 #ifdef ENABLE_SOUND
-        syssnd_play(WAV_EXPLODE, 1);
+        sounds_play(EXPLODE_SND);
 #endif
         /* See above: fixing alignment */
         E_BOMB_ENT.x -= 4;

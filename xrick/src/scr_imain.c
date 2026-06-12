@@ -61,9 +61,16 @@ U16 screen_introMain(void)
 		period = game_period;
 		game_period = IMAIN_PERIOD;
 #ifdef ENABLE_SOUND
-		sounds_setMusic("sounds/tune5.wav", -1);
+        sounds_stop();
 #endif
 	}
+
+#ifdef ENABLE_SOUND
+    // loop music if needed (also handles first since we stopped above)
+    if (!sounds_playing()) {
+    	sounds_play(RICK1_SND);
+    }
+#endif
 
 #ifdef DEBUG
     if (seq != lastseq) {
@@ -217,7 +224,7 @@ U16 screen_introMain(void)
 			/* credit content */
             // conio is slow, but this will work
             gotoxy(0, 5);
-                   //012345678901234567890123456789012
+                   //01234567890123456789012345678901
             cprintf("This-is-a-port-of-xrick-by-Tursi");
             cprintf("/Atari-ST-version/\n\n");
             cprintf("github.com/tursilion/rickti\n\n");
@@ -227,8 +234,8 @@ U16 screen_introMain(void)
             cprintf("with-the-port-by-Stephan-Gay\n\n");
             VDP_INT_POLL;
             cprintf("Written-with-gcc,-convert9918\n");
-            cprintf("vgmcomp2,-libTI99ALL-and\n");
-            cprintf("Classic99\n\n");
+            cprintf("vgmcomp2,-libTI99ALL,-snjsfxr\n");
+            cprintf("and-Classic99");
 
             VDP_INT_ENABLE;
 

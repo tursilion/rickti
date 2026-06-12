@@ -17,10 +17,8 @@
 #include "config.h"
 
 extern const U8 pic_haf_pat[];
-extern const U8 pic_congrats_pat[];     // is this even used?!
 extern const U8 pic_splash_pat[];
 extern const U8 pic_haf_col[];
-extern const U8 pic_congrats_col[];     // is this even used?!
 extern const U8 pic_splash_col[];
 
 #endif

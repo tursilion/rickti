@@ -14,30 +14,66 @@
 #ifndef _SOUNDS_H
 #define _SOUNDS_H
 
-#include "syssnd.h"
+#define RICK1_SND 28
+#define SAMERICA_SND 27
+#define EGYPT_SND 0
+#define SCHWARZ_SND 19
+#define MBASE_SND 25
+#define GAMEOVER_SND 16
+#define RICK1VICTORY_SND 22
+
+// sound effects
+
+#define WALK_SND 1
+#define CRAWL_SND 3
+#define JUMP_SND 13
+#define STICK_SND 5
+#define BULLET_SND 7
+#define BOMBSHHT_SND 4
+#define EXPLODE_SND 8
+#define DIE_SND 23
+
+#define PAD_SND 15
+#define BOX_SND 10
+#define BONUS_SND 12
+#define SBONUS_SND 11
+#define SBONUS2_SND 14
+
+#define ENT0_SND 9
+#define ENT1_SND 20
+#define ENT2_SND 24
+#define ENT3_SND 17
+#define ENT4_SND 18
+#define ENT5_SND 21
+#define ENT6_SND 2
+#define ENT7_SND 26
+#define ENT8_SND 6
 
 #ifdef ENABLE_SOUND
 
-extern sound_t* WAV_GAMEOVER;
-extern sound_t* WAV_SBONUS2;
-extern sound_t* WAV_BULLET;
-extern sound_t* WAV_BOMBSHHT;
-extern sound_t* WAV_EXPLODE;
-extern sound_t* WAV_STICK;
-extern sound_t* WAV_WALK;
-extern sound_t* WAV_CRAWL;
-extern sound_t* WAV_JUMP;
-extern sound_t* WAV_PAD;
-extern sound_t* WAV_BOX;
-extern sound_t* WAV_BONUS;
-extern sound_t* WAV_SBONUS1;
-extern sound_t* WAV_DIE;
-extern sound_t* WAV_ENTITY[];
+#include "TISNPlay.h"
+#include <sound.h>
 
-extern void sounds_load(void);
-extern void sounds_free(void);
-extern void sounds_stopMusic(void);
-extern void sounds_setMusic(char* name, U16 loop);
+// Indexes into the SBF sound bank
+// Sounds are in BANK12 right now. About 5k.
+// music
+
+// start a sound effect
+extern void sounds_play(U16 idx);
+
+// stop sounds and mute
+// note: no pause needed, we don't play
+// music during the time 'pause' is valid, so we'll just let
+// whatever sound effect finish playing out.
+extern void sounds_stop(void);
+
+// check if sound is playing
+#define sounds_playing() (isSNPlaying)
+
+extern void sounds_toggleMute();
+extern U16 isMuted;
+
+extern const U16 WAV_ENTITY[9];
 
 #endif /* ENABLE_SOUND */
 

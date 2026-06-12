@@ -74,7 +74,7 @@ void e_them_gozombie(U16 e) {
     ent_ents[e].n = 0x47;  /* zombie entity */
     ent_ents[e].offsy = -0x0400;
 #ifdef ENABLE_SOUND
-    syssnd_play(WAV_DIE, 1);
+    sounds_play(DIE_SND);
 #endif
     addscore(50);
     if (ent_ents[e].flags & ENT_FLG_ONCE) {
@@ -769,8 +769,7 @@ wakeup:
             * FIXME is it 8 of them, not 10?
             * FIXME testing below...
             */
-            syssnd_play(WAV_ENTITY[(ent_ents[e].trigsnd & 0x1F) - 0x14], 1);
-            /*syssnd_play(WAV_ENTITY[0], 1);*/
+            sounds_play(WAV_ENTITY[(ent_ents[e].trigsnd & 0x1F) - 0x14]);
 #endif
             ent_ents[e].n &= ~ENT_LETHAL;
             if (ent_ents[e].flags & ENT_FLG_LETHALI) {

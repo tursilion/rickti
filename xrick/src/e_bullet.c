@@ -41,7 +41,7 @@ void e_bullet_init(U16 x, U16 y) {
         E_BULLET_ENT.sprite = 0x20;
     }
 #ifdef ENABLE_SOUND
-    syssnd_play(WAV_BULLET, 1);
+    sounds_play(BULLET_SND);
 #endif
 }
 

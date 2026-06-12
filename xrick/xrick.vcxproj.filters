@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="vgmcomp2">
+      <UniqueIdentifier>{474dd0f8-e125-4fe7-aa4c-65e45dbef713}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\config.h">
@@ -78,9 +81,6 @@
     <ClInclude Include="include\sprites.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\syssnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\ricksystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -108,6 +108,9 @@
     <ClInclude Include="include\sysarg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\TISNPlay.h">
+      <Filter>vgmcomp2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\control.c">
@@ -117,9 +120,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\dat_screens.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dat_snd.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\draw.c">
@@ -191,9 +191,6 @@
     <ClCompile Include="src\syskbd.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\syssnd.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\system.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -257,6 +254,9 @@
     <ClCompile Include="src\sysarg.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\soundbank.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xrick.rc">
@@ -277,5 +277,14 @@
     <None Include="src\crt0_bankcart.assembly" />
     <None Include="src\vdpint.assembly" />
     <None Include="src\scratchpad.assembly" />
+    <None Include="src\CPlayerCommonHandEdit.assembly">
+      <Filter>vgmcomp2</Filter>
+    </None>
+    <None Include="src\CPlayerTIHandEdit.assembly">
+      <Filter>vgmcomp2</Filter>
+    </None>
+    <None Include="src\CPlayerTIHandlers.assembly">
+      <Filter>vgmcomp2</Filter>
+    </None>
   </ItemGroup>
 </Project>

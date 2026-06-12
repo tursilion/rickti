@@ -68,7 +68,7 @@ e_box_action(U16 e) {
         if (e_rick_boxtest(e)) {
             /* rick: collect bombs or bullets and stop */
 #ifdef ENABLE_SOUND
-            syssnd_play(WAV_BOX, 1);
+            sounds_play(BOX_SND);
 #endif
             if (ent_ents[e].n == 0x10) {
                 env_bombs = GAME_BOMBS_INIT;
@@ -99,7 +99,7 @@ static void explode(U16 e) {
     ent_ents[e].cnt = SEQ_INIT;
     ent_ents[e].n |= ENT_LETHAL;
 #ifdef ENABLE_SOUND
-    syssnd_play(WAV_EXPLODE, 1);
+    sounds_play(EXPLODE_SND);
 #endif
 }
 

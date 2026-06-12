@@ -51,7 +51,7 @@ void e_sbonus_start(U16 e) {
 		e_sbonus_counter = 0x1e;  /* 6DDB */
 		e_sbonus_bonus = 2000;    /* 291A-291D */
 #ifdef ENABLE_SOUND
-		syssnd_play(WAV_SBONUS1, 1);
+		sounds_play(SBONUS_SND);
 #endif
 	}
 }
@@ -79,7 +79,7 @@ void e_sbonus_stop(U16 e) {
         delete_ent(e);
 		addscore(e_sbonus_bonus);  /* add bonus to score */
 #ifdef ENABLE_SOUND
-		syssnd_play(WAV_SBONUS2, 1);
+		sounds_play(SBONUS2_SND);
 #endif
 		/* make sure the entity won't be activated again */
 		map_marks_ent[ent_ents[e].mark] |= MAP_MARK_NACT;

@@ -19,15 +19,6 @@
 extern int sysarg_args_period;
 extern int sysarg_args_map;
 extern int sysarg_args_submap;
-extern int sysarg_args_fullscreen;
-extern int sysarg_args_zoom;
-#ifdef ENABLE_SOUND
-extern int sysarg_args_nosound;
-extern int sysarg_args_vol;
-#endif
-extern char* sysarg_args_data;
-
-extern void sysarg_init(int, char**);
 
 #endif /* _SYSARG_H */
 

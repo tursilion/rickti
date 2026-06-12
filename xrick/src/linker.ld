@@ -83,7 +83,6 @@ SECTIONS {
         vdpint.o
         control.o(.text .rodata)
         dat_screens.o(.text .rodata)
-        dat_snd.o(.text .rodata)
         draw.o(.text .rodata)
         e_bomb.o(.text .rodata)
         e_bonus.o(.text .rodata)
@@ -99,8 +98,7 @@ SECTIONS {
         img.o(.text .rodata)
         maps.o(.text .rodata)
         scr_pause.o(.text .rodata)  /* too small to be worth the cost of banking */
-        sounds.o(.text .rodata)     /* might be bankable? */
-        syssnd.o(.text .rodata)     /* might be bankable? */
+        sounds.o(.text .rodata)     /* leave in RAM */
         sprites.o(.text .rodata)    /* leave in RAM */
         sysarg.o(.text .rodata)
         syskbd.o(.text .rodata)
@@ -109,8 +107,10 @@ SECTIONS {
         tiles.o(.text .rodata)
         util.o(.text .rodata)
         xrick.o(.text .rodata)
+        CPlayerCommonHandEdit.o(.text .rodata)
+        CPlayerTIHandEdit.o(.text .rodata)
+        CPlayerTIHandlers.o(.text .rodata)
         *libti99.a:*(.text .rodata)
-        *libtivgm2.a:*(.text .rodata)
     } > FIXED AT> FLASH
     
     PROVIDE (etext = .);
@@ -191,6 +191,7 @@ SECTIONS {
     bank12 :
     {
         dat_maps1.o(.text .rodata)
+        soundbank.o(.text .rodata)
         PROVIDE(ebank12a = .);
     } > CART12 AT> FLASH
 

@@ -5,7 +5,8 @@
  ref vdpCountH
  ref sprite_table
  ref gSprite
- ref vdpmemcpy
+ ref SongLoop
+ ref nBank
  
 ****************
 *some memory for the sprite rotation
@@ -97,9 +98,15 @@ sprdon
 nowrap
     mov r0,@firsts
 
-*#ifdef ENABLE_SOUND
-*    // TODO: update sound engine (guess a push and a call will work, might not even need the push)
-*#endif
+#ifdef ENABLE_SOUND
+    * update sound engine
+    * force bank12 (does not update nBank)
+    mov r0,@>6018
+    bl @SongLoop
+    * now switch back
+    mov @nBank,r0
+    mov r0,*r0
+#endif
 
 *    // restore the GPLWS, turn ints back on, and return
     lwpi >83E0

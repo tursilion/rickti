@@ -18,3 +18,123 @@ And stretch goals:
     
 The trick is finding compiler bugs when I didn't write the code. Hand optimization to my style may help.
 
+---
+
+For f18a build I am leaning towards a separate program, since we have to double to 256k anyway we'll have a lot of room.
+
+I think maybe write a different crt0 that uses just one page as a bootstrap. That page, in this case, tests for F18A and loads one or the other program to RAM and jumps to it. Then we can simplify the program CRT to not require a loader or test 32k, saving a few bytes of ROM (since we'll need that one twice). That way we can test before we need to copy anything to RAM.
+
+Bootloader ROM:
+- test for 32k present, report if not
+- test for F18A present
+    - load first program if not (9918A version)
+    - load second program if so (F18A version)
+
+---
+
+For the title page - can use BML fat pixel mode - that's a full 16 colors, we'd just be limited to a resolution of 128x192. That does look better than the dithering does. Maybe we can hack the Core and Firebird logos as sprites since they lose too much resolution?
+
+Resizing the screen looks better using anti-aliasing, and a popularity palette select seems to work fine. However the title looks bad with this approach. Using nearest neighbor for the text looks a bit better. So we'll have to composite something by hand.
+    Thoughts: side by side, there's not much difference except on the text. Rick has better definition in a few places on the anti-aliased scale (even after color reduction), so it's probably worth doing. But from a distance you couldn't tell.
+    Could just be lazy and do the nearest neighbor - or in a pinch do it by hand and take the darker of the two pixels.
+
+The full screen would be 64 bytes per row times 192 rows = 12288 bytes (exactly 12k).
+
+The core logo is about 39x21 and the firebird logo is also 39x21. So, again, lots of wasted space, but we'd need 3 16x16 sprites across and 2 down each, total of 12 sprites. Each needs 4 colors plus transparent, so 8 color sprites. Each 16x16 sprite is 32*3 = 96 bytes, 12 sprites is 1162 bytes total. We would need to space the sprite tables by 48 characters (12*4), that fits in 512 bytes, so the three sprite pattern tables would take 1536 bytes, leaving 2432 bytes after the SAL (128 bytes). Lots of room.
+    Each sprite needs a different 8 color palette!
+
+If I wanted to sprite up the title, it's 211x22 - 14 across by 2 down, or 28 sprites. Now, we COULD be super sneaky, and use single color sprites here. That would mean a separate SAL (128) plus 28*32 bytes for pattern (896). We'd need a GPU program to swap out the sprite table mid screen (though there is lots of time.)
+
+We'd have to disable normal tile modes (VR50 - need to add support in Classic99).
+
+So to that end, it would look like this:
+
+0000 - BML - 12k
+3000 - Logo Sprite colors 0 (512 bytes)
+3200 - Logo Sprite colors 1
+3400 - Logo Sprite colors 2
+3600 - Logo SAL (128 bytes)
+3680 - Title SAL (128 bytes)
+3700 - -- free 256 bytes --
+3800 - Title sprite patterns (896 bytes)
+3B80 - -- free 1152 bytes --
+4000 - -- free 768 bytes --
+4300   GPU program
+4???   -- free ?? bytes --
+
+For simplicity - we can use the same GPU program as the Rick caching uses. We'll just reserve one code for "sprite toggle", and it'll check that every frame, and do one frame of sprite flips. The CPU can then clear it when it's done. (Conversely to the Rick sprite update, which it will clear itself when it's done.) That way we don't have to race the GPU program... though I guess stopping it is easy. But none of the work to be done will take much time.
+
+---
+
+Verify needed sprite indexes. Currently I allow up to 13 objects (from 0-12), and each object takes up 4 sprites. But then I also copy the pattern to spriteIndex*4 - 13*4*4 = 208 - I guess that's still legal. But do I only need 52? (and really 48 cause I don't think I need the +1). That will help on the F18A cause I can use a smaller sprite pattern table.
+
+Ah, cause the sprite*4 is for each object being 4 sprites (wasteful, but necessary if I don't want to redraw everything). Then the pattern is *4 cause each sprite is 4 characters. So yeah, it does go up to 208. I need to play the game and see what the maximum value ever used is, see if I can get it down under 128 (8 entities).
+
+The largest index in my playthrough was 0x28 - that's 10 entities onscreen. Since I needed to get down to 8, I'm stuck with 2k tables.
+
+Sprite table offset can be 256 bytes, 512 bytes, 1k or 2k (default).
+
+F18A VDP Layout with 2k sprites:
+
+0000    Pattern (only 2k cause of masking working)
+0800    5K of Rick sprites
+1C00    pattern table
+1F00    sprite attribute table
+1F80    -- free 128 bytes --
+2000    Color (also 2k)
+2800    Sprite colors (2k table) bit 0    
+3000    Sprite colors bit 1
+3800    Sprite colors bit 2
+4000    Rick sprite cache .5k (ish)
+4300    GPU program
+4???    -- free ?? bytes --
+
+Working on the idea if I cache Rick's sprites in VRAM and use GPU to copy them, the enemy updates should be cheap enough
+to counter the increased amount of data copies.
+
+We can load the Rick sprites during the first intro screen animation.
+
+Rick has 26 frames (24 if I ignore the death frames).
+
+If each sprite becomes 128*3 bytes (384 = 0x180), then in 2K sprite mode:
+
+0800    1
+0980    2
+1100    3
+1280    4
+1400    5
+1580    6
+1700    7
+1880    8
+1a00    9
+1b80    -- free 128 bytes --
+...
+4000    10
+4180    11
+4300    12
+4480    13
+4600    14
+4780    -- free 128 bytes --
+
+Free space for just 14 sprites cached. Might be able to squeeze a bit since that last sprite never has more than 5 bytes.
+Actually, keeping the size of Rick is never more than 24x21, we could cache only the needed data. That would be:
+
+first sprite:   full    32 bytes
+second sprite:  5 rows  20 bytes
+third sprite:   8x16    16 bytes
+fourth sprite:  8x5      5 bytes = 73 bytes - that's a lot less than 128!
+
+We could RLE... some sprites would be smaller since they don't use anything in that last sprite, and the overpaint would be simpler. Just need to declare 0 an escape code followed by a count. Only downside is we'll need to store a list of addresses for the sprites... but that's not too big a deal for just 26 frames.
+
+Oh! Except we are caching 3 bitplanes, so it's 219 bytes. To save 26 frames would be 5694 bytes. There is enough in 2k sprite mode if I split the data between the gap at 0x0800 and the GPU RAM at 0x4000 (5694 is 0x163E bytes. Split it 5k below and 0.5k above and we're golden.) Cutting the sprites like this will make the GPU code a little more complex, but it should be more than fast enough to make up for it.
+
+===
+
+As far as palettes go, it seems the whole game has one 16 color palette - title page, tiles, the works. So my plan of converting with separate palettes for F18 is probably fine.
+
+Title page can be a 16 color palette. HOF title only needs one color - we can figure that out.
+
+Tile sets will also be 16 color. If we can get away with one palette on the whole thing, that will make the HUD easier. Otherwise we can use a separate palette for the HUD (ie: palette 0 for the screen, palette 1 for the HUD). That should be easy enough.
+
+Sprites have to be 8 color rather than 16. If we can do them all in the same 8 color palette that would be best. Otherwise we need to make sure all animation frames are on the same tile sheet. There are 64 colors IIRC - 4 palettes. If we are using 2x16 color for the tiles that only leaves 4x 8 color palettes for 5 tilesheets - although the last one doesn't have too much on it. So that's probably acceptable - using all 64 colors would help the screen.
+

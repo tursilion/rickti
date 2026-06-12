@@ -91,7 +91,7 @@ void e_rick_gozombie(void) {
     if E_RICK_STTST(E_RICK_STZOMBIE) return;
 
 #ifdef ENABLE_SOUND
-    syssnd_play(WAV_DIE, 1);
+    sounds_play(DIE_SND);
 #endif
 
     E_RICK_STSET(E_RICK_STZOMBIE);
@@ -256,7 +256,7 @@ vert_not:
     if ((env1 & MAP_EFLG_SPAD) && offsy >= 0X0200) {
         offsy = (control_status & CONTROL_UP) ? 0xf800 : 0x00fe - offsy;
 #ifdef ENABLE_SOUND
-        syssnd_play(WAV_PAD, 1);
+        sounds_play(PAD_SND);
 #endif
         goto horiz;
     }
@@ -345,7 +345,7 @@ firing_not:
         offsy = -0x0580;  /* jump */
         ylow = 0;
 #ifdef ENABLE_SOUND
-        syssnd_play(WAV_JUMP, 1);
+        sounds_play(JUMP_SND);
 #endif
         goto horiz;
     }
@@ -394,8 +394,9 @@ climbing:
                 /* reached end of climb zone */
                 offsy = (control_status & CONTROL_UP) ? -0x0300 : 0x0100;
 #ifdef ENABLE_SOUND
-                if (control_status & CONTROL_UP)
-                    syssnd_play(WAV_JUMP, 1);
+                if (control_status & CONTROL_UP) {
+                    sounds_play(JUMP_SND);
+                }
 #endif
                 E_RICK_STRST(E_RICK_STCLIMB);
                 return;
@@ -469,7 +470,7 @@ void e_rick_action(UNUSED(U16 e)) {
 #ifdef ENABLE_SOUND
         if (!stopped)
         {
-            syssnd_play(WAV_STICK, 1);
+            sounds_play(STICK_SND);
             stopped = TRUE;
         }
 #endif
@@ -487,7 +488,7 @@ void e_rick_action(UNUSED(U16 e)) {
         E_RICK_ENT.sprite = (((E_RICK_ENT.x ^ E_RICK_ENT.y) & 0x04) ? 0x18 : 0x0c);
 #ifdef ENABLE_SOUND
         seq = (seq + 1) & 0x03;
-        if (seq == 0) syssnd_play(WAV_WALK, 1);
+        if (seq == 0) sounds_play(WALK_SND);
 #endif
         return;
     }
@@ -497,7 +498,7 @@ void e_rick_action(UNUSED(U16 e)) {
         if (E_RICK_ENT.x & 0x04) E_RICK_ENT.sprite++;
 #ifdef ENABLE_SOUND
         seq = (seq + 1) & 0x03;
-        if (seq == 0) syssnd_play(WAV_CRAWL, 1);
+        if (seq == 0) sounds_play(CRAWL_SND);
 #endif
         return;
     }
@@ -511,14 +512,14 @@ void e_rick_action(UNUSED(U16 e)) {
 
     if (seq >= 0x14) {
 #ifdef ENABLE_SOUND
-        syssnd_play(WAV_WALK, 1);
+        sounds_play(WALK_SND);
 #endif
         seq = 0x04;
     }
 #ifdef ENABLE_SOUND
     else {
         if (seq == 0x0C) {
-            syssnd_play(WAV_WALK, 1);
+            sounds_play(WALK_SND);
         }
     }
 #endif

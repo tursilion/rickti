@@ -18,14 +18,7 @@
 
 #ifdef ENABLE_SOUND
 
-typedef struct {
-#ifdef DEBUG
-	char* name;
-#endif
-	U8* buf;
-	U32 len;
-	U16 dispose;
-} sound_t;
+typedef unsigned char sound_t;
 
 extern void syssnd_init(void);
 extern void syssnd_shutdown(void);

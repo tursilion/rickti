@@ -162,12 +162,12 @@
     <ClInclude Include="include\sysarg.h" />
     <ClInclude Include="include\sysevt.h" />
     <ClInclude Include="include\syskbd.h" />
-    <ClInclude Include="include\syssnd.h" />
     <ClInclude Include="include\ricksystem.h" />
     <ClInclude Include="include\sysvid.h" />
     <ClInclude Include="include\tiles.h" />
     <ClInclude Include="include\util.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="src\TISNPlay.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\control.c" />
@@ -180,7 +180,6 @@
     <ClCompile Include="src\dat_picscTI.c" />
     <ClCompile Include="src\dat_picspTI.c" />
     <ClCompile Include="src\dat_screens.c" />
-    <ClCompile Include="src\dat_snd.c" />
     <ClCompile Include="src\dat_spritesTI0.c" />
     <ClCompile Include="src\dat_spritesTI1.c" />
     <ClCompile Include="src\dat_spritesTI2.c" />
@@ -208,12 +207,12 @@
     <ClCompile Include="src\scr_imain.c" />
     <ClCompile Include="src\scr_imap.c" />
     <ClCompile Include="src\scr_pause.c" />
+    <ClCompile Include="src\soundbank.c" />
     <ClCompile Include="src\sounds.c" />
     <ClCompile Include="src\sprites.c" />
     <ClCompile Include="src\sysarg.c" />
     <ClCompile Include="src\sysevt.c" />
     <ClCompile Include="src\syskbd.c" />
-    <ClCompile Include="src\syssnd.c" />
     <ClCompile Include="src\system.c" />
     <ClCompile Include="src\sysvid.c" />
     <ClCompile Include="src\tiles.c" />
@@ -228,6 +227,9 @@
     <Image Include="icons\xrickPC.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\CPlayerCommonHandEdit.assembly" />
+    <None Include="src\CPlayerTIHandEdit.assembly" />
+    <None Include="src\CPlayerTIHandlers.assembly" />
     <None Include="src\crt0_bankcart.assembly" />
     <None Include="src\linker.ld" />
     <None Include="src\Makefile" />

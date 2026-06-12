@@ -17,7 +17,6 @@
 #include <stddef.h> /* NULL */
 
 #include "ricksystem.h"
-#include "syssnd.h"
 #include "maps.h"
 
 #define LEFT 1

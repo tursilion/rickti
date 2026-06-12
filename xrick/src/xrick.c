@@ -163,11 +163,6 @@ sys_init(int argc, char** argv)
 #endif                            
     VDP_CLEAR_VBLANK;             
                                   
-#ifdef ENABLE_SOUND
-	if (sysarg_args_nosound == 0)
-		syssnd_init();
-#endif
-
     // Note: we run with interrupts enabled, but we expect no VDP activity during blank
     VDP_INT_ENABLE;
 }
@@ -180,9 +175,7 @@ sys_init(int argc, char** argv)
 void
 sys_shutdown(void)
 {
-#ifdef ENABLE_SOUND
-	syssnd_shutdown();
-#endif
+    // TODO: put the F18A reset here
 }
 
 
