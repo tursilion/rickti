@@ -218,8 +218,12 @@ U16 screen_introMain(void)
                 ++out;
                 VDP_INT_POLL;
             }
-            vdpmemset(gColor, 0xe0, 0x1800);
-            VDP_INT_POLL;
+
+            // do a slower vdpmemset to allow music to play
+            for (U16 vdp = gColor; vdp<gColor+0x1800; vdp+=0x200) {
+                vdpmemset(vdp, 0xe0, 0x200);
+                VDP_INT_POLL;
+            }
 
 			/* credit content */
             // conio is slow, but this will work
@@ -227,14 +231,16 @@ U16 screen_introMain(void)
                    //01234567890123456789012345678901
             cprintf("This-is-a-port-of-xrick-by-Tursi");
             cprintf("/Atari-ST-version/\n\n");
-            cprintf("github.com/tursilion/rickti\n\n");
             VDP_INT_POLL;
+            cprintf("github.com/tursilion/rickti\n\n");
             cprintf("Original-creator-Simon-Phipps\n\n");
+            VDP_INT_POLL;
             cprintf("xrick-by-BigOrno,-and-I-started\n");
             cprintf("with-the-port-by-Stephan-Gay\n\n");
             VDP_INT_POLL;
             cprintf("Written-with-gcc,-convert9918\n");
             cprintf("vgmcomp2,-libTI99ALL,-snjsfxr\n");
+            VDP_INT_POLL;
             cprintf("and-Classic99");
 
             VDP_INT_ENABLE;
@@ -277,7 +283,7 @@ U16 screen_introMain(void)
 
 	if (seq == 30) /* we're done */
 	{
-#ifdef SOUND_ENABLE
+#ifdef ENABLE_SOUND
         sounds_stop();
 #endif
 		fb_clear();

@@ -19,6 +19,8 @@
 /*
  * methods
  */
+void loadDigitTiles(void);
+void loadStringTiles(const char* str);
 void tiles_setBank(U16);
 void tiles_setFilter(U16);
 int tiles_paintList(U8* , int);

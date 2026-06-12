@@ -27,6 +27,8 @@
 #include "tiles.h"
 #include "maps.h"
 
+#include <vdp.h>
+
 
 /*
  * Display the pause indicator
@@ -34,17 +36,25 @@
 void
 screen_pause(U16 pause)
 {
-	if (pause == TRUE)
+    VDP_INT_DISABLE;
+    hchar(0,0,0,32);
+    VDP_INT_ENABLE;
+
+    if (pause == TRUE)
 	{
-        // TODO: this was used because the FONT characters aren't in the level graphics bank!
-        // Maybe we can fix this by spreading out the banks a bit, not sure
-		//tiles_setBank(0);
-		tiles_paintListAt((U8*)screen_pausedtxt, 120, 80);
+        // we'll do this the same way as the status line, overwriting the digits
+        // "PAUSED" takes just 6 characters
+        loadStringTiles("PAUSED");
+        VDP_INT_DISABLE;
+        VDP_SET_ADDRESS_WRITE(gImage+3);
+        for (U8 c=env_digits; c<env_digits+6; ++c) {
+            VDPWD(c);
+        }
+        VDP_INT_ENABLE;
 	}
 	else
 	{
-		maps_paint();
-		ents_paintAll();
+        loadDigitTiles();
 		env_paintGame();
 	}
 }

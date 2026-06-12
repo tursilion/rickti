@@ -211,6 +211,9 @@ U16 screen_introMap(void)
 
 	if (seq == 30)
 	{
+#ifdef ENABLE_SOUND
+        sounds_stop();
+#endif
 		fb_clear();
 		sysvid_setGamma(GAMMA_ON);
 		seq = 0;

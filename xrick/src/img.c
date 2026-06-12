@@ -25,7 +25,7 @@
  * paints an image of size <width>,<height> with data in <pic> at
  * position <x>,<y> (fb/px). NOTE: 8 pixel character bounardies!
  * if either pic or col is 0, don't copy that part (we still rewrite the SIT, but that's okay)
- * If it is too slow, we can rewrite the SIT only for the pattern part
+ * We run a little slowly, pausing for interrupts to allow title music to run smoothly.
  * NOTE: various banks are probably mapped in for this
  */
 void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8* pic, const U8* col, U16 chroff)
@@ -56,6 +56,7 @@ void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8* pic, const U8* 
         v+=32;      // one full row down
         v2+=32*8;   // one full row down
         chr+=32;
+        VDP_INT_POLL;
     }
     VDP_INT_ENABLE;
 }

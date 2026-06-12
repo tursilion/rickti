@@ -68,14 +68,4 @@ const screen_imapsteps_t screen_imapsteps[] = {
   { 0x0000, 0x0000, 0x0000, 0x0000 }
 };
 
-/*
- * paused
- *
- * \376=0xfe \377=0xff
- */
-const U8 screen_pausedtxt[] = "\
-@@@@@@@@@@\377\
-@@PAUSED@@\377\
-@@@@@@@@@@\376";
-
 /* eof */

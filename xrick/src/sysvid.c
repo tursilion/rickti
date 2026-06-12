@@ -106,7 +106,7 @@ void sysvid_setGamma(U16 g) {
 // copy to the three tables of the bitmap screen
 // TODO: if not F18A
 // NOTE: very likely a different bank is mapped in!!
-// VDP INTS MUST BE DISABLED
+// Will pause periodically to allow interrupts so title music plays clean
 void bitmapcharcopy(U16 adr, const U8* buf, U16 size) {
 #ifdef CLASSIC99
     if (classic99InterruptState) {
@@ -114,9 +114,22 @@ void bitmapcharcopy(U16 adr, const U8* buf, U16 size) {
     }
 #endif
 
-    vdpmemcpy(adr, buf, size);
-    vdpmemcpy(adr+0x800, buf, size);
-    vdpmemcpy(adr+0x1000, buf, size);
+    // we'll copy 0x200 bytes at a time, we need to know how much extra there is
+    U16 remsize = size%0x200;
+    size -= remsize;
+
+    VDP_INT_DISABLE;
+
+    for (U16 outer=adr; outer<adr+0x1800; outer+=0x800) {
+        for (U16 off=0; off<size; off+=0x200) {
+            vdpmemcpy(outer+off, buf+off, 0x200);
+            VDP_INT_POLL;
+        }
+        if (remsize > 0) {
+            vdpmemcpy(outer+size, buf+size, remsize);
+            VDP_INT_POLL;
+        }
+    }
 }
 
 

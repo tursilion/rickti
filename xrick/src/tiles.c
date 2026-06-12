@@ -20,6 +20,55 @@
 
 #include <vdp.h>
 
+// load the digits from tile bank 0 to the correct place set by env_digits
+void loadDigitTiles(void) {
+    unsigned int nOldBank = nBank;
+
+    VDP_INT_DISABLE;
+
+    // chars 8-20. Don't use bitmapcharcopy, only want the first page
+    // assumes gPattern is 0!
+    SWITCH_IN_BANK8;
+    vdpmemcpy(env_digits*8, tiles_banks_pat+48*8, 10*8); // digits
+    vdpmemcpy((env_digits+10)*8, tiles_banks_pat+1*8, 3*8);  // icons
+    VDP_INT_POLL;
+    SWITCH_IN_BANK9;
+    vdpmemcpy(gColor+env_digits*8, tiles_banks_col+48*8, 10*8); // digits
+    vdpmemcpy(gColor+(env_digits+10)*8, tiles_banks_col+1*8, 3*8);  // icons
+
+    VDP_INT_ENABLE;
+
+    // restore bank
+    SWITCH_IN_BANK(nOldBank);
+}
+
+// load the characters from a string to the correct place set by env_digits
+// your own problem if the string is more than 10 chars!
+void loadStringTiles(const char* str) {
+    unsigned int nOldBank = nBank;
+
+    VDP_INT_DISABLE;
+
+    // chars 8-20. Don't use bitmapcharcopy, only want the first page
+    // assumes gPattern is 0!
+    U16 off = 0;
+    while (*str) {
+        SWITCH_IN_BANK8;
+        vdpmemcpy((env_digits+off)*8, tiles_banks_pat+(*str)*8, 8); // digits
+        VDP_INT_POLL;
+        SWITCH_IN_BANK9;
+        vdpmemcpy(gColor+(env_digits+off)*8, tiles_banks_col+(*str)*8, 8); // digits
+        ++str;
+        ++off;
+    }
+
+    VDP_INT_ENABLE;
+
+    // restore bank
+    SWITCH_IN_BANK(nOldBank);
+}
+
+
 /*
  * tiles_setBank
  *
@@ -46,8 +95,6 @@ void tiles_setBank(U16 bank)
     U16 off = bank*0x800;
     nOldBank = nBank;
 
-    VDP_INT_DISABLE;
-    
     // first patterns
     SWITCH_IN_BANK8;
     bitmapcharcopy(gPattern, tiles_banks_pat+off, 0x800);
@@ -79,18 +126,8 @@ void tiles_setBank(U16 bank)
                 break;
         }
 
-        // overwrite the sarcaphogus characters with digits from bank 0
-        // chars 8-20. Don't use bitmapcharcopy, only want the first page
-        // assumes gPattern is 0!
-        SWITCH_IN_BANK8;
-        vdpmemcpy(env_digits*8, tiles_banks_pat+48*8, 10*8); // digits
-        vdpmemcpy((env_digits+10)*8, tiles_banks_pat+1*8, 3*8);  // icons
-        SWITCH_IN_BANK9;
-        vdpmemcpy(gColor+env_digits*8, tiles_banks_col+48*8, 10*8); // digits
-        vdpmemcpy(gColor+(env_digits+10)*8, tiles_banks_col+1*8, 3*8);  // icons
+        loadDigitTiles();
     }
-
-    VDP_INT_ENABLE;
 
     // restore bank
     SWITCH_IN_BANK(nOldBank);

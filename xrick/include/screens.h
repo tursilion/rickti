@@ -30,7 +30,6 @@ typedef struct {
 extern const U8 screen_imapsl[];  /* sprite lists */
 extern const screen_imapsteps_t screen_imapsteps[];  /* map intro steps */
 extern U8* screen_imaptext[];  /* map intro texts */
-extern const U8 screen_pausedtxt[];  /* paused */
 
 extern U16 screen_introMain(void);  /* main intro */
 extern U16 screen_introMap(void);  /* map intro */

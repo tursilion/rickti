@@ -30,7 +30,9 @@ void fb_clear()
     // good place to wipe sprite table too
     VDP_INT_DISABLE;
     // Tile 0 should already be cleared in all tilesets
-    vdpmemset(gImage, 0, 768);
+    vdpmemset(gImage, 0, 384);
+    VDP_INT_POLL;   // split up for the title music
+    vdpmemset(gImage+384, 0, 384);
     VDP_INT_ENABLE;
     // this is the CPU buffer, so it's safe without VDP
     sprites_clear();
