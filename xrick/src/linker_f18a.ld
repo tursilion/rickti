@@ -1,23 +1,3 @@
-/* TODO: we barely fit in 256k, we'd have to share all the spare space,
-   and I'm not sure that the program switcher will fit as well. We could
-   use compression, but the more common cart is 512k anyway. Maybe we
-   just refocus on 512k and be done with it. It's a bit wasteful though,
-   since we just /just/ over 256k. But we can't compress the sprites,
-   and that's over 90k of it right there. We can't compress the tables.
-   We could compress the title page, tiles, and program. That's a total
-   of 96k that we MIGHT get to 60-70%. I don't know if it's worth it,
-   though 512k seems painfully large.
-   If we used my compression tool for the programs, though, they would
-   have a lot of shared code. 48k might realistically even squeeze down
-   to 16k, which would save 4 banks and get us to 256k, I think. Maybe
-   worth a try, but we'll have to build the F18A version for 256k and
-   put the program part in the original place.
-   First goal is to make the F18A version work on a 256k cart while
-   sharing space with the 9918A data. Only thing we can replace is the program.
-   Banked code that DOES NOT CHANGE can be shared, but we ARE assuming
-   that nothing changes with the separate compilation.
-*/   
-
 /* 
  256k banked cartridge with 32k RAM support
  Fixed bank is copied into 32k by the CRT0.

@@ -117,9 +117,12 @@ void draw_titlepage()
 #ifdef F18A
     // we need to make sure bitmap is in full bitmap mode
     // (the tables can't move, so no need to change the global pointers)
+    VDP_INT_DISABLE;
 	VDP_SET_REGISTER(VDP_REG_CT, 0xFF);
 	VDP_SET_REGISTER(VDP_REG_PDT, 0x03);
+    VDP_SET_REGISTER(F18A_REG_ECM, 0x0);   // disable 8 color sprites
     sysarg_half_bitmap = 0;
+    VDP_INT_ENABLE;
 
     // for ROM space reasons, the title picture is split up over 8(!!) banks
     // we'll still use img_paintPic since it keeps interrupts flowing
@@ -186,8 +189,12 @@ void draw_hof_title()
 #ifdef F18A
     // we need to make sure bitmap is in full bitmap mode
     // (the tables can't move, so no need to change the global pointers)
+    VDP_INT_DISABLE;
 	VDP_SET_REGISTER(VDP_REG_CT, 0xFF);
 	VDP_SET_REGISTER(VDP_REG_PDT, 0x03);
+    VDP_SET_REGISTER(F18A_REG_ECM, 0x00);   // disable 8 color sprites
+    VDP_INT_ENABLE;
+
     sysarg_half_bitmap = 0;
 
     // pattern
@@ -389,6 +396,8 @@ static void game_cycle(void) {
                 // switch to half bitmap mode - no sprite limits with F18A!
 	            VDP_SET_REGISTER(VDP_REG_CT, 0x9F);
 	            VDP_SET_REGISTER(VDP_REG_PDT, 0x00);
+                VDP_SET_REGISTER(F18A_REG_ECM, 0x03);   // enable 8 color sprites
+                vdpmemset(gSpritePat, 0, 0x1800);    // make sure it's zeroed (all three tables)
                 sysarg_half_bitmap = 1;
 #endif
 
@@ -403,9 +412,9 @@ static void game_cycle(void) {
                     game_save();
                     fb_clear();                 /* clear buffer */
                     //ent_clprev();
-                    maps_paint();                     /* draw the map onto the buffer */
+                    maps_paint();               /* draw the map onto the buffer */
                     //ents_paintAll();
-                    env_paintGame();              /* draw the status bar onto the buffer */
+                    env_paintGame();            /* draw the status bar onto the buffer */
                     sysvid_setGamma(GAMMA_ON);
                     game_state = CTRL_ACTION;
                 }

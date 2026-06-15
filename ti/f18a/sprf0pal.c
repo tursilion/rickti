@@ -3,11 +3,11 @@
 //
 
 #ifndef BIN2INC_HEADER_ONLY
-const unsigned char sprf0pal[] = {
-	 0x00,0x00,0x0B,0x50,0x02,0xD2,0x0F,0x95,0x00,0x5C,0x0B,0x78,0x07,0x89,0x0B,0xAA	// 00000000 ...P.....\.x.... //
+const unsigned int sprf0pal[] = {
+	 0x0000,0x0B50,0x02D2,0x0F95,0x005C,0x0B78,0x0789,0x0BAA	// 00000000 ...P.....\.x.... //
 };
 #else
-extern const unsigned char sprf0pal[];
+extern const unsigned int sprf0pal[];
 
 // Size of data in above array
 #define SIZE_OF_SPRF0PAL 16

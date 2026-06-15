@@ -27,8 +27,21 @@
 #ifdef F18A
 #define BIN2INC_HEADER_ONLY
 #include "sprf00.c"
+#include "sprf01.c"
+#include "sprf02.c"
+#include "sprf10.c"
+#include "sprf11.c"
+#include "sprf12.c"
+#include "sprf20.c"
+#include "sprf21.c"
+#include "sprf22.c"
+#include "sprf30.c"
+#include "sprf31.c"
+#include "sprf32.c"
+#include "sprf40.c"
+#include "sprf41.c"
+#include "sprf42.c"
 #endif
-
 
 /*
  * sprites_paint
@@ -61,22 +74,38 @@ void sprites_paint(U16 spriteNumber, U16 spriteIndex, U16 x, U16 y, U16 load_pat
     *(pSpriteTab++) = (U8)y;
     *(pSpriteTab++) = (U8)x;
     *(pSpriteTab++) = chr;
+#ifdef F18A
+    *(pSpriteTab++) = 4;    // Palettes are indexed in sets of 4 colors, and we want color 16 as the first, so that's palette 4
+#else
     *(pSpriteTab++) = COLOR_WHITE;  // TODO: color table
+#endif
 
     *(pSpriteTab++) = (U8)(y+16);
     *(pSpriteTab++) = (U8)x;
     *(pSpriteTab++) = chr+4;
+#ifdef F18A
+    *(pSpriteTab++) = 4;    // Palettes are indexed in sets of 4 colors, and we want color 16 as the first, so that's palette 4
+#else
     *(pSpriteTab++) = COLOR_WHITE;  // TODO: color table
+#endif
 
     *(pSpriteTab++) = (U8)y;
     *(pSpriteTab++) = (U8)(x+16);
     *(pSpriteTab++) = chr+8;
+#ifdef F18A
+    *(pSpriteTab++) = 4;    // Palettes are indexed in sets of 4 colors, and we want color 16 as the first, so that's palette 4
+#else
     *(pSpriteTab++) = COLOR_WHITE;  // TODO: color table
+#endif
 
     *(pSpriteTab++) = (U8)y+16;
     *(pSpriteTab++) = (U8)x+16;
     *(pSpriteTab++) = chr+12;
+#ifdef F18A
+    *(pSpriteTab++) = 4;    // Palettes are indexed in sets of 4 colors, and we want color 16 as the first, so that's palette 4
+#else
     *(pSpriteTab++) = COLOR_WHITE;  // TODO: color table
+#endif
 
     if (load_pattern) {
 #ifdef CLASSIC99
@@ -93,37 +122,69 @@ void sprites_paint(U16 spriteNumber, U16 spriteIndex, U16 x, U16 y, U16 load_pat
         // UPDATE nBank YOU CAN NOT BRANCH TO ANY CODE THAT MIGHT BANK SWITCH AGAIN
         unsigned int spritePage = spriteNumber / 48;    // sprite page to read from
         unsigned int spriteIdx = spriteNumber % 48;     // Index on a page, not to confuse with spriteIndex, which is psuedo hardware
-        // Note: page index 0x6006 is determined by dat_sprintesTI0.o in the linker file
-        SWITCH_IN_BANK((0x6006 + (spritePage*2)));
         // in the math below:
         // spriteIdx is the 128 byte object index on the Rick side
         // i is the starting 32 byte sprite tile index on the TI side (multiple of four, see above)
         // Since sprites are only 21 rows tall, not 32, we can save a few bytes of copy. To make it
         // simple we only do two memcpys (not four, cause of setup overhead), copying 53 bytes instead 
         // of 64 for each left and right half
+
 #ifdef F18A
-        // TODO: need correct sprite copies - three pages!
 
 #ifndef CLASSIC99
+        // we copy the sprite in two split parts since there is lots of empty space at
+        // the bottom - this saves us some trouble.
+        // TODO: Possible future: cache all of Ricks sprites in VDP and use the GPU to load them
+
+        // Note: first page is page 16 (0x6020), covers bit 0. Subsequent tables are 5 pages later.
+        SWITCH_IN_BANK((0x6020 + (spritePage*2)));
         vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 53);
         vdpmemcpy(gSpritePat+(spriteIndex*4*8)+64, spriteIdx*128+sprf00+64, 53);
+
+        // second bit
+        SWITCH_IN_BANK((0x6020 + ((spritePage+5)*2)));
+        vdpmemcpy(gSpritePat+0x800+(spriteIndex*4*8), spriteIdx*128+sprf00, 53);
+        vdpmemcpy(gSpritePat+0x800+(spriteIndex*4*8)+64, spriteIdx*128+sprf00+64, 53);
+
+        // third bit
+        SWITCH_IN_BANK((0x6020 + ((spritePage+10)*2)));
+        vdpmemcpy(gSpritePat+0x1000+(spriteIndex*4*8), spriteIdx*128+sprf00, 53);
+        vdpmemcpy(gSpritePat+0x1000+(spriteIndex*4*8)+64, spriteIdx*128+sprf00+64, 53);
 #else
-        // Classic99 build doesn't have banks to switch!
+
+        // Classic99 build doesn't really have banks to switch!
         switch(spritePage) {
             case 0:
-                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); break;
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); 
+                vdpmemcpy(gSpritePat+0x800+(spriteIndex*4*8), spriteIdx*128+sprf01, 128); 
+                vdpmemcpy(gSpritePat+0x1000+(spriteIndex*4*8), spriteIdx*128+sprf02, 128); 
+                break;
             case 1:
-                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); break;
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf10, 128); 
+                vdpmemcpy(gSpritePat+0x800+(spriteIndex*4*8), spriteIdx*128+sprf11, 128); 
+                vdpmemcpy(gSpritePat+0x1000+(spriteIndex*4*8), spriteIdx*128+sprf12, 128); 
+                break;
             case 2:
-                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); break;
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf20, 128); 
+                vdpmemcpy(gSpritePat+0x800+(spriteIndex*4*8), spriteIdx*128+sprf21, 128); 
+                vdpmemcpy(gSpritePat+0x1000+(spriteIndex*4*8), spriteIdx*128+sprf22, 128); 
+                break;
             case 3:
-                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); break;
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf30, 128); 
+                vdpmemcpy(gSpritePat+0x800+(spriteIndex*4*8), spriteIdx*128+sprf31, 128); 
+                vdpmemcpy(gSpritePat+0x1000+(spriteIndex*4*8), spriteIdx*128+sprf32, 128); 
+                break;
             case 4:
-                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); break;
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf40, 128); 
+                vdpmemcpy(gSpritePat+0x800+(spriteIndex*4*8), spriteIdx*128+sprf41, 128); 
+                vdpmemcpy(gSpritePat+0x1000+(spriteIndex*4*8), spriteIdx*128+sprf42, 128); 
+                break;
         }
 #endif
 
 #else
+        // Note: page index 0x6006 is determined by dat_sprintesTI0.o in the linker file
+        SWITCH_IN_BANK((0x6006 + (spritePage*2)));
 
 #ifndef CLASSIC99
         vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data0, 53);

@@ -129,9 +129,19 @@ sys_init(int argc, char** argv)
 #endif
 
     set_bitmap(VDP_SPR_16x16);
+#ifdef F18A
+    // we need to move a few tables around
+    VDP_SET_REGISTER(VDP_REG_SIT, 7);
+    gImage = 0x1c00;
+    VDP_SET_REGISTER(VDP_REG_SAL, 62);
+    gSprite = 0x1f00;
+    VDP_SET_REGISTER(VDP_REG_SDT, 5);
+    gSpritePat = 0x2800;
+#else
 	VDP_SET_REGISTER(VDP_REG_SDT, 7);	// remap sprite pattern table to not overlap the SIT
     gSpritePat = 0x3800;
     vdpmemset(gSpritePat, 0, 0x800);    // make sure it's zeroed
+#endif
 
     // get a blank screen up by initializing all three char 0 to blank and then writing all zeros to the SIT
     fb_clear();

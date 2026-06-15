@@ -141,6 +141,13 @@ const U8 screen_imapsofs[] = {
 };
 
 
+#ifdef F18A
+const unsigned int sprf0pal[] = {
+	 0x0000,0x0B50,0x02D2,0x0F95,0x005C,0x0B78,0x0789,0x0BAA	// 00000000 ...P.....\.x.... //
+};
+#endif
+
+
 /*
  * Map introduction
  *
@@ -155,14 +162,19 @@ U16 screen_introMap(void)
 			sysvid_setGamma(GAMMA_OFF);
 
 #ifdef F18A
-            // we need to make sure bitmap is in full bitmap mode
+            // we need to make sure bitmap is in half bitmap mode to preserve sprites
             // (the tables can't move, so no need to change the global pointers)
 
             VDP_INT_DISABLE;
 
-	        VDP_SET_REGISTER(VDP_REG_CT, 0xFF);
-	        VDP_SET_REGISTER(VDP_REG_PDT, 0x03);
-            sysarg_half_bitmap = 0;
+	        VDP_SET_REGISTER(VDP_REG_CT, 0x9F);
+	        VDP_SET_REGISTER(VDP_REG_PDT, 0x00);
+            VDP_SET_REGISTER(F18A_REG_ECM, 0x03);   // enable 8 color sprites
+            vdpmemset(gSpritePat, 0, 0x1800);    // make sure it's zeroed (all three tables)
+            sysarg_half_bitmap = 1;
+
+            // and load the sprite palette
+            loadpal_f18a(sprf0pal, 16, 8);
 
             VDP_INT_ENABLE;
 #endif

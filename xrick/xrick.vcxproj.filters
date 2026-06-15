@@ -269,9 +269,6 @@
     <ClCompile Include="..\ti\f18a\sprf00.c">
       <Filter>Source Files\f18a</Filter>
     </ClCompile>
-    <ClCompile Include="..\ti\f18a\sprf0pal.c">
-      <Filter>Source Files\f18a</Filter>
-    </ClCompile>
     <ClCompile Include="..\ti\f18a\sprf01.c">
       <Filter>Source Files\f18a</Filter>
     </ClCompile>
@@ -318,18 +315,6 @@
       <Filter>Source Files\f18a</Filter>
     </ClCompile>
     <ClCompile Include="..\ti\f18a\dat_hafpTI.c">
-      <Filter>Source Files\f18a</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ti\f18a\sprf1pal.c">
-      <Filter>Source Files\f18a</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ti\f18a\sprf2pal.c">
-      <Filter>Source Files\f18a</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ti\f18a\sprf3pal.c">
-      <Filter>Source Files\f18a</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ti\f18a\sprf4pal.c">
       <Filter>Source Files\f18a</Filter>
     </ClCompile>
     <ClCompile Include="..\ti\f18a\splashf18_splitcol1.c">

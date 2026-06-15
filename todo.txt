@@ -1,34 +1,25 @@
 A lot of the game is working, but a lot of stuff still is not. Was able to play through a lot of egypt.
-
-- pretty slow (playable but could be better)
 - some enemies appear stuck inside walls
 - also check TODOs
 
 And stuff I deliberately need to deal with:
-- high score screen is disabled to save memory (less than 100 bytes needed)
-- top line status still has no solution
-- need to implement sound (that will require a lot more than 100 bytes, but there is bank memory free)
 - color sprites?
 
 And stretch goals:
-- fix those odd pixels on the title page
-- make climbable tiles more visible in set 1 (ok in egypt, and I don't think the other two levels have any)
-- F18A graphics (this will likely require going to 256k)
 - gram save for ubergrom support (for high scores)
     
 The trick is finding compiler bugs when I didn't write the code. Hand optimization to my style may help.
 
 ---
 
-For f18a build I am leaning towards a separate program, since we have to double to 256k anyway we'll have a lot of room.
+Sprite pages:
 
-I think maybe write a different crt0 that uses just one page as a bootstrap. That page, in this case, tests for F18A and loads one or the other program to RAM and jumps to it. Then we can simplify the program CRT to not require a loader or test 32k, saving a few bytes of ROM (since we'll need that one twice). That way we can test before we need to copy anything to RAM.
+0   16,21,26
+1   17,22,27
+2   18,23,28
+3   19,24,29
+4   20,25,30
 
-Bootloader ROM:
-- test for 32k present, report if not
-- test for F18A present
-    - load first program if not (9918A version)
-    - load second program if so (F18A version)
 
 ---
 
@@ -46,7 +37,7 @@ F18A VDP Layout with 2k sprites:
 
 0000    Pattern (only 2k cause of masking working)
 0800    5K of Rick sprites
-1C00    pattern table
+1C00    screen image table
 1F00    sprite attribute table
 1F80    -- free 128 bytes --
 2000    Color (also 2k)
@@ -92,8 +83,6 @@ second sprite:  5 rows  20 bytes
 third sprite:   8x16    16 bytes
 fourth sprite:  8x5      5 bytes = 73 bytes - that's a lot less than 128!
 
-We could RLE... some sprites would be smaller since they don't use anything in that last sprite, and the overpaint would be simpler. Just need to declare 0 an escape code followed by a count. Only downside is we'll need to store a list of addresses for the sprites... but that's not too big a deal for just 26 frames.
-
 Oh! Except we are caching 3 bitplanes, so it's 219 bytes. To save 26 frames would be 5694 bytes. There is enough in 2k sprite mode if I split the data between the gap at 0x0800 and the GPU RAM at 0x4000 (5694 is 0x163E bytes. Split it 5k below and 0.5k above and we're golden.) Cutting the sprites like this will make the GPU code a little more complex, but it should be more than fast enough to make up for it.
 
 ===
@@ -108,51 +97,21 @@ Sprites have to be 8 color rather than 16. If we can do them all in the same 8 c
 
 =====
 
-WAS BANK4, now 
-    scr_imain   16
-    sysevt      23
 
-WAS BANK15, now
-    scr_imap    30
-    (but dat_maps2 is still 15)
+---
 
+For f18a build I am leaning towards a separate program, since we have to double to 256k anyway we'll have a lot of room.
 
-Title was pic 10, col 11
-      now pic 18, col 17
-      
+I think maybe write a different crt0 that uses just one page as a bootstrap. That page, in this case, tests for F18A and loads one or the other program to RAM and jumps to it. Then we can simplify the program CRT to not require a loader or test 32k, saving a few bytes of ROM (since we'll need that one twice). That way we can test before we need to copy anything to RAM.
 
-const unsigned int tilesf18_pal[16] = {
-	 0x0000,0x0222,0x0420,0x0940,0x0666,0x0999,0x0D60,0x0BBB,	// 00000080 ...". .@.f...`.. //
-	 0x004B,0x006D,0x0FFF,0x0F96,0x0240,0x0462,0x0444,0x0000	// 00000090 .K.m.....@.b.D.. //
-};
+Bootloader ROM:
+- test for 32k present, report if not
+- test for F18A present
+    - load first program if not (9918A version)
+    - load second program if so (F18A version)
 
-const unsigned int splashf18_pal[16] = {
-	 0x0000,0x0420,0x0F96,0x0222,0x0D60,0x0940,0x0999,0x0666,	// 00000080 ... ...".`.@...f //
-	 0x0BBB,0x0D00,0x0B66,0x0000,0x0000,0x0000,0x0444,0x0000	// 00000090 .....f.......D.. //
-};
+The banking for F18A title page and tile sets are split across multiple banks, unlike the 9918A code. This was done to squeeze everything into the spare space in a 256k cart instead of going to 512k, when we clearly had space.
 
+At this point the F18A build and the 9918A build have compatible layouts, EXCEPT the loader banks - both use the first three banks. The expectation was that I would be able to use my vgmcomp2 packer to pack the two programs together into a compressed stream, and have them fit in that 24k along with an unpacker (which also detects F18A). It's a tall order, but I think it's feasible as a lot of the code is shared and should overlap.
 
-const unsigned char splashf18_pat[] = {
-const unsigned char splashf18_col[] = {
-BANKS: COL: 17,18,19,23  PAT: 24,26,27,28 - palette in 17 - 0x600 bytes each
-
-const unsigned char tilesf18_col[] = {
-const unsigned char tilesf18_pat[] = {
-BANKS: 20, 25 and 31 (col and pat A,B,C) - palette in 20 - 2k (1 bank) each
-
-
-ROM is too full - sprites can't be packed so they fill most of all banks. We can split up the F18A tiles and title though. We'll use 0x600 byte blocks - divides neatly into 6k (it's 1.5k) and is small enough (1536) to fit in most of the free space.
-
-(note: 0x80 offset cause of removed TIFILES header)
-
-A - 0x0080 - 0x0670
-B - 0x0680 - 0x0C70
-C - 0x0C80 - 0x1270
-D - 0x1280 - 0x1870
-
-Tiles I will split into 2k pages which each are exactly 1 bank - that will make copying easier. There are 3 pages with 4k left so I can put color and pattern in the same page.
-
-A - 0x0080 - 0x0870
-B - 0x0880 - 0x1070
-C - 0x1080 - 0x1870
-
+vgmcomp2 -pack currently expects only a single stream, so I will need to add support for a second one - if only to get a table telling me where it starts!
