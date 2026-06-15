@@ -16,6 +16,12 @@
     <Filter Include="vgmcomp2">
       <UniqueIdentifier>{474dd0f8-e125-4fe7-aa4c-65e45dbef713}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\f18a">
+      <UniqueIdentifier>{ac7e5eb5-b39b-4032-ac94-805257bfad26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vgmcomp2_for_classic99">
+      <UniqueIdentifier>{2687dd90-3ae1-4398-a407-72212148c9c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\config.h">
@@ -107,6 +113,12 @@
     </ClInclude>
     <ClInclude Include="include\sysarg.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vgmcomp2\CPlayer.h">
+      <Filter>vgmcomp2_for_classic99</Filter>
+    </ClInclude>
+    <ClInclude Include="vgmcomp2\sound.h">
+      <Filter>vgmcomp2_for_classic99</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -254,6 +266,126 @@
     <ClCompile Include="src\soundbank.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf00.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf0pal.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf01.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf02.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf10.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf11.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf12.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf20.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf21.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf22.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf30.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf31.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf32.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf40.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf41.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf42.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\dat_hafcTI.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\dat_hafpTI.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf1pal.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf2pal.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf3pal.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\sprf4pal.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\splashf18_splitcol1.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\splashf18_splitcol2.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\splashf18_splitcol3.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\splashf18_splitcol4.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\splashf18_splitpat1.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\splashf18_splitpat2.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\splashf18_splitpat3.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\splashf18_splitpat4.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\tilesf18_splitcol1.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\tilesf18_splitcol2.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\tilesf18_splitcol3.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\tilesf18_splitpat1.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\tilesf18_splitpat2.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ti\f18a\tilesf18_splitpat3.c">
+      <Filter>Source Files\f18a</Filter>
+    </ClCompile>
+    <ClCompile Include="vgmcomp2\CPlayerCommon.cpp">
+      <Filter>vgmcomp2_for_classic99</Filter>
+    </ClCompile>
+    <ClCompile Include="vgmcomp2\CPlayerPC.cpp">
+      <Filter>vgmcomp2_for_classic99</Filter>
+    </ClCompile>
+    <ClCompile Include="vgmcomp2\PC.cpp">
+      <Filter>vgmcomp2_for_classic99</Filter>
+    </ClCompile>
+    <ClCompile Include="vgmcomp2\sound.cpp">
+      <Filter>vgmcomp2_for_classic99</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xrick.rc">
@@ -269,7 +401,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\linker.ld" />
     <None Include="src\Makefile" />
     <None Include="src\crt0_bankcart.assembly" />
     <None Include="src\vdpint.assembly" />
@@ -283,5 +414,12 @@
     <None Include="src\CPlayerTIHandlers.assembly">
       <Filter>vgmcomp2</Filter>
     </None>
+    <None Include="src\linker_9918.ld" />
+    <None Include="src\linker_f18a.ld" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="vgmcomp2\readme.txt">
+      <Filter>vgmcomp2_for_classic99</Filter>
+    </Text>
   </ItemGroup>
 </Project>

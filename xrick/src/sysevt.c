@@ -24,6 +24,7 @@
 #include "ricksystem.h"
 #include "syskbd.h"
 #include "sysvid.h"
+#include "sounds.h"
 #include "game.h"
 #include "debug.h"
 
@@ -74,7 +75,6 @@ static int processEvent()
     }
 
     if (check_reset()) {
-        // TODO: remember F18A needs a reset_f18a() when we act on this
         /* player tries to close the window -- this is the same as pressing ESC */
         SETBIT(control_status, CONTROL_EXIT);
         control_last = CONTROL_EXIT;

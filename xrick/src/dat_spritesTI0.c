@@ -24,7 +24,6 @@
 //
 // So to make that work, my tool has converted the sprites that way from the
 // pattern table.
-
 const sprite_t sprites_data0[SPRITE_PAGE_SIZE*SPRITE_SIZE] =
 {
 

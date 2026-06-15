@@ -29,8 +29,13 @@
 /* joystick support */
 #define ENABLE_JOYSTICK
 
-/* sound support TODO */
+#ifdef CLASSIC99
+// I don't have this working here...
+#undef ENABLE_SOUND
+#else
+/* sound support */
 #define ENABLE_SOUND
+#endif
 
 /* cheats support */
 #define ENABLE_CHEATS
@@ -69,6 +74,26 @@ extern unsigned int nBank;
 #define SWITCH_IN_BANK13   nBank=(unsigned int)0x601a; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x601a)=0; 
 #define SWITCH_IN_BANK14   nBank=(unsigned int)0x601c; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x601c)=0; 
 #define SWITCH_IN_BANK15   nBank=(unsigned int)0x601e; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x601e)=0; 
+
+#ifdef F18A
+#define SWITCH_IN_BANK16   nBank=(unsigned int)0x6020; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6020)=0;  
+#define SWITCH_IN_BANK17   nBank=(unsigned int)0x6022; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6022)=0;  
+#define SWITCH_IN_BANK18   nBank=(unsigned int)0x6024; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6024)=0; 
+#define SWITCH_IN_BANK19   nBank=(unsigned int)0x6026; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6026)=0; 
+#define SWITCH_IN_BANK20   nBank=(unsigned int)0x6028; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6028)=0; 	
+#define SWITCH_IN_BANK21   nBank=(unsigned int)0x602a; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x602a)=0; 
+#define SWITCH_IN_BANK22   nBank=(unsigned int)0x602c; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x602c)=0; 
+#define SWITCH_IN_BANK23   nBank=(unsigned int)0x602e; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x602e)=0; 
+#define SWITCH_IN_BANK24   nBank=(unsigned int)0x6030; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6030)=0; 
+#define SWITCH_IN_BANK25   nBank=(unsigned int)0x6032; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6032)=0; 
+#define SWITCH_IN_BANK26   nBank=(unsigned int)0x6034; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6034)=0; 
+#define SWITCH_IN_BANK27   nBank=(unsigned int)0x6036; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6036)=0; 
+#define SWITCH_IN_BANK28   nBank=(unsigned int)0x6038; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x6038)=0; 
+#define SWITCH_IN_BANK29   nBank=(unsigned int)0x603a; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x603a)=0; 
+#define SWITCH_IN_BANK30   nBank=(unsigned int)0x603c; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x603c)=0; 
+#define SWITCH_IN_BANK31   nBank=(unsigned int)0x603e; __asm__ __volatile__("":::"memory"); (*(volatile unsigned int*)0x603e)=0; 
+#endif
+
 #else
 
 // in Classic99 we can check if you accidentally passed in nBank
@@ -94,6 +119,26 @@ static void SWITCH_IN_BANK(unsigned int nOldBank) {
 #define SWITCH_IN_BANK13   nBank=(unsigned int)0x601a; 
 #define SWITCH_IN_BANK14   nBank=(unsigned int)0x601c; 
 #define SWITCH_IN_BANK15   nBank=(unsigned int)0x601e; 
+
+#ifdef F18A
+#define SWITCH_IN_BANK16   nBank=(unsigned int)0x6020; 
+#define SWITCH_IN_BANK17   nBank=(unsigned int)0x6022; 
+#define SWITCH_IN_BANK18   nBank=(unsigned int)0x6024; 
+#define SWITCH_IN_BANK19   nBank=(unsigned int)0x6026; 
+#define SWITCH_IN_BANK20   nBank=(unsigned int)0x6028; 
+#define SWITCH_IN_BANK21   nBank=(unsigned int)0x602a; 
+#define SWITCH_IN_BANK22   nBank=(unsigned int)0x602c; 
+#define SWITCH_IN_BANK23   nBank=(unsigned int)0x602e; 
+#define SWITCH_IN_BANK24   nBank=(unsigned int)0x6030; 
+#define SWITCH_IN_BANK25   nBank=(unsigned int)0x6032; 
+#define SWITCH_IN_BANK26   nBank=(unsigned int)0x6034; 
+#define SWITCH_IN_BANK27   nBank=(unsigned int)0x6036; 
+#define SWITCH_IN_BANK28   nBank=(unsigned int)0x6038; 
+#define SWITCH_IN_BANK29   nBank=(unsigned int)0x603a; 
+#define SWITCH_IN_BANK30   nBank=(unsigned int)0x603c; 
+#define SWITCH_IN_BANK31   nBank=(unsigned int)0x603e; 
+#endif
+
 #endif
 
 

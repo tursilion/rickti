@@ -73,7 +73,7 @@
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\work\libti99ALL;$(IncludePath)</IncludePath>
+    <IncludePath>D:\work\libti99ALL;D:\work\TI\xrick\ti\f18a;$(IncludePath)</IncludePath>
     <LibraryPath>D:\work\libti99ALL\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -83,14 +83,14 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>include;..\..\lib\SDL2-2.0.9\include;..\..\lib\zlib1211\zlib-1.2.11</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;CLASSIC99</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;CLASSIC99;USE_SN_PSG;F18A</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>..\..\lib\SDL2-libs;..\..\lib\zlib-win-build\build-VS2019-MT\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;libti99all1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;winmm.lib;libti99all1.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
     </Link>
@@ -167,8 +167,46 @@
     <ClInclude Include="include\tiles.h" />
     <ClInclude Include="include\util.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="vgmcomp2\CPlayer.h" />
+    <ClInclude Include="vgmcomp2\sound.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\ti\f18a\dat_hafcTI.c" />
+    <ClCompile Include="..\ti\f18a\dat_hafpTI.c" />
+    <ClCompile Include="..\ti\f18a\splashf18_splitcol1.c" />
+    <ClCompile Include="..\ti\f18a\splashf18_splitcol2.c" />
+    <ClCompile Include="..\ti\f18a\splashf18_splitcol3.c" />
+    <ClCompile Include="..\ti\f18a\splashf18_splitcol4.c" />
+    <ClCompile Include="..\ti\f18a\splashf18_splitpat1.c" />
+    <ClCompile Include="..\ti\f18a\splashf18_splitpat2.c" />
+    <ClCompile Include="..\ti\f18a\splashf18_splitpat3.c" />
+    <ClCompile Include="..\ti\f18a\splashf18_splitpat4.c" />
+    <ClCompile Include="..\ti\f18a\sprf00.c" />
+    <ClCompile Include="..\ti\f18a\sprf01.c" />
+    <ClCompile Include="..\ti\f18a\sprf02.c" />
+    <ClCompile Include="..\ti\f18a\sprf0pal.c" />
+    <ClCompile Include="..\ti\f18a\sprf10.c" />
+    <ClCompile Include="..\ti\f18a\sprf11.c" />
+    <ClCompile Include="..\ti\f18a\sprf12.c" />
+    <ClCompile Include="..\ti\f18a\sprf1pal.c" />
+    <ClCompile Include="..\ti\f18a\sprf20.c" />
+    <ClCompile Include="..\ti\f18a\sprf21.c" />
+    <ClCompile Include="..\ti\f18a\sprf22.c" />
+    <ClCompile Include="..\ti\f18a\sprf2pal.c" />
+    <ClCompile Include="..\ti\f18a\sprf30.c" />
+    <ClCompile Include="..\ti\f18a\sprf31.c" />
+    <ClCompile Include="..\ti\f18a\sprf32.c" />
+    <ClCompile Include="..\ti\f18a\sprf3pal.c" />
+    <ClCompile Include="..\ti\f18a\sprf40.c" />
+    <ClCompile Include="..\ti\f18a\sprf41.c" />
+    <ClCompile Include="..\ti\f18a\sprf42.c" />
+    <ClCompile Include="..\ti\f18a\sprf4pal.c" />
+    <ClCompile Include="..\ti\f18a\tilesf18_splitcol1.c" />
+    <ClCompile Include="..\ti\f18a\tilesf18_splitcol2.c" />
+    <ClCompile Include="..\ti\f18a\tilesf18_splitcol3.c" />
+    <ClCompile Include="..\ti\f18a\tilesf18_splitpat1.c" />
+    <ClCompile Include="..\ti\f18a\tilesf18_splitpat2.c" />
+    <ClCompile Include="..\ti\f18a\tilesf18_splitpat3.c" />
     <ClCompile Include="src\control.c" />
     <ClCompile Include="src\dat_ents.c" />
     <ClCompile Include="src\dat_ents2.c" />
@@ -217,6 +255,10 @@
     <ClCompile Include="src\tiles.c" />
     <ClCompile Include="src\util.c" />
     <ClCompile Include="src\xrick.c" />
+    <ClCompile Include="vgmcomp2\CPlayerCommon.cpp" />
+    <ClCompile Include="vgmcomp2\CPlayerPC.cpp" />
+    <ClCompile Include="vgmcomp2\PC.cpp" />
+    <ClCompile Include="vgmcomp2\sound.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xrick.rc" />
@@ -230,10 +272,14 @@
     <None Include="src\CPlayerTIHandEdit.assembly" />
     <None Include="src\CPlayerTIHandlers.assembly" />
     <None Include="src\crt0_bankcart.assembly" />
-    <None Include="src\linker.ld" />
+    <None Include="src\linker_9918.ld" />
+    <None Include="src\linker_f18a.ld" />
     <None Include="src\Makefile" />
     <None Include="src\scratchpad.assembly" />
     <None Include="src\vdpint.assembly" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="vgmcomp2\readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

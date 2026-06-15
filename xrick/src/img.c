@@ -24,6 +24,7 @@
 /*
  * paints an image of size <width>,<height> with data in <pic> at
  * position <x>,<y> (fb/px). NOTE: 8 pixel character bounardies!
+ * chroff is only if you don't want the standard bitmap character for that position
  * if either pic or col is 0, don't copy that part (we still rewrite the SIT, but that's okay)
  * We run a little slowly, pausing for interrupts to allow title music to run smoothly.
  * NOTE: various banks are probably mapped in for this
@@ -60,11 +61,5 @@ void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8* pic, const U8* 
     }
     VDP_INT_ENABLE;
 }
-
-// fullscreen image
-//void img_paintImg(img_t *img) {
-//    // TODO: for F18A mode we probably want to add the palette here
-//    img_paintPic(0, 0, img->w, img->h, img->pixels, img->colors);
-//}
 
 /* eof */

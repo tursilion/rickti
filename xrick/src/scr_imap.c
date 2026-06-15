@@ -12,6 +12,7 @@
  */
 
 #include "config.h"
+#include "sysarg.h"
 
 #include "env.h"
 
@@ -152,6 +153,19 @@ U16 screen_introMap(void)
 		case 0: /* initialize */
 			fb_clear();
 			sysvid_setGamma(GAMMA_OFF);
+
+#ifdef F18A
+            // we need to make sure bitmap is in full bitmap mode
+            // (the tables can't move, so no need to change the global pointers)
+
+            VDP_INT_DISABLE;
+
+	        VDP_SET_REGISTER(VDP_REG_CT, 0xFF);
+	        VDP_SET_REGISTER(VDP_REG_PDT, 0x03);
+            sysarg_half_bitmap = 0;
+
+            VDP_INT_ENABLE;
+#endif
 
 			tiles_setBank(0);
 			tiles_paintListAt(maps_intros[env_map].title, 0, 0);

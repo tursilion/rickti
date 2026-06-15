@@ -20,6 +20,10 @@ extern int sysarg_args_period;
 extern int sysarg_args_map;
 extern int sysarg_args_submap;
 
+#ifdef F18A
+extern int sysarg_half_bitmap;
+#endif
+
 #endif /* _SYSARG_H */
 
 /* eof */

@@ -21,6 +21,7 @@
   */
 
 #include "config.h"
+#include "sysarg.h"
 
 #include <vdp.h>
 #ifdef CLASSIC99
@@ -104,16 +105,9 @@ void sysvid_setGamma(U16 g) {
 }
 
 // copy to the three tables of the bitmap screen
-// TODO: if not F18A
 // NOTE: very likely a different bank is mapped in!!
 // Will pause periodically to allow interrupts so title music plays clean
 void bitmapcharcopy(U16 adr, const U8* buf, U16 size) {
-#ifdef CLASSIC99
-    if (classic99InterruptState) {
-        sys_printf("WARNING: bitmapcharcopy with interrupts enabled\n");
-    }
-#endif
-
     // we'll copy 0x200 bytes at a time, we need to know how much extra there is
     U16 remsize = size%0x200;
     size -= remsize;
@@ -129,7 +123,13 @@ void bitmapcharcopy(U16 adr, const U8* buf, U16 size) {
             vdpmemcpy(outer+size, buf+size, remsize);
             VDP_INT_POLL;
         }
+#ifdef F18A
+        // only one table copy in half bitmap mode
+        if (sysarg_half_bitmap) break;
+#endif
     }
+
+    VDP_INT_ENABLE;
 }
 
 

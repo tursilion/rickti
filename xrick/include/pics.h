@@ -16,10 +16,16 @@
 
 #include "config.h"
 
+#ifdef F18A
+extern const U8 pic_hafF18_pat[];
+extern const U8 pic_hafF18_col[];
+extern const unsigned int splashf18_pal[16];
+#else
 extern const U8 pic_haf_pat[];
 extern const U8 pic_splash_pat[];
 extern const U8 pic_haf_col[];
 extern const U8 pic_splash_col[];
+#endif
 
 #endif
 /* eof */

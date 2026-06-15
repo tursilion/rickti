@@ -21,6 +21,11 @@
 
 #include <vdp.h>
 
+#ifdef F18A
+#include <f18a.h>
+extern void vsetchar_base(int pAddr, unsigned char ch);
+#endif
+
 // timer updated by VDP interrupt - making it 32 bit so it can represent milliseconds better
 // without wrapping very often. Note we are doing milliseconds*10 (so we can count by 16.6ms)
 // TODO: this is wrong for PAL, obviously, which counts at 20ms
@@ -80,6 +85,39 @@ sys_init(int argc, char** argv)
     (void)argc;
     (void)argv;
 
+    // make sure interrupts are off during init
+    VDP_INT_DISABLE;
+
+    // get banking into a known state
+    SWITCH_IN_BANK0;
+
+    VDP_SET_REGISTER(VDP_REG_COL, COLOR_BLACK);
+
+#ifdef F18A
+    // VRAM Map (ingame)
+    // 0000    Pattern (only 2k cause of masking working)
+    // 0800    5K of Rick sprites
+    // 1C00    screen image table
+    // 1F00    sprite attribute table
+    // 1F80    -- free 128 bytes --
+    // 2000    Color (also 2k)
+    // 2800    Sprite colors (2k table) bit 0    
+    // 3000    Sprite colors bit 1
+    // 3800    Sprite colors bit 2
+    // 4000    Rick sprite cache .5k (ish)
+    // 4300    GPU program
+    // 4???    -- free ?? bytes --
+
+    // detect also unlocks for us
+    if (!detect_f18a()) {
+        // the loader loaded the wrong program!
+        sys_panic("F18A required!");
+    }
+
+    // disable sprite flicker
+    VDP_SET_REGISTER(F18A_REG_MAXSPR, 32);
+
+#else
     // VRAM map
     //      0000    pattern
     //      1800    image table
@@ -88,20 +126,13 @@ sys_init(int argc, char** argv)
     //      2000    color
     //      3800    sprite patterns (192 chars)
     //      3E00    -- free --
+#endif
 
-    // make sure interrupts are off during init
-    VDP_INT_DISABLE;
-
-    // get banking into a known state
-    SWITCH_IN_BANK0;
-
-    // TODO: F18A can use bitmap with a single color/pattern table (half bitmap) and still
-    // have access to all sprites. It will use palettes. Also set up for 8 color sprites.
-    VDP_SET_REGISTER(VDP_REG_COL, COLOR_BLACK);
     set_bitmap(VDP_SPR_16x16);
 	VDP_SET_REGISTER(VDP_REG_SDT, 7);	// remap sprite pattern table to not overlap the SIT
     gSpritePat = 0x3800;
     vdpmemset(gSpritePat, 0, 0x800);    // make sure it's zeroed
+
     // get a blank screen up by initializing all three char 0 to blank and then writing all zeros to the SIT
     fb_clear();
 
@@ -175,7 +206,9 @@ sys_init(int argc, char** argv)
 void
 sys_shutdown(void)
 {
-    // TODO: put the F18A reset here
+#ifdef F18A
+    reset_f18a();
+#endif
 }
 
 

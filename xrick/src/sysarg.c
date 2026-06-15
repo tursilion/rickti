@@ -26,6 +26,11 @@ int sysarg_args_period = 0;
 int sysarg_args_map = 0;
 int sysarg_args_submap = 0;
 
+#ifdef F18A
+int sysarg_half_bitmap = 0;
+#endif
+
+
 
 
 

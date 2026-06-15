@@ -18,6 +18,16 @@
 #include "sysvid.h"
 #include "env.h"
 
+#ifdef F18A
+#define BIN2INC_HEADER_ONLY
+#include "tilesf18_splitcol1.c"
+#include "tilesf18_splitcol2.c"
+#include "tilesf18_splitcol3.c"
+#include "tilesf18_splitpat1.c"
+#include "tilesf18_splitpat2.c"
+#include "tilesf18_splitpat3.c"
+#endif
+
 #include <vdp.h>
 
 // load the digits from tile bank 0 to the correct place set by env_digits
@@ -28,6 +38,16 @@ void loadDigitTiles(void) {
 
     // chars 8-20. Don't use bitmapcharcopy, only want the first page
     // assumes gPattern is 0!
+
+#ifdef F18A
+    // pattern and tiles in same bank - we only need tile bank0
+    SWITCH_IN_BANK20;
+    vdpmemcpy(env_digits*8, tilesf18_patA+48*8, 10*8); // digits
+    vdpmemcpy((env_digits+10)*8, tilesf18_patA+1*8, 3*8);  // icons
+    VDP_INT_POLL;
+    vdpmemcpy(gColor+env_digits*8, tilesf18_colA+48*8, 10*8); // digits
+    vdpmemcpy(gColor+(env_digits+10)*8, tilesf18_colA+1*8, 3*8);  // icons
+#else
     SWITCH_IN_BANK8;
     vdpmemcpy(env_digits*8, tiles_banks_pat+48*8, 10*8); // digits
     vdpmemcpy((env_digits+10)*8, tiles_banks_pat+1*8, 3*8);  // icons
@@ -35,6 +55,7 @@ void loadDigitTiles(void) {
     SWITCH_IN_BANK9;
     vdpmemcpy(gColor+env_digits*8, tiles_banks_col+48*8, 10*8); // digits
     vdpmemcpy(gColor+(env_digits+10)*8, tiles_banks_col+1*8, 3*8);  // icons
+#endif
 
     VDP_INT_ENABLE;
 
@@ -53,11 +74,20 @@ void loadStringTiles(const char* str) {
     // assumes gPattern is 0!
     U16 off = 0;
     while (*str) {
+#ifdef F18A
+        // pattern and tiles in same bank - we only need tile bank0
+        SWITCH_IN_BANK20;
+        vdpmemcpy((env_digits+off)*8, tilesf18_patA+(*str)*8, 8); // digits
+        VDP_INT_POLL;
+        vdpmemcpy(gColor+(env_digits+off)*8, tilesf18_colA+(*str)*8, 8); // digits
+#else
         SWITCH_IN_BANK8;
         vdpmemcpy((env_digits+off)*8, tiles_banks_pat+(*str)*8, 8); // digits
         VDP_INT_POLL;
         SWITCH_IN_BANK9;
         vdpmemcpy(gColor+(env_digits+off)*8, tiles_banks_col+(*str)*8, 8); // digits
+#endif
+
         ++str;
         ++off;
     }
@@ -92,18 +122,49 @@ void tiles_setBank(U16 bank)
 		sys_panic("xrick/tiles: invalid bank number %d\n", bank);
     }
 
-    U16 off = bank*0x800;
+    // bank switching, not tile bank!
     nOldBank = nBank;
+
+#ifdef F18A
+    // the data is split among banks
+    switch (bank) {
+        case 0:
+            SWITCH_IN_BANK20;
+            bitmapcharcopy(gPattern, tilesf18_patA, 0x800);
+            bitmapcharcopy(gColor, tilesf18_colA, 0x800);
+            break;
+
+        case 1:
+            SWITCH_IN_BANK25;
+            bitmapcharcopy(gPattern, tilesf18_patB, 0x800);
+            bitmapcharcopy(gColor, tilesf18_colB, 0x800);
+            break;
+
+        case 2:
+            SWITCH_IN_BANK31;
+            bitmapcharcopy(gPattern, tilesf18_patC, 0x800);
+            bitmapcharcopy(gColor, tilesf18_colC, 0x800);
+            break;
+    }
+
+    // and also load a palette
+    SWITCH_IN_BANK20;
+    VDP_INT_DISABLE;
+    loadpal_f18a(tilesf18_pal, 0, 16);
+    VDP_INT_ENABLE;
+
+#else
+    U16 off = bank*0x800;
 
     // first patterns
     SWITCH_IN_BANK8;
     bitmapcharcopy(gPattern, tiles_banks_pat+off, 0x800);
 
-    VDP_INT_POLL;
-
     // then color
     SWITCH_IN_BANK9;
     bitmapcharcopy(gColor, tiles_banks_col+off, 0x800);
+
+#endif
 
     // okay, screw it. Just find 13 characters we can overwrite, something we KNOW
     // is only for a different map.

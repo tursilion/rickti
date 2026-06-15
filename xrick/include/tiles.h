@@ -15,6 +15,9 @@
 #define _TILES_H
 
 #include "config.h"
+#ifdef F18A
+#include <f18a.h>
+#endif
 
 /*
  * methods
@@ -49,6 +52,10 @@ typedef U8 tile_t;
 #define TILES_BANKS_COUNT 3
 extern const tile_t tiles_banks_col[TILES_BANKS_COUNT*256*8];
 extern const tile_t tiles_banks_pat[TILES_BANKS_COUNT*256*8];
+
+#ifdef F18A
+extern const unsigned int tilesf18_pal[16];
+#endif
 
 /*
  * special tile numbers

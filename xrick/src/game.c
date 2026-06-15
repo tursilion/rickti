@@ -37,6 +37,18 @@
 #include "draw.h"
 #include "pics.h"
 
+#ifdef F18A
+#define BIN2INC_HEADER_ONLY
+#include "splashf18_splitcol1.c"
+#include "splashf18_splitcol2.c"
+#include "splashf18_splitcol3.c"
+#include "splashf18_splitcol4.c"
+#include "splashf18_splitpat1.c"
+#include "splashf18_splitpat2.c"
+#include "splashf18_splitpat3.c"
+#include "splashf18_splitpat4.c"
+#endif
+
 /*
  * local typedefs
  */
@@ -102,19 +114,59 @@ void draw_titlepage()
 
     nOldBank = nBank;
 
+#ifdef F18A
+    // we need to make sure bitmap is in full bitmap mode
+    // (the tables can't move, so no need to change the global pointers)
+	VDP_SET_REGISTER(VDP_REG_CT, 0xFF);
+	VDP_SET_REGISTER(VDP_REG_PDT, 0x03);
+    sysarg_half_bitmap = 0;
+
+    // for ROM space reasons, the title picture is split up over 8(!!) banks
+    // we'll still use img_paintPic since it keeps interrupts flowing
+
+    // pattern
+    SWITCH_IN_BANK24;
+	img_paintPic(0, 0, 256, 48, (U8*)splashf18_patA, 0, 0);
+
+    SWITCH_IN_BANK26;
+	img_paintPic(0, 48, 256, 48, (U8*)splashf18_patB, 0, 0);
+
+    SWITCH_IN_BANK27;
+	img_paintPic(0, 96, 256, 48, (U8*)splashf18_patC, 0, 0);
+
+    SWITCH_IN_BANK28;
+	img_paintPic(0, 144, 256, 48, (U8*)splashf18_patD, 0, 0);
+
+    // color
+    SWITCH_IN_BANK17;
+	img_paintPic(0, 0, 256, 48, 0, (U8*)splashf18_colA, 0);
+
+    SWITCH_IN_BANK18;
+	img_paintPic(0, 48, 256, 48, 0, (U8*)splashf18_colB, 0);
+
+    SWITCH_IN_BANK19;
+	img_paintPic(0, 96, 256, 48, 0, (U8*)splashf18_colC, 0);
+
+    SWITCH_IN_BANK23;
+	img_paintPic(0, 144, 256, 48, 0, (U8*)splashf18_colD, 0);
+
+    // and also load a palette
+    SWITCH_IN_BANK17;
     VDP_INT_DISABLE;
+    loadpal_f18a(splashf18_pal, 0, 16);
+    VDP_INT_ENABLE;
+
+#else
 
     // pattern
     SWITCH_IN_BANK10;
 	img_paintPic(0, 0, 256, 192, (U8*)pic_splash_pat, 0, 0);
 
-    VDP_INT_POLL;
-
     // color
     SWITCH_IN_BANK11;
 	img_paintPic(0, 0, 256, 192, 0, (U8*)pic_splash_col, 0);
 
-    VDP_INT_ENABLE;
+#endif
 
     // restore
     SWITCH_IN_BANK(nOldBank);
@@ -130,19 +182,31 @@ void draw_hof_title()
     tiles_setBank(0);
 
 	/* hall of fame title */
-    VDP_INT_DISABLE;
 
+#ifdef F18A
+    // we need to make sure bitmap is in full bitmap mode
+    // (the tables can't move, so no need to change the global pointers)
+	VDP_SET_REGISTER(VDP_REG_CT, 0xFF);
+	VDP_SET_REGISTER(VDP_REG_PDT, 0x03);
+    sysarg_half_bitmap = 0;
+
+    // pattern
+    SWITCH_IN_BANK22;
+	img_paintPic(0, 0, 256, 24, (U8*)pic_hafF18_pat, 0, 128);
+
+    // color
+    SWITCH_IN_BANK21;
+	img_paintPic(0, 0, 256, 24, 0, (U8*)pic_hafF18_col, 128);
+
+#else
     // pattern
     SWITCH_IN_BANK10;
 	img_paintPic(0, 0, 256, 24, (U8*)pic_haf_pat, 0, 128);
 
-    VDP_INT_POLL;
-
     // color
     SWITCH_IN_BANK11;
 	img_paintPic(0, 0, 256, 24, 0, (U8*)pic_haf_col, 128);
-
-    VDP_INT_ENABLE;
+#endif
 
     // restore
     SWITCH_IN_BANK(nOldBank);
@@ -228,7 +292,12 @@ static void game_loop(void) {
 
     /* events */
     nOldBank = nBank;
+#ifdef F18A
+    // sysevt doesn't really care about F18A, but it was easier to move the whole page
+    SWITCH_IN_BANK23
+#else
     SWITCH_IN_BANK4;
+#endif
     if (game_waitevt) {
         sysevt_wait();  /* wait for an event, stop doing anything */
     } else {
@@ -260,7 +329,11 @@ static void game_cycle(void) {
 
             case MAIN_INTRO:
                 nOldBank = nBank;
+#ifdef F18A
+                SWITCH_IN_BANK16
+#else
                 SWITCH_IN_BANK4;
+#endif
                 ret = screen_introMain();
                 SWITCH_IN_BANK(nOldBank);
                 switch (ret)
@@ -290,7 +363,11 @@ static void game_cycle(void) {
 
             case MAP_INTRO:
                 nOldBank = nBank;
+#ifdef F18A
+                SWITCH_IN_BANK30;
+#else
                 SWITCH_IN_BANK15;
+#endif
                 ret = screen_introMap();
                 SWITCH_IN_BANK(nOldBank);
                 switch (ret)
@@ -308,6 +385,12 @@ static void game_cycle(void) {
                 break;
 
             case INIT_MAP:
+#ifdef F18A
+                // switch to half bitmap mode - no sprite limits with F18A!
+	            VDP_SET_REGISTER(VDP_REG_CT, 0x9F);
+	            VDP_SET_REGISTER(VDP_REG_PDT, 0x00);
+                sysarg_half_bitmap = 1;
+#endif
 
                 if (env_map >= 0x04) /* reached end of game */
                 {

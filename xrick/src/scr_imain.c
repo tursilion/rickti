@@ -187,7 +187,6 @@ U16 screen_introMain(void)
 
             // patch up the character set
             U16 out='a';
-            VDP_INT_DISABLE;
 
             // because the font was converted from an image, the colors are randomly forward and backwards
             // in order to make a small version, we need to keep the same color rows, or convert all the letters
@@ -197,10 +196,17 @@ U16 screen_introMain(void)
                 if (i == '/') {
                     memcpy(workbuf, "\x03\x06\x0c\x18\x30\x60\xc0", 7);
                 } else {
+                    VDP_INT_DISABLE;
                     vdpmemread(gPattern+i*8, workbuf, 7);
                     vdpmemread(gColor+i*8, workbuf2, 7);
+                    VDP_INT_ENABLE;
                     for (U16 j=0; j<7; ++j) {
+#ifdef F18A
+                        // worked out organically
+                        if (workbuf2[j] >= 0xe0) {
+#else
                         if (workbuf2[j] < 0xe0) {
+#endif
                             // ie: if black is the foreground color, invert it
                             // we don't have to do color as we'll write the whole thing below
                             workbuf[j] = ~workbuf[j];
@@ -216,19 +222,26 @@ U16 screen_introMain(void)
                 workbuf[1]=0;
                 bitmapcharcopy(gPattern+out*8, workbuf, 8);
                 ++out;
-                VDP_INT_POLL;
             }
 
             // do a slower vdpmemset to allow music to play
             for (U16 vdp = gColor; vdp<gColor+0x1800; vdp+=0x200) {
+                VDP_INT_DISABLE;
+#ifdef F18A
+                vdpmemset(vdp, 0xa0, 0x200);
+#else
                 vdpmemset(vdp, 0xe0, 0x200);
-                VDP_INT_POLL;
+#endif
+                VDP_INT_ENABLE;
             }
 
 			/* credit content */
             // conio is slow, but this will work
             gotoxy(0, 5);
                    //01234567890123456789012345678901
+            
+            VDP_INT_DISABLE;
+
             cprintf("This-is-a-port-of-xrick-by-Tursi");
             cprintf("/Atari-ST-version/\n\n");
             VDP_INT_POLL;

@@ -24,6 +24,11 @@
 #include <vdp.h>
 #include <string.h>
 
+#ifdef F18A
+#define BIN2INC_HEADER_ONLY
+#include "sprf00.c"
+#endif
+
 
 /*
  * sprites_paint
@@ -96,6 +101,30 @@ void sprites_paint(U16 spriteNumber, U16 spriteIndex, U16 x, U16 y, U16 load_pat
         // Since sprites are only 21 rows tall, not 32, we can save a few bytes of copy. To make it
         // simple we only do two memcpys (not four, cause of setup overhead), copying 53 bytes instead 
         // of 64 for each left and right half
+#ifdef F18A
+        // TODO: need correct sprite copies - three pages!
+
+#ifndef CLASSIC99
+        vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 53);
+        vdpmemcpy(gSpritePat+(spriteIndex*4*8)+64, spriteIdx*128+sprf00+64, 53);
+#else
+        // Classic99 build doesn't have banks to switch!
+        switch(spritePage) {
+            case 0:
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); break;
+            case 1:
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); break;
+            case 2:
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); break;
+            case 3:
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); break;
+            case 4:
+                vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 128); break;
+        }
+#endif
+
+#else
+
 #ifndef CLASSIC99
         vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data0, 53);
         vdpmemcpy(gSpritePat+(spriteIndex*4*8)+64, spriteIdx*128+sprites_data0+64, 53);
@@ -113,6 +142,8 @@ void sprites_paint(U16 spriteNumber, U16 spriteIndex, U16 x, U16 y, U16 load_pat
             case 4:
                 vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data4, 128); break;
         }
+#endif
+
 #endif
         // restore the previous page
         SWITCH_IN_BANK(nOldBank);

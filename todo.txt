@@ -32,39 +32,7 @@ Bootloader ROM:
 
 ---
 
-For the title page - can use BML fat pixel mode - that's a full 16 colors, we'd just be limited to a resolution of 128x192. That does look better than the dithering does. Maybe we can hack the Core and Firebird logos as sprites since they lose too much resolution?
-
-Resizing the screen looks better using anti-aliasing, and a popularity palette select seems to work fine. However the title looks bad with this approach. Using nearest neighbor for the text looks a bit better. So we'll have to composite something by hand.
-    Thoughts: side by side, there's not much difference except on the text. Rick has better definition in a few places on the anti-aliased scale (even after color reduction), so it's probably worth doing. But from a distance you couldn't tell.
-    Could just be lazy and do the nearest neighbor - or in a pinch do it by hand and take the darker of the two pixels.
-
-The full screen would be 64 bytes per row times 192 rows = 12288 bytes (exactly 12k).
-
-The core logo is about 39x21 and the firebird logo is also 39x21. So, again, lots of wasted space, but we'd need 3 16x16 sprites across and 2 down each, total of 12 sprites. Each needs 4 colors plus transparent, so 8 color sprites. Each 16x16 sprite is 32*3 = 96 bytes, 12 sprites is 1162 bytes total. We would need to space the sprite tables by 48 characters (12*4), that fits in 512 bytes, so the three sprite pattern tables would take 1536 bytes, leaving 2432 bytes after the SAL (128 bytes). Lots of room.
-    Each sprite needs a different 8 color palette!
-
-If I wanted to sprite up the title, it's 211x22 - 14 across by 2 down, or 28 sprites. Now, we COULD be super sneaky, and use single color sprites here. That would mean a separate SAL (128) plus 28*32 bytes for pattern (896). We'd need a GPU program to swap out the sprite table mid screen (though there is lots of time.)
-
-We'd have to disable normal tile modes (VR50 - need to add support in Classic99).
-
-So to that end, it would look like this:
-
-0000 - BML - 12k
-3000 - Logo Sprite colors 0 (512 bytes)
-3200 - Logo Sprite colors 1
-3400 - Logo Sprite colors 2
-3600 - Logo SAL (128 bytes)
-3680 - Title SAL (128 bytes)
-3700 - -- free 256 bytes --
-3800 - Title sprite patterns (896 bytes)
-3B80 - -- free 1152 bytes --
-4000 - -- free 768 bytes --
-4300   GPU program
-4???   -- free ?? bytes --
-
-For simplicity - we can use the same GPU program as the Rick caching uses. We'll just reserve one code for "sprite toggle", and it'll check that every frame, and do one frame of sprite flips. The CPU can then clear it when it's done. (Conversely to the Rick sprite update, which it will clear itself when it's done.) That way we don't have to race the GPU program... though I guess stopping it is easy. But none of the work to be done will take much time.
-
----
+Title page is standard bitmap with a custom palette.
 
 Verify needed sprite indexes. Currently I allow up to 13 objects (from 0-12), and each object takes up 4 sprites. But then I also copy the pattern to spriteIndex*4 - 13*4*4 = 208 - I guess that's still legal. But do I only need 52? (and really 48 cause I don't think I need the +1). That will help on the F18A cause I can use a smaller sprite pattern table.
 
@@ -137,4 +105,54 @@ Title page can be a 16 color palette. HOF title only needs one color - we can fi
 Tile sets will also be 16 color. If we can get away with one palette on the whole thing, that will make the HUD easier. Otherwise we can use a separate palette for the HUD (ie: palette 0 for the screen, palette 1 for the HUD). That should be easy enough.
 
 Sprites have to be 8 color rather than 16. If we can do them all in the same 8 color palette that would be best. Otherwise we need to make sure all animation frames are on the same tile sheet. There are 64 colors IIRC - 4 palettes. If we are using 2x16 color for the tiles that only leaves 4x 8 color palettes for 5 tilesheets - although the last one doesn't have too much on it. So that's probably acceptable - using all 64 colors would help the screen.
+
+=====
+
+WAS BANK4, now 
+    scr_imain   16
+    sysevt      23
+
+WAS BANK15, now
+    scr_imap    30
+    (but dat_maps2 is still 15)
+
+
+Title was pic 10, col 11
+      now pic 18, col 17
+      
+
+const unsigned int tilesf18_pal[16] = {
+	 0x0000,0x0222,0x0420,0x0940,0x0666,0x0999,0x0D60,0x0BBB,	// 00000080 ...". .@.f...`.. //
+	 0x004B,0x006D,0x0FFF,0x0F96,0x0240,0x0462,0x0444,0x0000	// 00000090 .K.m.....@.b.D.. //
+};
+
+const unsigned int splashf18_pal[16] = {
+	 0x0000,0x0420,0x0F96,0x0222,0x0D60,0x0940,0x0999,0x0666,	// 00000080 ... ...".`.@...f //
+	 0x0BBB,0x0D00,0x0B66,0x0000,0x0000,0x0000,0x0444,0x0000	// 00000090 .....f.......D.. //
+};
+
+
+const unsigned char splashf18_pat[] = {
+const unsigned char splashf18_col[] = {
+BANKS: COL: 17,18,19,23  PAT: 24,26,27,28 - palette in 17 - 0x600 bytes each
+
+const unsigned char tilesf18_col[] = {
+const unsigned char tilesf18_pat[] = {
+BANKS: 20, 25 and 31 (col and pat A,B,C) - palette in 20 - 2k (1 bank) each
+
+
+ROM is too full - sprites can't be packed so they fill most of all banks. We can split up the F18A tiles and title though. We'll use 0x600 byte blocks - divides neatly into 6k (it's 1.5k) and is small enough (1536) to fit in most of the free space.
+
+(note: 0x80 offset cause of removed TIFILES header)
+
+A - 0x0080 - 0x0670
+B - 0x0680 - 0x0C70
+C - 0x0C80 - 0x1270
+D - 0x1280 - 0x1870
+
+Tiles I will split into 2k pages which each are exactly 1 bank - that will make copying easier. There are 3 pages with 4k left so I can put color and pattern in the same page.
+
+A - 0x0080 - 0x0870
+B - 0x0880 - 0x1070
+C - 0x1080 - 0x1870
 

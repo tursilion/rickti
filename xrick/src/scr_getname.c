@@ -54,11 +54,7 @@ static void name_draw(void);
  * return: 0 while running, 1 when finished.
  */
 U16 screen_getname(void) {
-#if 0
-    // TODO: temporarily removed to save code space
-    return SCREEN_DONE;
-#else
-    static U16 tm = 0;
+    static U32 tm = 0;
     U16 i, j;
 
     if (seq == 0) {
@@ -104,11 +100,10 @@ U16 screen_getname(void) {
             seq = 2;
             break;
 
-            // TODO: check autorepeat delay or better, kill autorepeat
         case 2:  /* wait for key pressed */
-            if (control_status & CONTROL_FIRE)
+            if (control_status & CONTROL_FIRE) {
                 seq = 3;
-            if (control_status & CONTROL_UP) {
+            } else if (control_status & CONTROL_UP) {
                 if (y > 0) {
                     pointer_show(FALSE);
                     y--;
@@ -116,8 +111,7 @@ U16 screen_getname(void) {
                     tm = sys_gettime();
                 }
                 seq = 4;
-            }
-            if (control_status & CONTROL_DOWN) {
+            } else if (control_status & CONTROL_DOWN) {
                 if (y < 4) {
                     pointer_show(FALSE);
                     y++;
@@ -125,8 +119,7 @@ U16 screen_getname(void) {
                     tm = sys_gettime();
                 }
                 seq = 5;
-            }
-            if (control_status & CONTROL_LEFT) {
+            } else if (control_status & CONTROL_LEFT) {
                 if (x > 0) {
                     pointer_show(FALSE);
                     x--;
@@ -134,8 +127,7 @@ U16 screen_getname(void) {
                     tm = sys_gettime();
                 }
                 seq = 6;
-            }
-            if (control_status & CONTROL_RIGHT) {
+            } else if (control_status & CONTROL_RIGHT) {
                 if (x < 5) {
                     pointer_show(FALSE);
                     x++;
@@ -143,9 +135,10 @@ U16 screen_getname(void) {
                     tm = sys_gettime();
                 }
                 seq = 7;
-            }
-            if (seq == 2)
+            } else {
+                // TI Doesn't really need these idle sleeps.. but whatever
                 sys_sleep(50);
+            }
             break;
 
         case 3:  /* wait for FIRE released */
@@ -173,13 +166,13 @@ U16 screen_getname(void) {
                     name_draw();
                     seq = 2;
                 }
-            } else
+            } else {
                 sys_sleep(50);
+            }
             break;
 
         case 4:  /* wait for UP released */
-            if (!(control_status & CONTROL_UP) ||
-            sys_gettime() - tm > AUTOREPEAT_TMOUT)
+            if (!(control_status & CONTROL_UP) || (sys_gettime() - tm > AUTOREPEAT_TMOUT))
                 seq = 2;
             else
                 sys_sleep(50);
@@ -220,7 +213,6 @@ U16 screen_getname(void) {
         return SCREEN_DONE;
     } else
         return SCREEN_RUNNING;
-#endif
 }
 
 
