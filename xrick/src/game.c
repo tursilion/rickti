@@ -118,10 +118,7 @@ void draw_titlepage()
     // we need to make sure bitmap is in full bitmap mode
     // (the tables can't move, so no need to change the global pointers)
     VDP_INT_DISABLE;
-	VDP_SET_REGISTER(VDP_REG_CT, 0xFF);
-	VDP_SET_REGISTER(VDP_REG_PDT, 0x03);
-    VDP_SET_REGISTER(F18A_REG_ECM, 0x0);   // disable 8 color sprites
-    sysarg_half_bitmap = 0;
+    set_fullbitmap();
     VDP_INT_ENABLE;
 
     // for ROM space reasons, the title picture is split up over 8(!!) banks
@@ -191,9 +188,7 @@ void draw_hof_title()
     // we need to make sure bitmap is in full bitmap mode
     // (the tables can't move, so no need to change the global pointers)
     VDP_INT_DISABLE;
-	VDP_SET_REGISTER(VDP_REG_CT, 0xFF);
-	VDP_SET_REGISTER(VDP_REG_PDT, 0x03);
-    VDP_SET_REGISTER(F18A_REG_ECM, 0x00);   // disable 8 color sprites
+    set_fullbitmap();
     VDP_INT_ENABLE;
 
     // pattern
@@ -392,12 +387,7 @@ static void game_cycle(void) {
 
             case INIT_MAP:
 #ifdef F18A
-                // switch to half bitmap mode - no sprite limits with F18A!
-	            VDP_SET_REGISTER(VDP_REG_CT, 0x9F);
-	            VDP_SET_REGISTER(VDP_REG_PDT, 0x00);
-                VDP_SET_REGISTER(F18A_REG_ECM, 0x03);   // enable 8 color sprites
-                vdpmemset(gSpritePat, 0, 0x1800);    // make sure it's zeroed (all three tables)
-                sysarg_half_bitmap = 1;
+                set_halfbitmap();
 #endif
 
                 if (env_map >= 0x04) /* reached end of game */

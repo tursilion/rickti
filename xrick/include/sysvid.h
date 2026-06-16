@@ -23,6 +23,11 @@ extern void sysvid_update(void);
 extern void sysvid_setGamma(U16 g);
 extern void bitmapcharcopy(U16 adr, const U8* buf, U16 size);
 
+#ifdef F18A
+void set_halfbitmap();
+void set_fullbitmap();
+#endif
+
 #endif /* _SYSVID_H */
 
 /* eof */

@@ -176,11 +176,7 @@ U16 screen_introMap(void)
 
             VDP_INT_DISABLE;
 
-	        VDP_SET_REGISTER(VDP_REG_CT, 0x9F);
-	        VDP_SET_REGISTER(VDP_REG_PDT, 0x00);
-            VDP_SET_REGISTER(F18A_REG_ECM, 0x03);   // enable 8 color sprites
-            vdpmemset(gSpritePat, 0, 0x1800);    // make sure it's zeroed (all three tables)
-            sysarg_half_bitmap = 1;
+            set_halfbitmap();
 
             // and load the sprite palettes
             loadpal_f18a(sprf0pal, 16, 8);  // page 0

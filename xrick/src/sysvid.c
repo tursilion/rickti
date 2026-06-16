@@ -24,6 +24,11 @@
 #include "sysarg.h"
 
 #include <vdp.h>
+
+#ifdef F18A
+#include <f18a.h>
+#endif
+
 #ifdef CLASSIC99
 #include "sprites.h"
 #endif
@@ -132,6 +137,26 @@ void bitmapcharcopy(U16 adr, const U8* buf, U16 size) {
     VDP_INT_ENABLE;
 }
 
+#ifdef F18A
+// F18A functions to set and clear half bitmap - assumes we are already setup in normal bitmap
+// Make sure interrupts are disabled!
+void set_halfbitmap() {
+    // switch to half bitmap mode - no sprite limits with F18A!
+	VDP_SET_REGISTER(VDP_REG_CT, 0x9F);
+	VDP_SET_REGISTER(VDP_REG_PDT, 0x00);
+    VDP_SET_REGISTER(F18A_REG_ECM, 0x03);   // enable 8 color sprites
+    vdpmemset(gSpritePat, 0, 0x1800);    // make sure it's zeroed (all three tables)
+    sysarg_half_bitmap = 1;
+}
+
+void set_fullbitmap() {
+	VDP_SET_REGISTER(VDP_REG_CT, 0xFF);
+	VDP_SET_REGISTER(VDP_REG_PDT, 0x03);
+    VDP_SET_REGISTER(F18A_REG_ECM, 0x0);   // disable 8 color sprites
+    sysarg_half_bitmap = 0;
+}
+
+#endif
 
 /* eof */
 

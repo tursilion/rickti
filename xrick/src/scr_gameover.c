@@ -17,6 +17,7 @@
 #include "game.h"
 #include "screens.h"
 #include "sysvid.h"
+#include "sysarg.h"
 #include "sounds.h"
 
 #include "draw.h"
@@ -47,6 +48,14 @@ U16 screen_gameover(void)
 	static U32 tm = 0;
 
 	if (seq == 0) {
+#ifdef F18A
+    // we need to make sure bitmap is in full bitmap mode
+    // (the tables can't move, so no need to change the global pointers)
+    VDP_INT_DISABLE;
+    set_fullbitmap();
+    VDP_INT_ENABLE;
+#endif
+
 		tiles_setBank(0);
 		seq = 1;
 		period = game_period; /* save period, */

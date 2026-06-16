@@ -22,6 +22,7 @@
 #include "tiles.h"
 #include "fb.h"
 #include "sysvid.h"
+#include "sysarg.h"
 #include <vdp.h>
 #include <string.h>
 
@@ -67,6 +68,14 @@ U16 screen_getname(void) {
         }
 
         /* prepare */
+#ifdef F18A
+        // we need to make sure bitmap is in full bitmap mode
+        // (the tables can't move, so no need to change the global pointers)
+        VDP_INT_DISABLE;
+        set_fullbitmap();
+        VDP_INT_ENABLE;
+#endif
+
         tiles_setBank(0);
 
         //for (i = 0; i < 10; i++)
