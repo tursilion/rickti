@@ -4,6 +4,7 @@ A lot of the game is working, but a lot of stuff still is not. Was able to play 
 
 And stuff I deliberately need to deal with:
 - color sprites?
+- is there enough memory left in scratchpad to move the sprite copy loop? That would speed up a ton. Or maybe just a general purpose copy loop instead of the two custom ones?
 
 And stretch goals:
 - gram save for ubergrom support (for high scores)
@@ -115,3 +116,34 @@ The banking for F18A title page and tile sets are split across multiple banks, u
 At this point the F18A build and the 9918A build have compatible layouts, EXCEPT the loader banks - both use the first three banks. The expectation was that I would be able to use my vgmcomp2 packer to pack the two programs together into a compressed stream, and have them fit in that 24k along with an unpacker (which also detects F18A). It's a tall order, but I think it's feasible as a lot of the code is shared and should overlap.
 
 vgmcomp2 -pack currently expects only a single stream, so I will need to add support for a second one - if only to get a table telling me where it starts!
+
+---
+
+F18A sprite mapping table (to allow a different palette for each sprite page)
+
+32  142     bullet right
+33  143     bullet left
+41  91      crate 1
+42  92      crate 2
+43  33      tongue statue
+44  34      egyptian mask
+45  115     rocket
+46  47      hostage
+47  85      green giant right
+85  121     orange brick
+91  41      gem
+92  42      gem stand
+94  111     mummy right 1
+95  112     mummy right 2
+109 43      bulldog sleep
+110 44      bulldog stand
+111 45      bulldog run 1
+112 46      bulldog run 2
+115 95      gunner
+121 46      tall spikes
+142 150     spear guy right 1
+143 151     spear guy right 2
+144 109     barrel diag1
+145 110     barrel diag2
+
+All four sprite tables now have a unique 8 color palette - except sheet 4 shares sheet 2's palette.

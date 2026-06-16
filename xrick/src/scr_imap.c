@@ -143,7 +143,16 @@ const U8 screen_imapsofs[] = {
 
 #ifdef F18A
 const unsigned int sprf0pal[] = {
-	 0x0000,0x0B50,0x02D2,0x0F95,0x005C,0x0B78,0x0789,0x0BAA	// 00000000 ...P.....\.x.... //
+	 0x0000,0x0940,0x0420,0x0555,0x0F96,0x004B,0x0D60,0x0AAA	// 00000000 ...@. .U...K.`.. //
+};
+const unsigned int sprf1pal[] = {
+	 0x0000,0x0240,0x0D60,0x0AAA,0x0420,0x0940,0x0462,0x0555	// 00000000 ...@.`... .@.b.U //
+};
+const unsigned int sprf2pal[] = {  // also shared with sprf4pal
+	 0x0000,0x0555,0x0999,0x0940,0x0D60,0x0420,0x0F96,0x0B66	// 00000000 ...U...@.`. ...f //
+};
+const unsigned int sprf3pal[] = {
+	 0x0000,0x0D60,0x0420,0x0940,0x0555,0x0F96,0x0AAA,0x0240	// 00000000 ...`. .@.U.....@ //
 };
 #endif
 
@@ -173,8 +182,11 @@ U16 screen_introMap(void)
             vdpmemset(gSpritePat, 0, 0x1800);    // make sure it's zeroed (all three tables)
             sysarg_half_bitmap = 1;
 
-            // and load the sprite palette
-            loadpal_f18a(sprf0pal, 16, 8);
+            // and load the sprite palettes
+            loadpal_f18a(sprf0pal, 16, 8);  // page 0
+            loadpal_f18a(sprf1pal, 24, 8);  // page 1
+            loadpal_f18a(sprf2pal, 32, 8);  // page 2 and 4
+            loadpal_f18a(sprf3pal, 40, 8);  // page 3
 
             VDP_INT_ENABLE;
 #endif

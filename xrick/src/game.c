@@ -182,6 +182,7 @@ void draw_hof_title()
     unsigned int nOldBank = nBank;
 
     // we need the main tiles loaded to see text!
+    sysarg_half_bitmap = 0;
     tiles_setBank(0);
 
 	/* hall of fame title */
@@ -194,8 +195,6 @@ void draw_hof_title()
 	VDP_SET_REGISTER(VDP_REG_PDT, 0x03);
     VDP_SET_REGISTER(F18A_REG_ECM, 0x00);   // disable 8 color sprites
     VDP_INT_ENABLE;
-
-    sysarg_half_bitmap = 0;
 
     // pattern
     SWITCH_IN_BANK22;
