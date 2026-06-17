@@ -16,6 +16,7 @@
 #include <vdp.h>
 #include "img.h"
 #include "fb.h"
+#include "scroller.h"
 
 /*
  * paints an image of size <width>,<height> with data in <pic> at
@@ -47,11 +48,11 @@ void img_paintPic(U16 x, U16 y, U16 width, U16 height, const U8* pic, const U8* 
     for (i=0; i<height; i+=8) {
         vdpwriteinc(v, chr, sz);    // SIT
         if (pic) {
-            vdpmemcpy(v2, pic, sz*8);   // pattern
+            vdpmemcpy2(v2, pic, sz*8);   // pattern
             pic += sz*8;
         }
         if (col) {
-            vdpmemcpy(v2+0x2000, col, sz*8);   // col
+            vdpmemcpy2(v2+0x2000, col, sz*8);   // col
             col += sz*8;
         }
         v+=32;      // one full row down

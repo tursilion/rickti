@@ -109,6 +109,8 @@ SECTIONS {
         CPlayerCommonHandEdit.o(.text .rodata)
         CPlayerTIHandEdit.o(.text .rodata)
         CPlayerTIHandlers.o(.text .rodata)
+        scroller.o(.text .rodata)
+        scratchpad.o(.text .rodata) /* keep associated with scroller.o */
         *libti99.a:*(.text .rodata)
     } > FIXED AT> FLASH
     
@@ -129,8 +131,6 @@ SECTIONS {
         . = . + 6144;  /* size of sprite data */
         
         scr_getname.o(.text .rodata)
-        scroller.o(.text .rodata)
-        scratchpad.o(.text .rodata) /* keep associated with scroller.o */
         PROVIDE(ebank3a = .);
     } > CART3 AT> FLASH
 

@@ -147,9 +147,7 @@ sys_init(int argc, char** argv)
     fb_clear();
 
     // load scroll assembly to scratchpad
-    SWITCH_IN_BANK3;
     scroll_init();
-    SWITCH_IN_BANK0;
 
     // reset timing and interrupt system
     sys_resettime();

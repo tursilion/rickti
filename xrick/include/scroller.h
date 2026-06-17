@@ -22,11 +22,14 @@
 void scroll_init(void);
 extern U16 scroll_up(void);
 extern U16 scroll_down(void);
+extern void vdpmemcpy2(U16 dest, const U8* src, U16 cnt);
 
 // asm
 extern void asmscrup(void* dest, void* src, void* end);
 extern void asmscrdn(void* dest, void* src, void* end);
+extern void asmvdpcp(U8* vdpwd, void *src, U16 evencnt);
 extern void* asmscrend;
+
 
 #endif
 

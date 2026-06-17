@@ -17,6 +17,7 @@
 #include "fb.h"
 #include "sysvid.h"
 #include "env.h"
+#include "scroller.h"
 
 #ifdef F18A
 #define BIN2INC_HEADER_ONLY
@@ -42,19 +43,19 @@ void loadDigitTiles(void) {
 #ifdef F18A
     // pattern and tiles in same bank - we only need tile bank0
     SWITCH_IN_BANK20;
-    vdpmemcpy(env_digits*8, tilesf18_patA+48*8, 10*8); // digits
-    vdpmemcpy((env_digits+10)*8, tilesf18_patA+1*8, 3*8);  // icons
+    vdpmemcpy2(env_digits*8, tilesf18_patA+48*8, 10*8); // digits
+    vdpmemcpy2((env_digits+10)*8, tilesf18_patA+1*8, 3*8);  // icons
     VDP_INT_POLL;
-    vdpmemcpy(gColor+env_digits*8, tilesf18_colA+48*8, 10*8); // digits
-    vdpmemcpy(gColor+(env_digits+10)*8, tilesf18_colA+1*8, 3*8);  // icons
+    vdpmemcpy2(gColor+env_digits*8, tilesf18_colA+48*8, 10*8); // digits
+    vdpmemcpy2(gColor+(env_digits+10)*8, tilesf18_colA+1*8, 3*8);  // icons
 #else
     SWITCH_IN_BANK8;
-    vdpmemcpy(env_digits*8, tiles_banks_pat+48*8, 10*8); // digits
-    vdpmemcpy((env_digits+10)*8, tiles_banks_pat+1*8, 3*8);  // icons
+    vdpmemcpy2(env_digits*8, tiles_banks_pat+48*8, 10*8); // digits
+    vdpmemcpy2((env_digits+10)*8, tiles_banks_pat+1*8, 3*8);  // icons
     VDP_INT_POLL;
     SWITCH_IN_BANK9;
-    vdpmemcpy(gColor+env_digits*8, tiles_banks_col+48*8, 10*8); // digits
-    vdpmemcpy(gColor+(env_digits+10)*8, tiles_banks_col+1*8, 3*8);  // icons
+    vdpmemcpy2(gColor+env_digits*8, tiles_banks_col+48*8, 10*8); // digits
+    vdpmemcpy2(gColor+(env_digits+10)*8, tiles_banks_col+1*8, 3*8);  // icons
 #endif
 
     VDP_INT_ENABLE;
@@ -77,15 +78,15 @@ void loadStringTiles(const char* str) {
 #ifdef F18A
         // pattern and tiles in same bank - we only need tile bank0
         SWITCH_IN_BANK20;
-        vdpmemcpy((env_digits+off)*8, tilesf18_patA+(*str)*8, 8); // digits
+        vdpmemcpy2((env_digits+off)*8, tilesf18_patA+(*str)*8, 8); // digits
         VDP_INT_POLL;
-        vdpmemcpy(gColor+(env_digits+off)*8, tilesf18_colA+(*str)*8, 8); // digits
+        vdpmemcpy2(gColor+(env_digits+off)*8, tilesf18_colA+(*str)*8, 8); // digits
 #else
         SWITCH_IN_BANK8;
-        vdpmemcpy((env_digits+off)*8, tiles_banks_pat+(*str)*8, 8); // digits
+        vdpmemcpy2((env_digits+off)*8, tiles_banks_pat+(*str)*8, 8); // digits
         VDP_INT_POLL;
         SWITCH_IN_BANK9;
-        vdpmemcpy(gColor+(env_digits+off)*8, tiles_banks_col+(*str)*8, 8); // digits
+        vdpmemcpy2(gColor+(env_digits+off)*8, tiles_banks_col+(*str)*8, 8); // digits
 #endif
 
         ++str;

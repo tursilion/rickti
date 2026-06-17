@@ -20,6 +20,7 @@
 #include "fb.h"
 #include "maps.h"
 #include "tiles.h"
+#include "scroller.h"
 
 #include <vdp.h>
 #include <string.h>
@@ -202,18 +203,18 @@ void sprites_paint(U16 spriteNumber, U16 spriteIndex, U16 x, U16 y, U16 load_pat
 
         // Note: first page is page 16 (0x6020), covers bit 0. Subsequent tables are 5 pages later.
         SWITCH_IN_BANK((0x6020 + (spritePage*2)));
-        vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 53);
-        vdpmemcpy(gSpritePat+(spriteIndex*4*8)+64, spriteIdx*128+sprf00+64, 53);
+        vdpmemcpy2(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprf00, 54);
+        vdpmemcpy2(gSpritePat+(spriteIndex*4*8)+64, spriteIdx*128+sprf00+64, 54);
 
         // second bit
         SWITCH_IN_BANK((0x6020 + ((spritePage+5)*2)));
-        vdpmemcpy(gSpritePat+0x800+(spriteIndex*4*8), spriteIdx*128+sprf00, 53);
-        vdpmemcpy(gSpritePat+0x800+(spriteIndex*4*8)+64, spriteIdx*128+sprf00+64, 53);
+        vdpmemcpy2(gSpritePat+0x800+(spriteIndex*4*8), spriteIdx*128+sprf00, 54);
+        vdpmemcpy2(gSpritePat+0x800+(spriteIndex*4*8)+64, spriteIdx*128+sprf00+64, 54);
 
         // third bit
         SWITCH_IN_BANK((0x6020 + ((spritePage+10)*2)));
-        vdpmemcpy(gSpritePat+0x1000+(spriteIndex*4*8), spriteIdx*128+sprf00, 53);
-        vdpmemcpy(gSpritePat+0x1000+(spriteIndex*4*8)+64, spriteIdx*128+sprf00+64, 53);
+        vdpmemcpy2(gSpritePat+0x1000+(spriteIndex*4*8), spriteIdx*128+sprf00, 54);
+        vdpmemcpy2(gSpritePat+0x1000+(spriteIndex*4*8)+64, spriteIdx*128+sprf00+64, 54);
 #else
 
         // Classic99 build doesn't really have banks to switch!
@@ -251,8 +252,8 @@ void sprites_paint(U16 spriteNumber, U16 spriteIndex, U16 x, U16 y, U16 load_pat
         SWITCH_IN_BANK((0x6006 + (spritePage*2)));
 
 #ifndef CLASSIC99
-        vdpmemcpy(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data0, 53);
-        vdpmemcpy(gSpritePat+(spriteIndex*4*8)+64, spriteIdx*128+sprites_data0+64, 53);
+        vdpmemcpy2(gSpritePat+(spriteIndex*4*8), spriteIdx*128+sprites_data0, 54);
+        vdpmemcpy2(gSpritePat+(spriteIndex*4*8)+64, spriteIdx*128+sprites_data0+64, 54);
 #else
         // Classic99 build doesn't have banks to switch!
         switch(spritePage) {

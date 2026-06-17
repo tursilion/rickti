@@ -22,6 +22,7 @@
 
 #include "config.h"
 #include "sysarg.h"
+#include "scroller.h"
 
 #include <vdp.h>
 
@@ -121,7 +122,7 @@ void bitmapcharcopy(U16 adr, const U8* buf, U16 size) {
 
     for (U16 outer=adr; outer<adr+0x1800; outer+=0x800) {
         for (U16 off=0; off<size; off+=0x200) {
-            vdpmemcpy(outer+off, buf+off, 0x200);
+            vdpmemcpy2(outer+off, buf+off, 0x200);
             VDP_INT_POLL;
         }
         if (remsize > 0) {

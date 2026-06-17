@@ -589,10 +589,7 @@ static void game_cycle(void) {
                 return;
 
             case SCROLL_UP:
-                nOldBank = nBank;
-                SWITCH_IN_BANK3;
                 ret = scroll_up();
-                SWITCH_IN_BANK(nOldBank);
                 switch (ret)
                 {
                     case SCROLL_RUNNING:
@@ -604,10 +601,7 @@ static void game_cycle(void) {
                 break;
 
             case SCROLL_DOWN:
-                nOldBank = nBank;
-                SWITCH_IN_BANK3;
                 ret = scroll_down();
-                SWITCH_IN_BANK(nOldBank);
                 switch (ret)
                 {
                     case SCROLL_RUNNING:

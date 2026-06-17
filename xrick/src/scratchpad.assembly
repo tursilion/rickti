@@ -1,7 +1,8 @@
 * This code lives in scratchpad at 0x8340
 * must be relocatable code
-* must end before 0x8370
+* must end before 0x8370 (or at least 8375 for kscanfast)
 * Its used by the scroller to accelerate the screen scroll
+* and vdp sprite copies
 *
 * The linkage for this is a bit of a pain. We want to assemble
 * for SCRATCH, store in FLASH and be associated with BANKx
@@ -15,6 +16,7 @@
 
     def asmscrup
     def asmscrdn
+    def asmvdpcp
     def asmscrend
 
 * helper for scroll_up
@@ -47,6 +49,18 @@ lp1
     ai r1,-64
     c r1,r3         * complete copy
     jhe asmscrdn
+    b *r11
+
+* helper for VDP copy (sprites)
+* VDP Address set by caller
+* r1 = 0x8c00 (VDPWD)
+* r2 = source addres
+* R3 = count (must be even)
+asmvdpcp
+    movb *r2+,*r1
+    movb *r2+,*r1
+    dect r3
+    jne asmvdpcp
     b *r11
 
 * end marker used by copy

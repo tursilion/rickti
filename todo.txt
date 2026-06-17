@@ -1,6 +1,9 @@
-A lot of the game is working, but a lot of stuff still is not. Was able to play through a lot of egypt.
+Game is mostly working
+- write loader program
+- attempt to compress 9918A and F18A versions. If not, loader can maybe get creative (is there 24k free? ;) )
 - some enemies appear stuck inside walls
 - also check TODOs
+- play through both versions start to finish
 
 And stuff I deliberately need to deal with:
 - color sprites?

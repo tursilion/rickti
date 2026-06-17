@@ -22,10 +22,12 @@
 #include "draw.h"
 #include "maps.h"
 #include "ents.h"
+#include <vdp.h>
 
 static U16 period = 0;
 static void (*myasmscrup)(void*,void*,void*) = NULL;
 static void (*myasmscrdn)(void*,void*,void*) = NULL;
+static void (*myasmvdpcp)(U8*, const void*, U16) = NULL;
 
 /* load the asm to scratchpad */
 void scroll_init(void)
@@ -35,6 +37,7 @@ void scroll_init(void)
     memcpy(pDest, asmscrup, (U8*)&asmscrend-(U8*)&asmscrup);
     myasmscrup = (void(*)(void*,void*,void*))0x8340;
     myasmscrdn = (void(*)(void*,void*,void*))0x834A;
+    myasmvdpcp = (void(*)(U8*, const void*, U16))0x8364;
 #endif
 }
 
@@ -180,6 +183,12 @@ U16 scroll_down(void)
   }
 
   return SCROLL_RUNNING;
+}
+
+/* generic fast replacement for vdpmemcpy */
+void vdpmemcpy2(U16 dest, const U8* src, U16 cnt) {
+    VDP_SET_ADDRESS_WRITE(dest);
+    myasmvdpcp((U8*)0x8c00, src, cnt);
 }
 
 /* eof */

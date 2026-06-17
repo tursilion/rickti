@@ -41,6 +41,7 @@
 #include "e_sbonus.h"
 #include "tiles.h"
 #include "fb.h"
+#include "scroller.h"
 
 #include <vdp.h>
 
@@ -285,7 +286,7 @@ void maps_paint(void)
 	for (i = 1; i < 24; i++) /* 23 rows, cause we skip the status row 0 */
 	{
 		f = fb_at(0, i * 8);   // gets VDP offset into gImage
-        vdpmemcpy(gImage+f, map_map[i+8], 32);
+        vdpmemcpy2(gImage+f, map_map[i+8], 32);
 	}
 
     VDP_INT_ENABLE;
