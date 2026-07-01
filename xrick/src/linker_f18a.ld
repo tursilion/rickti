@@ -158,7 +158,7 @@ SECTIONS {
 
         FILL(0xFF);
         . = . + 6144;
-        BYTE(0xFF);
+        tigrom.o(.text .rodata)
    
         PROVIDE(ebank5a = .);
     } > CART5 AT> FLASH

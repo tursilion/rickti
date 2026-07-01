@@ -120,6 +120,9 @@
     <ClInclude Include="vgmcomp2\sound.h">
       <Filter>vgmcomp2_for_classic99</Filter>
     </ClInclude>
+    <ClInclude Include="include\tigrom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\control.c">
@@ -371,6 +374,9 @@
     <ClCompile Include="vgmcomp2\sound.cpp">
       <Filter>vgmcomp2_for_classic99</Filter>
     </ClCompile>
+    <ClCompile Include="src\tigrom.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xrick.rc">
@@ -406,5 +412,6 @@
     <Text Include="vgmcomp2\readme.txt">
       <Filter>vgmcomp2_for_classic99</Filter>
     </Text>
+    <Text Include="..\todo.txt" />
   </ItemGroup>
 </Project>

@@ -2,19 +2,10 @@ Game is mostly working
 - write loader program
 - attempt to compress 9918A and F18A versions. If not, loader can maybe get creative (is there 24k free? ;) )
 - some enemies appear stuck inside walls
-- also check TODOs
-- play through both versions start to finish
-
-And stuff I deliberately need to deal with:
-- color sprites?
-- is there enough memory left in scratchpad to move the sprite copy loop? That would speed up a ton. Or maybe just a general purpose copy loop instead of the two custom ones?
-- make cheat keys only work when holding fire
 
 And stretch goals:
 - gram save for ubergrom support (for high scores)
-- can we nudge the bat up a few pixels so it hangs in the right place? Maybe just when displaying the upside down sprite?
 
-    
 The trick is finding compiler bugs when I didn't write the code. Hand optimization to my style may help.
 
 ---

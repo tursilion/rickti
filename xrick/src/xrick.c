@@ -18,6 +18,7 @@
 #include "fb.h"
 #include "sprites.h"
 #include "scroller.h"
+#include "tigrom.h"
 
 #include <vdp.h>
 
@@ -145,6 +146,11 @@ sys_init(int argc, char** argv)
 
     // get a blank screen up by initializing all three char 0 to blank and then writing all zeros to the SIT
     fb_clear();
+
+    // load high scores if we have GRAM
+    SWITCH_IN_BANK5;
+    loadgrom();
+    SWITCH_IN_BANK0;
 
     // load scroll assembly to scratchpad
     scroll_init();

@@ -36,6 +36,7 @@
 #include "tiles.h"
 #include "draw.h"
 #include "pics.h"
+#include "tigrom.h"
 
 #ifdef F18A
 #define BIN2INC_HEADER_ONLY
@@ -654,6 +655,9 @@ static void game_cycle(void) {
                     case SCREEN_RUNNING:
                         return;
                     case SCREEN_DONE:
+                        SWITCH_IN_BANK5;
+                        savegrom();
+                        SWITCH_IN_BANK(nOldBank);
                         game_state = MAIN_INTRO;
                         return;
                     case SCREEN_EXIT:

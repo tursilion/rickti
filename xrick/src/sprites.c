@@ -124,6 +124,8 @@ void sprites_paint(U16 spriteNumber, U16 spriteIndex, U16 x, U16 y, U16 load_pat
     unsigned char pal = 4+(spritePage*2);
     // Palettes are indexed in sets of 4 colors, and we want color 16 as the first, so that's palette 4
     if (pal > 10) pal = 8;   // deliberate remap to page 2, not clipping (4,6,8,10,8)
+    // manual fix for the bat appearing too low
+    if (spriteNumber == 100) y-=6;
 #endif
 
     // we just have to load the four sprites into the sprite table, and maybe also the pattern

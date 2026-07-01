@@ -41,7 +41,7 @@ OBJECT_LIST = crt0.o vdpint.o control.o dat_ents.o dat_ents2.o dat_maps1.o dat_m
     draw.o e_bomb.o e_bonus.o e_box.o e_bullet.o e_rick.o e_sbonus.o e_them.o ents.o env.o fb.o \
     game.o img.o maps.o scr_gameover.o scr_getname.o scr_imain.o scr_imap.o scr_pause.o soundbank.o \
     scroller.o sounds.o sprites.o sysarg.o sysevt.o syskbd.o system.o sysvid.o tiles.o \
-    util.o xrick.o scratchpad.o CPlayerCommonHandEdit.o CPlayerTIHandEdit.o CPlayerTIHandlers.o
+    util.o xrick.o scratchpad.o CPlayerCommonHandEdit.o CPlayerTIHandEdit.o CPlayerTIHandlers.o tigrom.o
 
 # the tilemap and title page use the same source files for F18A and 9918A mode - probably shouldn't but they do ;)
 OBJECT_LIST_9918A = dat_spritesTI0.o dat_spritesTI1.o dat_spritesTI2.o dat_spritesTI3.o dat_spritesTI4.o \

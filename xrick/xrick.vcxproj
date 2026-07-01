@@ -164,6 +164,7 @@
     <ClInclude Include="include\syskbd.h" />
     <ClInclude Include="include\ricksystem.h" />
     <ClInclude Include="include\sysvid.h" />
+    <ClInclude Include="include\tigrom.h" />
     <ClInclude Include="include\tiles.h" />
     <ClInclude Include="include\util.h" />
     <ClInclude Include="resource.h" />
@@ -247,6 +248,7 @@
     <ClCompile Include="src\syskbd.c" />
     <ClCompile Include="src\system.c" />
     <ClCompile Include="src\sysvid.c" />
+    <ClCompile Include="src\tigrom.c" />
     <ClCompile Include="src\tiles.c" />
     <ClCompile Include="src\util.c" />
     <ClCompile Include="src\xrick.c" />
@@ -274,6 +276,7 @@
     <None Include="src\vdpint.assembly" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\todo.txt" />
     <Text Include="vgmcomp2\readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

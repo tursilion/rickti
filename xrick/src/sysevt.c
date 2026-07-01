@@ -49,6 +49,12 @@ static int processEvent()
     // assume nothing set
     control_status = 0;
 
+    // and check joystick fire early for the sake of cheats
+#ifdef ENABLE_JOYSTICK
+    kscanfast(1);
+    if (KSCAN_KEY == JOY_FIRE) SETBIT(control_status, CONTROL_FIRE);    // just one check, no need to cache
+#endif
+
     // check important keys - only setting control_last for exit, ignoring keybd_end and xtra
     if (key != 0xff) {
         U16 waitRelease = 0;
@@ -62,9 +68,12 @@ static int processEvent()
 #ifdef ENABLE_SOUND
         else if (key == '4') { sounds_toggleMute(); ret = 1; }
 #endif
-		else if (key == '7') { game_toggleCheat(1); ret = 1; }
-		else if (key == '8') { game_toggleCheat(2); ret = 1; }
-		else if (key == '9') { game_toggleCheat(3); ret = 1; }
+
+        if (control_status&CONTROL_FIRE) { 
+		    if (key == '7') { game_toggleCheat(1); ret = 1; }       // trainer
+    		else if (key == '8') { game_toggleCheat(2); ret = 1; }  // invincible
+	    	else if (key == '9') { game_toggleCheat(3); ret = 1; }  // highlight
+        }
 
         // nothing else has set ret yet, so use it here for key release
         if (ret) {
@@ -90,9 +99,6 @@ static int processEvent()
     key = KSCAN_JOYY;
     if (key == JOY_UP) SETBIT(control_status, CONTROL_UP);
     if (key == JOY_DOWN) SETBIT(control_status, CONTROL_DOWN);
-
-    kscanfast(1);
-    if (KSCAN_KEY == JOY_FIRE) SETBIT(control_status, CONTROL_FIRE);    // just one check, no need to cache
 #endif
 
     if (control_status != 0) ret = 1;

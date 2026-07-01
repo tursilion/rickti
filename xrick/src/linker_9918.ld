@@ -143,6 +143,7 @@ SECTIONS {
         /* must start at beginning of bank and be sequential after 1 */
         dat_spritesTI2.o(.text .rodata)
         /* --NOTHING BUT THE SPRITES BEFORE THIS-- */
+        tigrom.o(.text .rodata)
         PROVIDE(ebank5a = .);
     } > CART5 AT> FLASH
 
