@@ -269,6 +269,8 @@
     <None Include="src\CPlayerTIHandEdit.assembly" />
     <None Include="src\CPlayerTIHandlers.assembly" />
     <None Include="src\crt0_bankcart.assembly" />
+    <None Include="src\crt0_bankcart_minimal.assembly" />
+    <None Include="src\crt0_rickcart.assembly" />
     <None Include="src\linker_9918.ld" />
     <None Include="src\linker_f18a.ld" />
     <None Include="src\Makefile" />

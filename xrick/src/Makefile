@@ -78,9 +78,10 @@ buildf18a: $(OBJECT_LIST) $(OBJECT_LIST_F18A)
 clean:
 	-rm -rf base f18a
 
-# libti99 crt0 copied into folder
-crt0.o: ../crt0_bankcart.assembly
-	$(GAS) $(AFLAGS) ../crt0_bankcart.assembly -o crt0.o
+# libti99 crt0 copied into folder - this is just a basic init stub
+# the real init is done in crt0_rickcart.assembly
+crt0.o: ../crt0_bankcart_minimal.assembly
+	$(GAS) $(AFLAGS) ../crt0_bankcart_minimal.assembly -o crt0.o
 
 # other assembly files
 %.o: ../%.assembly
@@ -91,3 +92,4 @@ crt0.o: ../crt0_bankcart.assembly
 	$(CC) -c $< $(CFLAGS) $(INCPATH) -o $@
 %.o: ../../../ti/f18a/%.c
 	$(CC) -c $< $(CFLAGS) $(INCPATH) -o $@
+

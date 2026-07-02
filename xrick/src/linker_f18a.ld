@@ -126,11 +126,12 @@ SECTIONS {
         /* 9918A data */
         /* dat_spritesTI0.o(.text .rodata) - exactly 6k */
         /* --NOTHING BUT THE SPRITES BEFORE THIS-- */
+        /*scr_getname.o(.text .rodata)*/
         
         FILL(0xFF);
-        . = . + 6144;  /* size of sprite data */
-        
-        scr_getname.o(.text .rodata)
+        . = . + 7479;  /* size of sprite data */
+        BYTE(0xFF);
+
         PROVIDE(ebank3a = .);
     } > CART3 AT> FLASH
 
@@ -145,7 +146,7 @@ SECTIONS {
         /* sysevt.o(.text .rodata) */
 
         FILL(0xFF);
-        . = . + 8146;
+        . = . + 8083;
         BYTE(0xFF);
         
         PROVIDE(ebank4a = .);
@@ -169,7 +170,7 @@ SECTIONS {
         /*dat_spritesTI3.o(.text .rodata)*/
 
         FILL(0xFF);
-        . = . + 6144;
+        . = . + 6143;
         BYTE(0xFF);
 
         PROVIDE(ebank6a = .);
@@ -195,7 +196,7 @@ SECTIONS {
         /*dat_tilespTI.o(.text .rodata)*/
 
         FILL(0xFF);
-        . = . + 6144;
+        . = . + 6143;
         BYTE(0xFF);
 
         PROVIDE(ebank8a = .);
@@ -207,7 +208,7 @@ SECTIONS {
         /*dat_tilescTI.o(.text .rodata)*/
 
         FILL(0xFF);
-        . = . + 6144;
+        . = . + 6143;
         BYTE(0xFF);
 
         PROVIDE(ebank9a = .);
@@ -216,12 +217,10 @@ SECTIONS {
     bank10 :
     {
         /* we can't reuse the title or tile memory, but code is safe */
-
-        scr_gameover.o(.text .rodata)
-        
+        /*scr_gameover.o(.text .rodata)*/
         /*dat_picspTI.o(.text .rodata)*/
         FILL(0xFF);
-        . = . + 6912;   /* note larger size */
+        . = . + 7202;   /* note larger size for pic */
         BYTE(0xFF);
         
         PROVIDE(ebank10a = .);
@@ -233,7 +232,7 @@ SECTIONS {
         /*dat_picscTI.o(.text .rodata)*/
 
         FILL(0xFF);
-        . = . + 6912;   /* note larger size */
+        . = . + 6911;   /* note larger size */
         BYTE(0xFF);
         
         PROVIDE(ebank11a = .);
@@ -268,12 +267,11 @@ SECTIONS {
     bank15 :
     {
         /* safe to reuse maps, but not imap, so just declare the bank full */
-        
         dat_maps4.o(.text .rodata)
 
         /*scr_imap.o(.text .rodata)*/
         FILL(0xFF);
-        . = . + 2412;
+        . = . + 2371;
         BYTE(0xFF);
         
         PROVIDE(ebank15a = .);
@@ -286,7 +284,8 @@ SECTIONS {
     {
         sprf00.o(.text .rodata)
         scr_imain.o(.text .rodata)
-        
+        scr_gameover.o(.text .rodata)
+
         PROVIDE(ebank16a = .);
     } > CART16 AT> FLASH
 
@@ -357,6 +356,7 @@ SECTIONS {
         sprf41.o(.text .rodata)
         tilesf18_splitcol2.o(.text .rodata)
         tilesf18_splitpat2.o(.text .rodata)
+        scr_getname.o(.text .rodata)        
 
         PROVIDE(ebank25a = .);
     } > CART25 AT> FLASH

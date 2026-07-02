@@ -1,11 +1,9 @@
 Game is mostly working
+- game over/high score screen is corrupt if you win the game (F18a only? Seems to be stuck in full bitmap and wants half)
 - write loader program
-- attempt to compress 9918A and F18A versions. If not, loader can maybe get creative (is there 24k free? ;) )
+    - loader is not loading pages 3-15 of the base game (watch for F18A code in those pages)
+    
 - some enemies appear stuck inside walls
-
-And stretch goals:
-- gram save for ubergrom support (for high scores)
-
 The trick is finding compiler bugs when I didn't write the code. Hand optimization to my style may help.
 
 ---

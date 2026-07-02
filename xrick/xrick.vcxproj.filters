@@ -407,6 +407,8 @@
     </None>
     <None Include="src\linker_9918.ld" />
     <None Include="src\linker_f18a.ld" />
+    <None Include="src\crt0_rickcart.assembly" />
+    <None Include="src\crt0_bankcart_minimal.assembly" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="vgmcomp2\readme.txt">

@@ -41,7 +41,7 @@
 #define ENABLE_CHEATS
 
 /* debug support (only supported in Classic99 build */
-#define DEBUG /* see include/debug.h */
+#undef DEBUG /* see include/debug.h */
 
 /* bank switching */
 // bank switching - nOldBank is used to let a function restore the original bank

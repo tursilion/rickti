@@ -1,0 +1,266 @@
+* Bank cart header by Tursi
+* based on original CRT0 by Insomniac for GCC ELF
+* Designed for up to 24k of fixed space loaded to >A000
+* this one checks for F18A and loads a different binary depending on whether
+* it was detected. Its designed to allow the ROM to be split up into spare
+* cart space, so we load by table - however the ROMs contain the full header
+* and even boot code (slightly wasteful) just for ease of building.
+
+ def _start
+ def _init_data
+ 
+* cartridge header here - we dont expect a normal startup entry
+* We can reserve 40 bytes for the header on every page - that must take us to the bank switch!
+* This count is enforced in the header below, the copy loop down below, and the linker file,
+* and elf2bankedcart.
+    aorg >6000
+    
+* because many bytes in the standard header are unused, and location is well known,
+* we store our init data there. That way the CRT length can change without needing
+* to change the elf2cart tool
+* NOTE: in this particular boot code, the ELF data is not filled in. We copy these values
+* from the selected programs header instead.
+    data >aa01,>0100      * header, version, [program count, unused] - [] used as data start in RAM
+    data >0000,_prog       * [power up list], program list - [] used as data address in ROM
+    data >0000,>0000      * [DSR list], [subprogram list] - [] used as data size, [] then is bss start
+    data >0000,>0000      * not standard header - bss length, fixed program start
+
+* program list
+_prog
+    data >0000             * next program
+    data _start             * entry point - 20 bytes to this point
+    byte 14                 * length of following name
+    text 'RICK DANGEROUSx'
+    even
+
+* 36 bytes used till this point (note title length!)
+* Pad the above if necessary to get to 36 bytes so the cartridge headers work
+* 40 bytes noted above includes the CLR opcode to set the start back.
+
+* Entry point for C runtime initilization code
+*
+* This will set initial values for data memory and otherwise create
+* the conditions needed for the C environment
+_start
+  clr @>6000          * force bank switch to the first page - must end at exactly 46 bytes!
+
+* Disable interrupts
+*
+* This will disable console reset via keyboard, music playback,
+* sprite automotion, etc. But will make the environment much simpler
+* to work in. Users can re-enable interrupts later if they wish.
+  limi 0
+
+* Set initial workspace
+*
+* The registers will be located at the start of scratchpad memory 
+  lwpi >8300
+
+* check for RAM before we start - if there is RAM at >a000 we assume 32k compatible layout
+  clr @>a000
+  mov @>a000,r0
+  jne failboot
+  seto @>a000
+  mov @>a000,r0
+  inc r0
+  jne failboot
+
+* check for F18A so we know which one to boot
+  li r0,>8c02
+  li r1,f18unlock
+  li r2,6
+fun
+  movb *r1+,*r0
+  dec r2
+  jne fun
+
+  dect r0
+  li r1,f18test
+  li r2,8
+ftst
+  movb *r1+,*r0
+  dec r2
+  jne ftst
+
+  inct r0
+  li r1,f18run
+  li r2,4
+frun
+  movb *r1+,*r0
+  dec r2
+  jne frun
+
+  li r1,>0010
+  movb r1,*r0
+  swpb r1
+  movb r1,*r0
+  clr r2
+  movb @>8800,r2
+  jeq nof18
+  jmp yesf18
+
+* Tell the user we need 32k - assume a character set is loaded
+* and the boot environment is set
+failboot
+  li r0,>0040       * going to write to VDP
+  movb r0,@>8c02
+  swpb r0
+  movb r0,@>8c02
+
+  li r0,>2000       * space
+  li r1,320         * 10 rows of 32
+scrnclr
+  movb r0,@>8c00
+  dec r1
+  jne scrnclr
+
+  li r1,warn32k     * emit the message
+txtprint
+  movb *r1+,@>8c00  
+  jne txtprint      * 0 terminated (0 is also blank)
+
+  li r1,448-12      * the rest of the screen (if we go too far well get sprite corruption)
+scrnclr2
+  movb r0,@>8c00
+  dec r1
+  jne scrnclr2
+
+  lwpi >83e0        * GPLWS
+waitky
+  li r0,>0500
+  movb r0,@>8374    * keymode 5
+  bl @>000e         * call SCAN
+  clr r0
+  movb @>8375,r0    * key code
+  ci r0,>ff00       * no key
+  jeq waitky
+
+  blwp @>0000       * reboot
+
+warn32k
+  text '32K REQUIRED'
+  data 0
+
+f18unlock
+  data >1cb9,>1cb9,>0050
+f18test
+  data >0000,>0720,>1000,>0340
+f18run
+  data >10b6,>02b7
+
+***************
+* Enter here for no F18a
+nof18
+  li r5,CODE9918
+  jmp initall
+
+***************
+* Enter here for yes F18a
+yesf18
+  li r5,CODEF18A
+
+***************
+* main copy code - R5 points to our code table
+* // First block must be large enough for all initialized data //
+* // FIRST BLOCK MUST ALSO BE HERE IN PAGE 0 //
+initall
+
+* Initialize data segment to known values
+  mov *r5,r0
+  inct r0              * point into standard header as above
+  mov  *r0+, r1        * R1 = Start of data section in RAM
+  mov  *r0+, r2        * R2 = Location of initial data
+  inct r0              * skip program list
+  mov  *r0+, r3        * R3 = Size of data section
+  jeq  data_copy_end   * If size is 0, skip the loop
+  a *r5,r2             * fix address
+  ai r2,->6000
+  
+* Copy loop for data initialization
+data_copy_top
+  mov  *r2+, *r1+      
+  dect r3
+  jgt  data_copy_top
+data_copy_end
+
+* Initialize BSS segment to zeroes
+  mov  *r0+, r1        * R1 = Start of BSS section
+  mov  *r0, r2         * R2 = Size of BSS section
+  jeq  bss_clear_end   * If size is 0, skip the loop
+
+* Clearing loop for BSS initialization
+bss_clear_top
+  clr  *r1+
+  dect r2
+  jgt  bss_clear_top
+bss_clear_end
+
+* now copy the rest of the fixed data into RAM
+* we are lazy here and assume a load address of >A000
+* The rest of the data comes from the table pointed to by R5
+* These addresses do not require fixup
+* Anyway... to do this right we are going to need to work from scratchpad 
+* - copy into >8320
+
+  li r0,>8320
+  li r1,cpcode
+cpsclp
+  mov *r1+,*r0+
+  ci r1,cpend
+  jne cpsclp
+
+* destination in RAM
+  li r0,>a000  
+
+* table address for copies
+  mov r5,r4
+  inct r4
+
+* do the copy - we will return
+  bl @>8320
+
+* now jump into the dedicated startup code, 40 bytes after header
+  mov *r5,r0
+  ai r0,40
+  b *r0
+
+cpcode
+* copy table is in R4 (in page 0)
+* destination address is in r0
+  clr @>6000        * page 0
+  mov *r4+,r3       * get page
+  jeq cpdone
+  mov *r4+,r1       * src address
+  mov *r4+,r2       * count of bytes (must be even)
+  clr *r3           * set page
+cplp
+  mov *r1+,*r0+     * first copy loop
+  dect r2
+  jne cplp
+  jmp cpcode
+
+cpdone
+  clr @>6000        * restore page 0
+  b *r11            * back to caller
+cpend
+
+******************
+* the actual copy data tables
+* The first block including all initialized data must be in the first block
+* (this limits the available size a bit, but its okay here)
+* I think Id prefer not to do it this way again...
+* So the first entry is the root address, and must contain all the startup data
+* After that a list of page,address,size - copied to >A000 and up, page of 0 ends it
+* these are pretty much hand calculated starting with the program address in the header
+* at >600E, and hand fit into the available ROM space.
+
+CODEF18A
+    data >6440,>6000,>6680,>1980,>6002,>6028,>1fd8
+    data >6004,>6028,>1fd8,0
+    
+CODE9918
+    data >6200,>603e,>7028,>0fd8,>603c,>7480,>0b80
+    data >603a,>7828,>07d8,>6012,>7828,>07d8,>6010
+    data >7828,>07d8,>600c,>7828,>07d8,>601c,>78c2
+    data >073e,>601e,>796c,>0694,>600a,>79e0,>0620
+    data >6018,>7a6c,>0594,0

@@ -1,0 +1,87 @@
+* Bank cart header by Tursi
+* based on original CRT0 by Insomniac for GCC ELF
+* this is a minimal header designed to be viewed by a separate loader
+* the other loader gets the code into 24K RAM and loads bss and data,
+* all we need to do is run our startup and jump to it (needed because
+* the address of vdp_init and main arent guaranteed)
+
+ def _start
+ def _init_data
+ 
+* cartridge header here - we dont expect a normal startup entry
+* We can reserve 40 bytes for the header on every page - that must take us to the bank switch!
+* This count is enforced in the header below, the copy loop down below, and the linker file,
+* and elf2bankedcart.
+    aorg >6000
+    
+* because many bytes in the standard header are unused, and location is well known,
+* we store our init data there. That way the CRT length can change without needing
+* to change the elf2cart tool
+    data 0xaa01,0x0100      * header, version, [program count, unused] - [] used as data start in RAM
+    data 0x0000,_prog       * [power up list], program list - [] used as data address in ROM
+    data 0x0000,0x0000      * [DSR list], [subprogram list] - [] used as data size, [] then is bss start
+    data 0x0000,0x0000      * not standard header - bss length, fixed program start
+
+* program list
+_prog:
+    data 0x0000             * next program
+    data _start             * entry point - 20 bytes to this point
+    byte 14                 * length of following name
+    text 'RICK DANGEROUSx'
+    even
+
+* 36 bytes used till this point (note title length!)
+* Pad the above if necessary to get to 36 bytes so the cartridge headers work
+* 40 bytes noted above includes the CLR opcode to set the start back.
+
+* Entry point for C runtime initilization code
+*
+* This will set initial values for data memory and otherwise create
+* the conditions needed for the C environment
+_start:
+  clr @>6000          * force bank switch to the first page - must end at exactly 46 bytes!
+
+*********************************
+* Note: we enter here, AFTER the 40 bytes and AFTER the page switch!!
+* Relocatable code only - we could be at any address
+*********************************
+
+* Disable interrupts
+*
+* This will disable console reset via keyboard, music playback,
+* sprite automotion, etc. But will make the environment much simpler
+* to work in. Users can re-enable interrupts later if they wish.
+  limi 0
+
+* Set initial workspace
+*
+* The registers will be located at the start of scratchpad memory 
+  lwpi 0x8300
+
+* Create the stack
+* reserved stack space (not cleared on restart):
+* 3FF6 - 
+* 3FF8 - 
+* 3FF9 - 
+* 3FFA - 
+* 3FFC - 
+* 3FFE - 
+  li sp, 0x3ff6
+
+* prevent screen blank by setting it to an odd calue
+  li r0,1
+  soc r0,@>83d6
+
+* Clear flags and user interrupt
+  li r1,>0100
+  mov r1,@>83fc
+  clr @>83c4
+
+* call vdpinit to set critical variables
+  bl @vdpinit  
+
+* Start running C code
+  bl @main
+
+* reset the console on return
+  blwp @0x0000

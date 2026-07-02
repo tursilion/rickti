@@ -180,7 +180,9 @@ void draw_hof_title()
     unsigned int nOldBank = nBank;
 
     // we need the main tiles loaded to see text!
+#ifdef F18A
     sysarg_half_bitmap = 0;
+#endif
     tiles_setBank(0);
 
 	/* hall of fame title */
@@ -627,7 +629,11 @@ static void game_cycle(void) {
 
             case GAMEOVER:
                 nOldBank = nBank;
+#ifdef F18A
+                SWITCH_IN_BANK16;
+#else
                 SWITCH_IN_BANK10;
+#endif
                 ret = screen_gameover();
                 SWITCH_IN_BANK(nOldBank);
 
@@ -646,7 +652,11 @@ static void game_cycle(void) {
 
             case GETNAME:
                 nOldBank = nBank;
+#ifdef F18A
+                SWITCH_IN_BANK25;
+#else
                 SWITCH_IN_BANK3;
+#endif
                 ret = screen_getname();
                 SWITCH_IN_BANK(nOldBank);
 

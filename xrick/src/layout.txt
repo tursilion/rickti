@@ -1,0 +1,174 @@
+rickcart is being done by hand with xas99
+
+> python /mnt/d/work/ti/xdt99/xas99.py -R -b crt0_rickcart.assembly
+
+gives us a raw binary crt0_rickcart.bin, we'll pad to 512 bytes.
+
+Then we also have the base rick8.bin and F18A rick8.bin.
+
+Raw build map (ignore the first 3 pages):
+
+##  BANK  ROM     NAME         LOAD  FREE
+--  ----  ------  -----------  ----  -----
+00  6000  000000  loader       6000      0
+01  6002  002000  fixed        A000      0
+02  6004  004000               0000   1780
+
+03  6006  006000  bank3        6028    672
+04  6008  008000  bank4        6028     68
+05  600A  00A000  bank5        6028   1568
+06  600C  00C000  bank6        6028   2008
+07  600E  00E000  bank7        6028    760
+08  6010  010000  bank8        6028   2008
+09  6012  012000  bank9        6028   2008
+10  6014  014000  bank10       6028    949
+11  6016  016000  bank11       6028   1240
+12  6018  018000  bank12       6028   1428
+13  601A  01A000  bank13       6028      0
+14  601C  01C000  bank14       6028   1854
+15  601E  01E000  bank15       6028   1684
+16  6020  020000  bank16       6028    109
+17  6022  022000  bank17       6028    440
+18  6024  024000  bank18       6028    472
+19  6026  026000  bank19       6028    472
+20  6028  028000  bank20       6028   1336
+21  602A  02A000  bank21       6028   1240
+22  602C  02C000  bank22       6028   1240
+23  602E  02E000  bank23       6028    124
+24  6030  030000  bank24       6028    472
+25  6032  032000  bank25       6028     16
+26  6034  034000  bank26       6028    472
+27  6036  036000  bank27       6028    472
+28  6038  038000  bank28       6028    472
+29  603A  03A000  bank29       6028   2008
+30  603C  03C000  bank30       6028   2946
+31  603E  03E000  bank31       6028   4056
+
+----
+
+    data >aa01,>0100      * header, version, [program count, unused] - [] used as data start in RAM
+    data >0000,_prog       * [power up list], program list - [] used as data address in ROM
+    data >0000,>0000      * [DSR list], [subprogram list] - [] used as data size, [] then is bss start
+    data >0000,>0000      * not standard header - bss length, fixed program start
+
+----
+
+New layout sits on top of this - replacing the first three pages, and the rest is patched in.
+For the first block header - take till the start address (available at >000E). After that is all copy data.
+
+Bank 0 - 6000
+------------------------
+0000-01FF  crt0_rickcart     (0x0000, 0x0200)
+0200-043F  base boot header  (0x0000, 0x0240)   0
+0440-067F  f18a boot header  (0x0000, 0x0240)   0
+0680-1FFF  f18a program code (0x0236, 0x1980)   1
+
+Bank 1 - 6002
+------------------------
+2028-3FFF  f18a program code (0x1BB6, 0x1FD8)   2
+
+Bank 2 - 6004
+------------------------
+4028-5fff  f18a program code (0x3B8E, 0x1fd8)   3
+
+Bank 5 - 600A
+------------------------
+0b9e0-0bfff base program code (0x4ac0, 0x0620)  9
+
+Bank 6 - 600C
+------------------------
+0D828-0DFFF base program code (0x3516, 0x07d8)  6
+
+Bank 8 - 6010
+------------------------
+11828-11FFF base program code (0x2d3e, 0x07d8)  5
+
+Bank 9 - 6012
+------------------------
+13828-13FFF base program code (0x2566, 0x07d8)  4
+
+Bank 12 - 6018
+------------------------
+19a6c-19fff base program code (0x50e0, 0x0594)  10
+
+Bank 14 - 601C
+------------------------
+1d8c2-1dfff base program code (0x3cee, 0x073e)  7
+
+Bank 15 - 601E
+------------------------
+1f96c-1ffff base program code (0x442c, 0x0694)  8
+
+Bank 29 - 603A
+------------------------
+3B828-3BFFF base program code (0x1D8E, 0x07D8)  3
+
+Bank 30 - 603C
+------------------------
+3D480-3EFFF base program code (0x120E, 0x0b80)  2
+
+Bank 31 - 603E
+------------------------
+3F028-3FFFF  base program code (0x0236, 0x0FD8) 1
+
+===============
+== copy tables
+===============
+
+CODEF18A
+    data >6440,>6000,>6680,>1980,>6002,>6028,>1fd8
+    data >6004,>6028,>1fd8,0
+    
+CODE9918
+    data >6200,>603e,>7028,>0fd8,>603c,>7480,>0b80
+    data >603a,>7828,>07d8,>6012,>7828,>07d8,>6010
+    data >7828,>07d8,>600c,>7828,>07d8,>601c,>78c2
+    data >073e,>601e,>796c,>0694,>600a,>79e0,>0620
+    data >6018,>7a6c,>0594,0
+
+
+===============
+== run from the src folder
+== note there are a couple extra patchbin2bin calls to jump around
+== cartridge headers, which we don't want in the binary data
+===============
+
+python /mnt/d/work/ti/xdt99/xas99.py -R -b crt0_rickcart.assembly
+d:\work\setbinsize\release\setbinsize.exe crt0_rickcart.bin 512
+copy /y f18a\rick8.bin rickd8.bin
+@rem init code
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0 crt0_rickcart.bin 0 512
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x200 base\rick8.bin 0 0x240
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x440 f18a\rick8.bin 0 0x240
+
+@rem f18a game code
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x680 f18a\rick8.bin 0x236 0x1980
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x2028 f18a\rick8.bin 0x1bb6 0x44a -
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x2472 f18a\rick8.bin 0x2028 0x1b8e -
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x4028 f18a\rick8.bin 0x3bb6 0x44a -
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x4472 f18a\rick8.bin 0x4028 0x1b8e -
+
+@rem base game code
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x3f028 base\rick8.bin 0x236 0xfd8     
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x3d480 base\rick8.bin 0x120e 0xb80
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x3b828 base\rick8.bin 0x1d8e 0x272 -
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x3BA9A base\rick8.bin 0x2028 0x566 -
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x13828 base\rick8.bin 0x258e 0x7d8    
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x11828 base\rick8.bin 0x2d66 0x7d8
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0xd828 base\rick8.bin 0x353e 0x7d8
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x1d8c2 base\rick8.bin 0x3d16 0x2ea -
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x1DBAC base\rick8.bin 0x4028 0x454 -
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x1f96c base\rick8.bin 0x447c 0x694
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0xb9e0 base\rick8.bin 0x4b10 0x620
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x19a6c base\rick8.bin 0x5130 0x594
+
+@rem base game rom code
+
+
+==================
+
+base - start copying from 6236 (plus whatever offset)
+
+RAM     ROM     Storage
+A000 <- 6236    603e/7028/0fd8
+Afd8 <- 720e    603c/7480/0b80
