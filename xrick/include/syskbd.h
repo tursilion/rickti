@@ -16,14 +16,15 @@
 
 #include "ricksystem.h"
 
+#ifdef ENABLE_KEYBOARD
 extern U16 syskbd_up;
 extern U16 syskbd_down;
 extern U16 syskbd_left;
 extern U16 syskbd_right;
-extern U16 syskbd_pause;
-extern U16 syskbd_end;
-extern U16 syskbd_xtra;
 extern U16 syskbd_fire;
+#endif
+
+extern U16 syskbd_pause;
 
 #endif /* _SYSKBD_H */
 

@@ -80,6 +80,7 @@ clean:
 
 # libti99 crt0 copied into folder - this is just a basic init stub
 # the real init is done in crt0_rickcart.assembly
+# to build standable, remove the _minimal (delete crt0.o to force rebuild)
 crt0.o: ../crt0_bankcart_minimal.assembly
 	$(GAS) $(AFLAGS) ../crt0_bankcart_minimal.assembly -o crt0.o
 

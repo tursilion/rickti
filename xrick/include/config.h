@@ -26,8 +26,13 @@
     #undef ENABLE_LOG
 #endif
 
-/* joystick support */
+/* joystick support - mandatory on TI */
 #define ENABLE_JOYSTICK
+
+/* keyboard support - because we need so many overlapping keys, we'd need a custom keyscan and layout
+to work on the TI. We will not implement this. (well, it's implemented, you
+ just can't overlap keys. To speed up a bit we'll disable it.) */
+#undef ENABLE_KEYBOARD
 
 #ifdef CLASSIC99
 // I don't have this working here...

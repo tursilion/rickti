@@ -63,12 +63,15 @@ static int processEvent()
 
     // check important keys - only setting control_last for exit, ignoring keybd_end and xtra
     if (key != 0xff) {
+#ifdef ENABLE_KEYBOARD
         if (key == syskbd_up) SETBIT(control_status, CONTROL_UP);
 		else if (key == syskbd_down) SETBIT(control_status, CONTROL_DOWN);
 		else if (key == syskbd_left) SETBIT(control_status, CONTROL_LEFT);
 		else if (key == syskbd_right) SETBIT(control_status, CONTROL_RIGHT);
-		else if (key == syskbd_pause) SETBIT(control_status, CONTROL_PAUSE);
 		else if (key == syskbd_fire) SETBIT(control_status, CONTROL_FIRE);
+        else
+#endif
+        if (key == syskbd_pause) SETBIT(control_status, CONTROL_PAUSE);
 #ifdef ENABLE_SOUND
         else if (key == '4') { sounds_toggleMute(); ret = 1; }
 #endif

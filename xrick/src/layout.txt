@@ -15,7 +15,7 @@ Raw build map (ignore the first 3 pages):
 02  6004  004000               0000   1780
 
 03  6006  006000  bank3        6028    672
-04  6008  008000  bank4        6028     68
+04  6008  008000  bank4        6028     68      132 - keyboard fix, more free on base, not used on F18A?
 05  600A  00A000  bank5        6028   1568
 06  600C  00C000  bank6        6028   2008
 07  600E  00E000  bank7        6028    760
@@ -27,14 +27,14 @@ Raw build map (ignore the first 3 pages):
 13  601A  01A000  bank13       6028      0
 14  601C  01C000  bank14       6028   1854
 15  601E  01E000  bank15       6028   1684
-16  6020  020000  bank16       6028    109
+16  6020  020000  bank16       6028    109  101     -imain fix, but f18a only, no manual patch, should be okay
 17  6022  022000  bank17       6028    440
 18  6024  024000  bank18       6028    472
 19  6026  026000  bank19       6028    472
 20  6028  028000  bank20       6028   1336
 21  602A  02A000  bank21       6028   1240
 22  602C  02C000  bank22       6028   1240
-23  602E  02E000  bank23       6028    124
+23  602E  02E000  bank23       6028    124  188     -keyboard removal, f18a only, no manual patch
 24  6030  030000  bank24       6028    472
 25  6032  032000  bank25       6028     16
 26  6034  034000  bank26       6028    472
@@ -131,11 +131,17 @@ CODE9918
 == run from the src folder
 == note there are a couple extra patchbin2bin calls to jump around
 == cartridge headers, which we don't want in the binary data
+== NOTE: these addresses assume program start at 0x6236 - don't change
+== the data section size or you will need to redo all this including the
+== header skips.
 ===============
 
 python /mnt/d/work/ti/xdt99/xas99.py -R -b crt0_rickcart.assembly
 d:\work\setbinsize\release\setbinsize.exe crt0_rickcart.bin 512
 copy /y f18a\rick8.bin rickd8.bin
+@rem base banks 0-15 (safe to fully copy - we will replace as needed)
+d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0 base\rick8.bin 0 0x20000
+
 @rem init code
 d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0 crt0_rickcart.bin 0 512
 d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x200 base\rick8.bin 0 0x240
@@ -161,8 +167,6 @@ d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x1DBAC base\rick8.bin 
 d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x1f96c base\rick8.bin 0x447c 0x694
 d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0xb9e0 base\rick8.bin 0x4b10 0x620
 d:\work\patchbin2bin\release\patchbin2bin.exe rickd8.bin 0x19a6c base\rick8.bin 0x5130 0x594
-
-@rem base game rom code
 
 
 ==================

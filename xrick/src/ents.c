@@ -278,8 +278,13 @@ ent_actvis(U16 frow, U16 lrow) {
 
         y = (map_marks[m].xy & 0x07) + (map_marks[m].row & 0xf8) - map_frow;
         y <<= 3;
-        if (!(ent_ents[e].flags & ENT_FLG_STOPRICK))
-            y += 3;
+        if (!(ent_ents[e].flags & ENT_FLG_STOPRICK)) {
+            y += 3;     // this hack causes some bricks to be misaligned because they don't have the tag
+        }               // (because they are a second brick and can't go in slot 0)
+                        // TODO: not sure how to identify those cases in order to correct it!
+                        // It also breaks the bat but I fixed that in the sprite render code. Can't do that
+                        // for bricks because if they HAVE this flag, they are already in the right place.
+                        // bricks are sprites 101 and 121 (after my remap, 101 and 85 original)
         ent_ents[e].y = y;
 
         ent_ents[e].xsave = ent_ents[e].x;
@@ -290,9 +295,9 @@ ent_actvis(U16 frow, U16 lrow) {
         ent_ents[e].w = ent_entdata[map_marks_ent[m]].w;
         ent_ents[e].h = ent_entdata[map_marks_ent[m]].h;
         ent_ents[e].sprbase = ent_entdata[map_marks_ent[m]].spr;
-        ent_ents[e].sprite = (U16)ent_entdata[map_marks_ent[m]].spr;
+        ent_ents[e].sprite = ent_entdata[map_marks_ent[m]].spr;
         ent_ents[e].step_no_i = ent_entdata[map_marks_ent[m]].sni;
-        ent_ents[e].trigsnd = (U16)ent_entdata[map_marks_ent[m]].snd;
+        ent_ents[e].trigsnd = ent_entdata[map_marks_ent[m]].snd;
         ent_ents[e].spriteIndex = 0xff;
         ent_ents[e].lastSpriteDrawn = 0xff;
 

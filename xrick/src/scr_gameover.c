@@ -19,6 +19,7 @@
 #include "sysvid.h"
 #include "sysarg.h"
 #include "sounds.h"
+#include "env.h"
 
 #include "draw.h"
 #include "control.h"
@@ -53,6 +54,7 @@ U16 screen_gameover(void)
     // (the tables can't move, so no need to change the global pointers)
     VDP_INT_DISABLE;
     set_fullbitmap();
+    tiles_setBank(0xff);    // force tile reload (only needed for game win)
     VDP_INT_ENABLE;
 #endif
 

@@ -21,12 +21,16 @@
  * for instance left on an AZERTY keyboard will be 'w' instead of 'z'.
  */
 
+// NOTE: even though we are not using these, I want the space allocated so
+// my build scripts don't need to recalculate all the addresses
 U16 syskbd_up = 'E';
 U16 syskbd_down = 'X';
 U16 syskbd_left = 'S';
 U16 syskbd_right = 'D';
-U16 syskbd_pause = 'P';
 U16 syskbd_fire = ' ';
+
+// This one we use
+U16 syskbd_pause = 'P';
 
 /* eof */
 
