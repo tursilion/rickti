@@ -118,7 +118,7 @@ cpsclp:
 * 3FFE - 
   li sp, 0x3ff6
 
-* prevent screen blank by setting it to an odd calue
+* prevent screen blank by setting it to an odd value
   li r0,1
   soc r0,@>83d6
 
