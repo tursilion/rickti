@@ -16,6 +16,9 @@ In game, '4' toggles audio, and 'P' toggles pause. Otherwise, use joystick 1 to 
 
 In case you are not familiar with Rick Dangerous - expect to die A LOT. This is a memorization game for the most part, and a lot of traps give little to no warning.
 
+A physical cartridge should be available from ArcadeShopper:
+https://www.arcadeshopper.com/wp/store/#!/TI-99-4A/c/5051340
+
 The original notes are below.
 
 # xrick
