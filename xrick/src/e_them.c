@@ -384,7 +384,9 @@ void e_them_t2_action2(U16 e) {
         (((ent_ents[e].x ^ ent_ents[e].y) & 0x04) ? 1 : 0);
 
       /* reached rick's level? */
-    if ((ent_ents[e].y & 0xfe) != (E_RICK_ENT.y & 0xfe)) {
+    /* 0x1fe not 0xfe: y reaches 0x140, comparing only the low byte made
+     * climbers below the screen think they were level with rick */
+    if ((ent_ents[e].y & 0x1fe) != (E_RICK_ENT.y & 0x1fe)) {
         goto ymove;
     }
 
@@ -478,7 +480,9 @@ climbing_not:
 
     /*sys_printf("e_them_t2 ymove nok or ...\n");*/
     /* can't go there, or ... */
-    ent_ents[e].y = (ent_ents[e].y & 0xf8) | 0x03;  /* align to ground */
+    /* align to ground -- must keep bit 8: y goes up to 0x140 and masking
+     * it off teleported enemies from the hidden bottom rows up 256px */
+    ent_ents[e].y = (ent_ents[e].y & 0xfff8) | 0x03;
     ent_ents[e].offsy = 0x0100;
     if (ent_ents[e].latency != 00) {
         SWITCH_IN_BANK(nOldBank);

@@ -279,12 +279,18 @@ ent_actvis(U16 frow, U16 lrow) {
         y = (map_marks[m].xy & 0x07) + (map_marks[m].row & 0xf8) - map_frow;
         y <<= 3;
         if (!(ent_ents[e].flags & ENT_FLG_STOPRICK)) {
-            y += 3;     // this hack causes some bricks to be misaligned because they don't have the tag
-        }               // (because they are a second brick and can't go in slot 0)
-                        // TODO: not sure how to identify those cases in order to correct it!
-                        // It also breaks the bat but I fixed that in the sprite render code. Can't do that
-                        // for bricks because if they HAVE this flag, they are already in the right place.
-                        // bricks are sprites 101 and 121 (after my remap, 101 and 85 original)
+            // moving bricks must stay tile-aligned like their slot-0 STOPRICK
+            // twins, but only one entity per screen gets slot 0, so a second
+            // brick arrives here without the flag. Bricks are type-3 entities
+            // whose sprite sequence starts with a brick sprite (0x65/0x55,
+            // i.e. 101 and 85 original / 121 after remap), so detect them by
+            // that and skip the 3px offset for them as well.
+            U16 spr1 = (map_marks_ent[m] >= 0x18) ?
+                ent_sprseq[ent_entdata[map_marks_ent[m]].spr] : 0;
+            if (spr1 != 0x65 && spr1 != 0x55) {
+                y += 3;
+            }
+        }
         ent_ents[e].y = y;
 
         ent_ents[e].xsave = ent_ents[e].x;

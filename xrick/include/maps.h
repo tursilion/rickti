@@ -30,7 +30,11 @@ extern U16 maps_clip(U16, U16, U16, U16);
 #define MAPS_VISHEIGHT_PX 0xc0
 #define MAPS_BOTHEIGHT_PX 0x40
 #define MAPS_TOPHEIGHT_TL 0x08
-#define MAPS_VISHEIGHT_TL 0x20
+#define MAPS_VISHEIGHT_TL 0x18  /* 0xc0 px = 0x18 rows; was 0x20, which made
+                                 * map_init activate marks up to 8 rows below
+                                 * the 0x28-row map_map window -- entities
+                                 * spawned at y > 0x140 and ran u_envtest past
+                                 * the end of map_map (garbage collision) */
 #define MAPS_BOTHEIGHT_TL 0x08
 
 /* position of the fb origin, expressed in map/px */
