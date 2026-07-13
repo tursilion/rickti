@@ -1,4 +1,4 @@
-20260706
+20260713
 
 This is a port of xrick to the TI-99/4A.
 
@@ -42,4 +42,3 @@ So far, it contains:
 * Ported from SDL to SDL2
 * With adjustments so it can build with [emscripten](https://emscripten.org/)
 
-This is all work-in-progress and will be updated.
