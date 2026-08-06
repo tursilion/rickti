@@ -44,8 +44,8 @@ OBJECT_LIST = crt0.o vdpint.o control.o dat_ents.o dat_ents2.o dat_maps1.o dat_m
     util.o xrick.o scratchpad.o CPlayerCommonHandEdit.o CPlayerTIHandEdit.o CPlayerTIHandlers.o tigrom.o
 
 # the tilemap and title page use the same source files for F18A and 9918A mode - probably shouldn't but they do ;)
-OBJECT_LIST_9918A = dat_spritesTI0.o dat_spritesTI1.o dat_spritesTI2.o dat_spritesTI3.o dat_spritesTI4.o \
-                    dat_picscTI.o dat_picspTI.o dat_tilescTI.o dat_tilespTI.o
+OBJECT_LIST_9918A = new_spr0.o dat_spritesTI1.o dat_spritesTI2.o dat_spritesTI3.o dat_spritesTI4.o \
+                    dat_picscTI.o dat_picspTI.o new_tile_col.o new_tile_pat.o
 OBJECT_LIST_F18A = sprf00.o sprf01.o sprf02.o sprf10.o sprf11.o sprf12.o sprf20.o sprf21.o sprf22.o sprf30.o sprf31.o sprf32.o \
                    sprf40.o sprf41.o sprf42.o splashf18_splitcol1.o splashf18_splitcol2.o splashf18_splitcol3.o splashf18_splitcol4.o \
                    splashf18_splitpat1.o splashf18_splitpat2.o splashf18_splitpat3.o splashf18_splitpat4.o \

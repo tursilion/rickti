@@ -1,4 +1,20 @@
-rickcart is being done by hand with xas99
+===============
+
+graphics replacement (9918 version):
+
+The tiles TIAP can be replaced as-is. However, there is an issue with the pre-stage animations screwing up now that needs to be sorted. (Stages 1 and 2 are okay, 3 and up are messed up).
+
+Sprites are harder. Take the sprite data with black background and convert to TIAP (B&W only). Run the TIAP through /ti/tiap2spritebin. Bin2Inc the output and drop it into a like-defined structure depending on which sprite page it is (in the past, I just copy/pasted the data into the structs). Make sure to delete the OBJ files.
+
+To build, then, from the src folder :
+
+make base
+make f18a
+then copy/paste the instructions below to assemble the crt0 (if needed) and patch the binary together.
+
+===============
+
+rickcart is being done by hand with xas99 --** AS CURRENTLY BUILT, THE CRT ONLY SUPPORTS THE COMBINED CART **--
 
 > python /mnt/d/work/ti/xdt99/xas99.py -R -b crt0_rickcart.assembly
 
@@ -136,7 +152,10 @@ CODE9918
 == header skips.
 ===============
 
+(Debian)
 python /mnt/d/work/ti/xdt99/xas99.py -R -b crt0_rickcart.assembly
+
+(CMD)
 d:\work\setbinsize\release\setbinsize.exe crt0_rickcart.bin 512
 copy /y f18a\rick8.bin rickd8.bin
 @rem base banks 0-15 (safe to fully copy - we will replace as needed)
