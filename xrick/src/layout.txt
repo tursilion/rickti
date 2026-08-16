@@ -4,7 +4,9 @@ graphics replacement (9918 version):
 
 The tiles TIAP can be replaced as-is. However, there is an issue with the pre-stage animations screwing up now that needs to be sorted. (Stages 1 and 2 are okay, 3 and up are messed up).
 
-Sprites are harder. Take the sprite data with black background and convert to TIAP (B&W only). Run the TIAP through /ti/tiap2spritebin. Bin2Inc the output and drop it into a like-defined structure depending on which sprite page it is (in the past, I just copy/pasted the data into the structs). Make sure to delete the OBJ files.
+Sprites are harder. Take the sprite data with black background and convert to TIAP (B&W only). Run the TIAP through /ti/tiap2spritebin (linux). Bin2Inc the output and drop it into a like-defined structure depending on which sprite page it is (in the past, I just copy/pasted the data into the structs). Make sure to delete the OBJ files.
+
+Watch the smaller size of spr4!
 
 To build, then, from the src folder :
 
@@ -22,28 +24,34 @@ gives us a raw binary crt0_rickcart.bin, we'll pad to 512 bytes.
 
 Then we also have the base rick8.bin and F18A rick8.bin.
 
-Raw build map (ignore the first 3 pages):
+Raw build map 
+Ignore the first 3 pages:
+ - 22,832 bytes are copied for F18A (I think that means 1744 free, but actual is 1730)
+ - 21,566 bytes are copied from 9918a (that means 3010 free, but actual is 2624)
 
 ##  BANK  ROM     NAME         LOAD  FREE
---  ----  ------  -----------  ----  -----
+--  ----  ------  -----------  ----  -----   9918/f18a
 00  6000  000000  loader       6000      0
 01  6002  002000  fixed        A000      0
-02  6004  004000               0000   1780
+02  6004  004000               0000   1780   2624/1730 
 
-03  6006  006000  bank3        6028    672
+03  6006  006000  bank3        6028    672 - 670/132 -- contains only 9918A data and code, no patches
 04  6008  008000  bank4        6028     68      132 - keyboard fix, more free on base, not used on F18A?
 05  600A  00A000  bank5        6028   1568
 06  600C  00C000  bank6        6028   2008
 07  600E  00E000  bank7        6028    760
 08  6010  010000  bank8        6028   2008
 09  6012  012000  bank9        6028   2008
-10  6014  014000  bank10       6028    949
+10  6014  014000  bank10       6028    949 = 945/949 - contains only 9918a code and data, no patches
 11  6016  016000  bank11       6028   1240
 12  6018  018000  bank12       6028   1428
 13  601A  01A000  bank13       6028      0
 14  601C  01C000  bank14       6028   1854
-15  601E  01E000  bank15       6028   1684
-16  6020  020000  bank16       6028    109  101     -imain fix, but f18a only, no manual patch, should be okay
+15  601E  01E000  bank15       6028   1684 = 1678/1684 - contains dat_maps4 and 9918A code, DOES HAVE A PATCH
+
+- f18a only, but we patch data into free space here -
+
+16  6020  020000  bank16       6028    109  101 = /97     -imain fix, but f18a only, no manual patch, should be okay
 17  6022  022000  bank17       6028    440
 18  6024  024000  bank18       6028    472
 19  6026  026000  bank19       6028    472
@@ -52,7 +60,53 @@ Raw build map (ignore the first 3 pages):
 22  602C  02C000  bank22       6028   1240
 23  602E  02E000  bank23       6028    124  188     -keyboard removal, f18a only, no manual patch
 24  6030  030000  bank24       6028    472
-25  6032  032000  bank25       6028     16
+25  6032  032000  bank25       6028     16  = /14
+26  6034  034000  bank26       6028    472
+27  6036  036000  bank27       6028    472
+28  6038  038000  bank28       6028    472
+29  603A  03A000  bank29       6028   2008
+30  603C  03C000  bank30       6028   2946  = /2940
+31  603E  03E000  bank31       6028   4056
+
+----
+
+After changing VDP.h globals to defines:
+
+FIXED is what we load to A000 - the tool reports 21278/22168
+                                         We copy 21566/22832
+
+##  BANK  ROM     NAME         LOAD  FREE
+--  ----  ------  -----------  ----  -----   9918/f18a
+00  6000  000000  loader       6000      0
+01  6002  002000  fixed        A000      0
+02  6004  004000               0000   1780  2652/1550
+
+03  6006  006000  bank3        6028    672  690/132 (is the line below wrong?)
+04  6008  008000  bank4        6028     68  124/68    132 - keyboard fix, more free on base, not used on F18A?
+05  600A  00A000  bank5        6028   1568  
+06  600C  00C000  bank6        6028   2008
+07  600E  00E000  bank7        6028    760
+08  6010  010000  bank8        6028   2008
+09  6012  012000  bank9        6028   2008
+10  6014  014000  bank10       6028    949  959/949 (changed sequencing a bit on 9918)
+11  6016  016000  bank11       6028   1240  
+12  6018  018000  bank12       6028   1428
+13  601A  01A000  bank13       6028      0
+14  601C  01C000  bank14       6028   1854
+15  601E  01E000  bank15       6028   1684
+
+- f18a only, but we patch data into free space here -
+
+16  6020  020000  bank16       6028    109  /103 101 - imain fix, but f18a only, no manual patch, should be okay
+17  6022  022000  bank17       6028    440
+18  6024  024000  bank18       6028    472
+19  6026  026000  bank19       6028    472
+20  6028  028000  bank20       6028   1336
+21  602A  02A000  bank21       6028   1240
+22  602C  02C000  bank22       6028   1240
+23  602E  02E000  bank23       6028    124  188 - keyboard removal, f18a only, no manual patch
+24  6030  030000  bank24       6028    472
+25  6032  032000  bank25       6028     16  /34
 26  6034  034000  bank26       6028    472
 27  6036  036000  bank27       6028    472
 28  6038  038000  bank28       6028    472

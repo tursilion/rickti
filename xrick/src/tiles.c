@@ -29,7 +29,8 @@
 #include "tilesf18_splitpat3.c"
 #endif
 
-#include <vdp.h>
+#include "game.h"
+//#include <vdp.h>
 
 // load the digits from tile bank 0 to the correct place set by env_digits
 void loadDigitTiles(void) {

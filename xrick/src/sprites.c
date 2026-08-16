@@ -22,7 +22,8 @@
 #include "tiles.h"
 #include "scroller.h"
 
-#include <vdp.h>
+#include "game.h"
+//#include <vdp.h>
 #include <string.h>
 
 #ifdef F18A

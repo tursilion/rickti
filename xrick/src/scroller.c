@@ -22,7 +22,7 @@
 #include "draw.h"
 #include "maps.h"
 #include "ents.h"
-#include <vdp.h>
+//#include <vdp.h>
 
 static U16 period = 0;
 static void (*myasmscrup)(void*,void*,void*) = NULL;
@@ -185,10 +185,17 @@ U16 scroll_down(void)
   return SCROLL_RUNNING;
 }
 
+#ifndef CLASSIC99
 /* generic fast replacement for vdpmemcpy */
 void vdpmemcpy2(U16 dest, const U8* src, U16 cnt) {
     VDP_SET_ADDRESS_WRITE(dest);
     myasmvdpcp((U8*)0x8c00, src, cnt);
 }
+#else
+void vdpmemcpy2(U16 dest, const U8* src, U16 cnt) {
+    vdpmemcpy(dest, src, cnt);
+}
+#endif
+
 
 /* eof */

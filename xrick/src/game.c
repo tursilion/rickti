@@ -13,14 +13,13 @@
 
 #include "config.h"
 
-#include <vdp.h>
+#include "game.h"
+//#include <vdp.h>
 
 #include "sysarg.h"
 #include "sysvid.h"
 #include "sysevt.h"
 #include "env.h"
-
-#include "game.h"
 
 #include "draw.h"
 #include "maps.h"
@@ -89,7 +88,7 @@ hscore_t game_hscores[8] = {
   { 0, 4000, "ROB@N@BOB@" },
   { 0, 3000, "TELLY@@@@@" },
   { 0, 2000, "NOBBY@KEN@" },
-  { 0, 1000, "TI994A@@@@" }
+  { 0, 1000, "TI99IUC@@@" }
 };
 
 /*

@@ -127,7 +127,6 @@ SECTIONS {
         /* dat_spritesTI0.o(.text .rodata) - exactly 6k */
         /* --NOTHING BUT THE SPRITES BEFORE THIS-- */
         /*scr_getname.o(.text .rodata)*/
-        /*sysevt.o(.text .rodata)*/
         
         FILL(0xFF);
         . = . + 8019;  /* size of sprite data and base code */

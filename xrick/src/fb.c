@@ -18,7 +18,7 @@
 #include "draw.h"
 #include "game.h"
 
-#include <vdp.h>
+//#include <vdp.h>
 #include "sprites.h"
 
 /*

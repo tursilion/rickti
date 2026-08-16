@@ -13,7 +13,8 @@
 
 #include "config.h"
 
-#include <vdp.h>
+#include "game.h"
+//#include <vdp.h>
 #include "img.h"
 #include "fb.h"
 #include "scroller.h"

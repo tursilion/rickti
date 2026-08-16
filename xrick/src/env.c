@@ -18,7 +18,8 @@
 #include "fb.h"
 #include "tiles.h"
 
-#include <vdp.h>
+#include "game.h"
+ //#include <vdp.h>
 #include <conio.h>
 
 U16 env_trainer = FALSE;

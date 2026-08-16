@@ -19,6 +19,34 @@
 #include "ricksystem.h"
 #include "maps.h"
 
+// this hack lets me save a few bytes of code for re-packing a rebuilt codebase into the same package
+// assumes nothing ever changes location in VDP
+#define gImage gImageReal
+#define gColor gColorReal
+#define gPattern gPatternReal
+#define gSprite gSpriteReal
+#define gSpritePat gSpritePatReal
+#include <vdp.h>
+#undef gImage 
+#undef gColor 
+#undef gPattern
+#undef gSprite
+#undef gSpritePat
+
+#ifdef F18A
+#define gImage 0x1c00
+#define gColor 0x2000
+#define gPattern 0x0000
+#define gSprite 0x1f00
+#define gSpritePat 0x2800
+#else
+#define gImage 0x1800
+#define gColor 0x2000
+#define gPattern 0x0000
+#define gSprite 0x1b00
+#define gSpritePat 0x3800
+#endif
+
 #define LEFT 1
 #define RIGHT 0
 

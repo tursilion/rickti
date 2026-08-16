@@ -11,8 +11,9 @@
 static int hasGrom = 0;
 extern hscore_t game_hscores[8];
 
-// return true if there's a high score ubergrom attached
+// return true if there's a high score ubergrom attached - not available in Classic99
 int checkHighScores() {
+#ifndef CLASSIC99
     // just check the configuration bits. If bytes 0 and 1
     // are not inverted copies of each other, assume no ubergrom
     // config space is always mapped, so we can just go ahead and read
@@ -26,12 +27,14 @@ int checkHighScores() {
     // we can also use signed chars, which causes the promotions to sign extend and
     // accidentally give us the correct results.
     if (a != (unsigned char)(~b)) return 0;
+#endif
     return 1;
 }
 
 // destroys the magic byte so high scores will be reset
 void clearHighScores() {
     // unlock the eeprom
+#ifndef CLASSIC99
 	GromWriteData(0xffff, 15, 0x55);
 	GromWriteData(0xffff, 15, 0xaa);
 	GromWriteData(0xffff, 15, 0x5a);
@@ -41,6 +44,7 @@ void clearHighScores() {
 
     // and relock the eeprom
 	GromWriteData(0xffff, 15, 0);
+#endif
 }
 
 // write the high scores out - we assume that the device was already checked for
@@ -50,6 +54,7 @@ void savegrom() {
         return;
     }
 
+#ifndef CLASSIC99
     // unlock the eeprom
 	GromWriteData(0xffff, 15, 0x55);
 	GromWriteData(0xffff, 15, 0xaa);
@@ -68,6 +73,7 @@ void savegrom() {
 
     // and relock the eeprom
 	GromWriteData(0xffff, 15, 0);
+#endif
 }
 
 void loadgrom() {
@@ -82,6 +88,7 @@ void loadgrom() {
         return;
     }
 
+#ifndef CLASSIC99
     // we think the device exists, so suck in the high scores
     // we don't bother assume the cache is valid - we re-read each time
     GROM_SET_ADDRESS(UBERGROM_WRITE);
@@ -99,4 +106,5 @@ void loadgrom() {
     for (int idx=0; idx<sizeof(game_hscores); ++idx) {
         *(pDat++) = UBERGROM_RD;
     }
+#endif
 }

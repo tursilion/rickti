@@ -766,6 +766,13 @@ wakeup:
                 SWITCH_IN_BANK(nOldBank);
                 return;
             }
+#ifdef CLASSIC99
+            // trying to catch a bug here...
+                while ((ent_ents[e].trigsnd & 0x1F) - 0x14 > 8) {
+                // spin - I think I can abuse i
+                ++i;
+            }
+#endif
 #ifdef ENABLE_SOUND
             /*
             * FIXME the sound should come from a table, there are 10 of them

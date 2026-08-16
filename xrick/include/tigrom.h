@@ -8,5 +8,5 @@
 #define UBERGROM_WRITE 0xfa00
 #define UBERGROM_UNLOCK 0xffff
 
-void loadgrom();
-void savegrom();
+void loadgrom(void);
+void savegrom(void);

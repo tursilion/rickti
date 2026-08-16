@@ -35,7 +35,7 @@
 #include "sprites.h"
 
 #ifdef CLASSIC99
-#include <vdp.h>
+//#include <vdp.h>
 #endif
 
 /*

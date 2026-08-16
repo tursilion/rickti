@@ -27,7 +27,7 @@
 #include "tiles.h"
 #include "maps.h"
 
-#include <vdp.h>
+//#include <vdp.h>
 
 
 /*

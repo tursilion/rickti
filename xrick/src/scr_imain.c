@@ -13,11 +13,11 @@
 
 #include "config.h"
 
-#include <vdp.h>
+#include "game.h"
+//#include <vdp.h>
 #include <conio.h>
 #include <string.h>
 
-#include "game.h"
 #include "screens.h"
 #include "sysvid.h"
 #include "sounds.h"
@@ -254,7 +254,8 @@ U16 screen_introMain(void)
             cprintf("Written-with-gcc,-convert9918\n");
             cprintf("vgmcomp2,-libTI99ALL,-snjsfxr\n");
             VDP_INT_POLL;
-            cprintf("and-Classic99");
+            cprintf("and-Classic99\n\n");
+            cprintf("9918A-gfx-by-ti99iuc");
 
             VDP_INT_ENABLE;
 

@@ -20,7 +20,18 @@
 #include "scroller.h"
 #include "tigrom.h"
 
-#include <vdp.h>
+//#include <vdp.h>
+
+// this is hacky af, but for this file only I need to disable the gImage/etc #defines so I can
+// tell the real library that tables are moved (at least gImage for F18A). Otherwise some things
+// can't draw at all. Probably only need gImage but I will do them all
+#undef gImage
+#undef gSprite
+#undef gSpritePat
+extern unsigned int gImage;				// SIT, Register 2 * 0x400
+extern unsigned int gSprite;			// SAL, Register 5 * 0x80
+extern unsigned int gSpritePat;			// SDT, Register 6 * 0x800
+
 
 #ifdef F18A
 #include <f18a.h>
@@ -130,6 +141,8 @@ sys_init(int argc, char** argv)
 #endif
 
     set_bitmap(VDP_SPR_16x16);
+    // Note we set these values only for libti99 calls (mostly for gImage)
+    // everywhere else in THIS code those variables are #defined instead
 #ifdef F18A
     // we need to move a few tables around
     VDP_SET_REGISTER(VDP_REG_SIT, 7);

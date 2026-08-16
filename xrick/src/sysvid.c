@@ -24,7 +24,8 @@
 #include "sysarg.h"
 #include "scroller.h"
 
-#include <vdp.h>
+#include "game.h"
+//#include <vdp.h>
 
 #ifdef F18A
 #include <f18a.h>

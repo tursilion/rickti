@@ -23,7 +23,7 @@
 #include "fb.h"
 #include "sysvid.h"
 #include "sysarg.h"
-#include <vdp.h>
+//#include <vdp.h>
 #include <string.h>
 
 /*

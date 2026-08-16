@@ -28,7 +28,7 @@
 #include "sprites.h"
 #include "fb.h"
 
-#include <vdp.h>
+//#include <vdp.h>
 
 /*
  * local vars

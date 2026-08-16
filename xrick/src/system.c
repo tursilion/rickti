@@ -19,7 +19,8 @@
 #include <stdlib.h>
 #endif
 
-#include <vdp.h>
+#include "game.h"
+//#include <vdp.h>
 #include <system.h>
 #ifndef CLASSIC99
 // vdpCountL is a 15.4 bit count. vdpCountH is 16.0

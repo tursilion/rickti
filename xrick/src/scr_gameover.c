@@ -59,15 +59,24 @@ U16 screen_gameover(void)
 #endif
 
 		tiles_setBank(0);
-		seq = 1;
+		//seq = 1;
 		period = game_period; /* save period, */
 		game_period = 50;     /* and use our own */
 #ifdef ENABLE_SOUND
 		sounds_play(GAMEOVER_SND);
 #endif
+
+        // from seq==1 below, otherwise re-enable the seq = 1 above.
+		fb_clear();
+		tm = sys_gettime();
+		tiles_paintListAt((U8*)screen_gameovertxt, 88, 80);
+        sysvid_setGamma(GAMMA_ON);
+		seq = 2;
 	}
 
 	switch (seq) {
+#if 0
+        // moved above to reclaim a few bytes */
 	case 1:  /* display banner */
 		fb_clear();
 		tm = sys_gettime();
@@ -76,6 +85,7 @@ U16 screen_gameover(void)
         sysvid_setGamma(GAMMA_ON);
 		seq = 2;
 		break;
+#endif
 
 	case 2:  /* wait for key pressed */
 		if (control_status & CONTROL_FIRE)

@@ -43,7 +43,7 @@
 #include "fb.h"
 #include "scroller.h"
 
-#include <vdp.h>
+//#include <vdp.h>
 
 /*
  * global vars
