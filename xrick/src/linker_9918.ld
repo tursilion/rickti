@@ -122,7 +122,7 @@ SECTIONS {
     bank3 :
     {
         /* must start at beginning of bank, index is hard coded in sprites.c sprites_paint */
-        new_spr0.o(.text .rodata)
+        dat_spritesTI0.o(.text .rodata)
         /* --NOTHING BUT THE SPRITES BEFORE THIS-- */
         scr_getname.o(.text .rodata)
         PROVIDE(ebank3a = .);
@@ -166,13 +166,13 @@ SECTIONS {
 
     bank8 :
     {
-        new_tile_pat.o(.text .rodata)
+        dat_tilespTI.o(.text .rodata)
         PROVIDE(ebank8a = .);
     } > CART8 AT> FLASH
 
     bank9 :
     {
-        new_tile_col.o(.text .rodata)
+        dat_tilescTI.o(.text .rodata)
         PROVIDE(ebank9a = .);
     } > CART9 AT> FLASH
 
