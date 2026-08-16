@@ -1,4 +1,4 @@
-20260713
+20260815
 
 This is a port of xrick to the TI-99/4A.
 
@@ -18,6 +18,8 @@ In case you are not familiar with Rick Dangerous - expect to die A LOT. This is 
 
 A physical cartridge should be available from ArcadeShopper:
 https://www.arcadeshopper.com/wp/store/#!/TI-99-4A/c/5051340
+
+ti99iuc has provided improved graphics for the 9918A port.
 
 The original notes are below.
 
